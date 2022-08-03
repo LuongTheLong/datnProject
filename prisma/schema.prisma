@@ -65,3 +65,13 @@ model ToDo {
     id   String @id @default(cuid())
     name String
 }
+
+model Material{
+    id String @id @default(cuid())
+    name String
+    codeName String
+    count Float
+    typeOfCount String
+    countOptional String
+}
+
