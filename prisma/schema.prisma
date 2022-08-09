@@ -81,7 +81,7 @@ model Category {
     id       String @id @default(cuid())
     name     String
     codeName String
-    Item     Item[]
+    items    Item[]
 }
 
 model Item {
@@ -92,46 +92,46 @@ model Item {
     price       Int
     description String?
     category    Category     @relation(fields: [idCategory], references: [id])
-    BillDetail  BillDetail[]
+    billDetails BillDetail[]
 }
 
 model Shift {
-    id          String        @id @default(cuid())
-    idWorker    String
-    CheckIncome CheckIncome[]
-    Bill        Bill[]
+    id       String   @id @default(cuid())
+    idWorker String
+    incomes  Income[]
+    bills    Bill[]
 }
 
-model CheckIncome {
+model Income {
     id             String @id @default(cuid())
     idShift        String
     startIncome    Int
-    inCome         Int
+    income         Int
     totalDecrease  Int
     feeService     Int
     vat            Float
     totalBills     Int
-    outCome        Int
+    outcome        Int
     moneyRemaining Int
     shift          Shift  @relation(fields: [idShift], references: [id])
 }
 
 model Bill {
-    id         String       @id @default(cuid())
-    numberDesk String
-    idShift    String
-    vat        Float
-    coupon     Int
-    totalCount Int
-    shift      Shift        @relation(fields: [idShift], references: [id])
-    BillDetail BillDetail[]
+    id          String       @id @default(cuid())
+    numberDesk  String
+    idShift     String
+    vat         Float
+    coupon      Int
+    totalCount  Int
+    shift       Shift        @relation(fields: [idShift], references: [id])
+    billDetails BillDetail[]
 }
 
 model BillDetail {
     id     String @id @default(cuid())
     idBill String
     idItem String
-    Count  Int
+    count  Int
     bill   Bill   @relation(fields: [idBill], references: [id])
     item   Item   @relation(fields: [idItem], references: [id])
 }
