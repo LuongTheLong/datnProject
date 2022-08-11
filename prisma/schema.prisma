@@ -51,6 +51,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    point         Int
+    pointCurrent  Int
 }
 
 model VerificationToken {
@@ -66,12 +68,70 @@ model ToDo {
     name String
 }
 
-model Material{
-    id String @id @default(cuid())
-    name String
-    codeName String
-    count Float
-    typeOfCount String
-    countOptional String
+model Material {
+    id          String  @id @default(cuid())
+    name        String
+    codeName    String
+    count       Float?
+    unit        String?
+    description String?
 }
 
+model Category {
+    id       String @id @default(cuid())
+    name     String
+    codeName String
+    items    Item[]
+}
+
+model Item {
+    id          String       @id @default(cuid())
+    idCategory  String
+    name        String
+    codeName    String
+    price       Int
+    description String?
+    category    Category     @relation(fields: [idCategory], references: [id])
+    billDetails BillDetail[]
+}
+
+model Shift {
+    id       String   @id @default(cuid())
+    idWorker String
+    incomes  Income[]
+    bills    Bill[]
+}
+
+model Income {
+    id             String @id @default(cuid())
+    idShift        String
+    startIncome    Int
+    income         Int
+    totalDecrease  Int
+    feeService     Int
+    vat            Float
+    totalBills     Int
+    outcome        Int
+    moneyRemaining Int
+    shift          Shift  @relation(fields: [idShift], references: [id])
+}
+
+model Bill {
+    id          String       @id @default(cuid())
+    numberDesk  String
+    idShift     String
+    vat         Float
+    coupon      Int
+    totalCount  Int
+    shift       Shift        @relation(fields: [idShift], references: [id])
+    billDetails BillDetail[]
+}
+
+model BillDetail {
+    id     String @id @default(cuid())
+    idBill String
+    idItem String
+    count  Int
+    bill   Bill   @relation(fields: [idBill], references: [id])
+    item   Item   @relation(fields: [idItem], references: [id])
+}
