@@ -9,6 +9,7 @@ import LoadingSpinner from "@components/loading-spinner";
 import AddMaterial from "@components/add-material";
 
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer } from "@chakra-ui/react";
+import EditMaterial from "@components/edit-material";
 
 const Material: NextPageWithLayout = () => {
   const { isLoading, data } = trpc.useQuery(["material.get-material", {}], {
@@ -31,6 +32,7 @@ const Material: NextPageWithLayout = () => {
                   <Th>Số lượng</Th>
                   <Th>Đơn vị</Th>
                   <Th>Mô tả</Th>
+                  <Th>Hành động</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -43,6 +45,16 @@ const Material: NextPageWithLayout = () => {
                     <Td>{material.count}</Td>
                     <Td>{material.unit}</Td>
                     <Td>{material.description}</Td>
+                    <EditMaterial
+                      defaultValues={{
+                        codeName: material.codeName,
+                        name: material.name,
+                        count: material.count?.toString(),
+                        description: material.description,
+                        unit: material.unit,
+                      }}
+                      id={material.id}
+                    />
                   </Tr>
                 ))}
               </Tbody>
