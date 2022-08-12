@@ -1,60 +1,90 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useState } from "react";
-import { trpc } from "../utils/trpc";
+import { ReactNode } from "react";
+import {
+  Box,
+  Flex,
+  Avatar,
+  HStack,
+  IconButton,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  useDisclosure,
+  useColorModeValue,
+  Stack
+} from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 
-type TechnologyCardProps = {
-  name: string;
-  description: string;
-  documentation: string;
-};
+const Links = ["Chill", "Booking", "Review"];
 
-const Home: NextPage = () => {
-  const [value, setValue] = useState("");
-  const todoGet = trpc.useMutation(["todo.create-todo"])
+export default function NavBar() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const session = useSession();
 
-  const getListTodo = trpc.useQuery(["todo.get-list-todo", { name: undefined }], { enabled: false })
-
-  const handleClick = () => {
-    todoGet.mutate({ name: value }, {
-      onSuccess: (data) => {
-        alert("Create success");
-      }
-    });
-  };
-
-  const handleClick2 = () => {
-    getListTodo.refetch();
-  }
   return (
     <>
-      {todoGet.isLoading && "loading..."}
-      <input value={value} onChange={(event) => setValue(event.target.value)} />
-      <button onClick={handleClick2} type="button">check</button>
-      {JSON.stringify(getListTodo.data)}
+      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+          <IconButton
+            size={"md"}
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            aria-label={"Open Menu"}
+            display={{ md: "none" }}
+            onClick={isOpen ? onClose : onOpen}
+          />
+          <HStack spacing={8} alignItems={"center"}>
+            <Box>Logo</Box>
+            <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
+              {Links.map((link) => (
+                <Link href={link} key={link}>
+                  <a className="px-2 hover:text-teal-700">{link}</a>
+                </Link>
+              ))}
+            </HStack>
+          </HStack>
+          <Flex alignItems={"center"}>
+            {
+              session.data?.user ? <Menu> <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
+                <Avatar
+                  size={"sm"}
+                  src={session.data.user?.image as string}
+                />
+              </MenuButton> <MenuList>
+                  <MenuItem>Trang cá nhân</MenuItem>
+                  <MenuItem>Quản lý</MenuItem>
+                  <MenuItem>Cài đặt</MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={() => signOut({ callbackUrl: "/" })}>Đăng xuất</MenuItem>
+                </MenuList>
+              </Menu> : <Link href="/login" passHref>
+                <Button variant={"solid"} colorScheme={"teal"} size={"sm"} mr={4}>
+                  Đăng nhập
+                </Button>
+              </Link>
+            }
+
+
+          </Flex>
+        </Flex>
+
+        {isOpen ? (
+          <Box pb={4} display={{ md: "none" }}>
+            <Stack as={"nav"} spacing={4}>
+              {Links.map((link) => (
+                <Link href={link} key={link}>
+                  <a className="px-2 hover:text-teal-700">{link}</a>
+                </Link>
+              ))}
+            </Stack>
+          </Box>
+        ) : null}
+      </Box>
+
+      <Box p={4}>Main Content Here</Box>
     </>
   );
-};
-
-const TechnologyCard = ({
-  name,
-  description,
-  documentation,
-}: TechnologyCardProps) => {
-  return (
-    <section className="flex flex-col justify-center p-6 duration-500 border-2 border-gray-500 rounded shadow-xl motion-safe:hover:scale-105">
-      <h2 className="text-lg text-gray-700">{name}</h2>
-      <p className="text-sm text-gray-600">{description}</p>
-      <a
-        className="mt-3 text-sm underline text-violet-500 decoration-dotted underline-offset-2"
-        href={documentation}
-        target="_blank"
-        rel="noreferrer"
-      >
-        Documentation
-      </a>
-    </section>
-  );
-};
-
-export default Home;
+}
