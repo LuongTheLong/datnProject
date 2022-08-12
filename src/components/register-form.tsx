@@ -1,5 +1,3 @@
-
-
 import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -17,12 +15,11 @@ import {
   FormLabel,
   Text,
   useColorModeValue,
-  HStack
+  HStack,
 } from "@chakra-ui/react";
 
 import Link from "next/link";
 
-import { userAPI } from "@constants/APIEndpoint";
 import { RegisterFields, registerFormValidator } from "@shared/register-form-validator";
 
 const RegisterForm = () => {
@@ -32,12 +29,10 @@ const RegisterForm = () => {
   const {
     register,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
   } = useForm<RegisterFields>({ resolver: zodResolver(registerFormValidator) });
 
-
-
-  const submitHandler: SubmitHandler<RegisterFields> = (values) => {
+  const submitHandler: SubmitHandler<RegisterFields> = values => {
     console.log(values);
   };
 
@@ -91,12 +86,10 @@ const RegisterForm = () => {
                   bg={"blue.400"}
                   color={"white"}
                   _hover={{
-                    bg: "blue.500"
+                    bg: "blue.500",
                   }}
-
                   type="submit"
                   width="full"
-
                   loadingText={"Đang xử lý..."}
                 >
                   Đăng ký

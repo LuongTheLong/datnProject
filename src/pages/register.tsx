@@ -1,4 +1,4 @@
-import RegisterForm from "@components/RegisterForm";
+import RegisterForm from "@components/register-form";
 import { Flex, useColorModeValue } from "@chakra-ui/react";
 
 export default function Register() {
