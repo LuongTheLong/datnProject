@@ -9,7 +9,15 @@ export const categoryRouter = createProtectedRouter()
     }),
     async resolve({ ctx, input }) {
       const res = await ctx.prisma.category.findMany({
-        where: { OR: [{ name: input.name }, { codeName: input.codeName }] },
+        include: {
+          items: {
+            select: {
+              name: true,
+              price: true,
+              description: true,
+            },
+          },
+        },
       });
       return res;
     },

@@ -4,7 +4,6 @@ import {
   Flex,
   Avatar,
   HStack,
-  Link,
   IconButton,
   Button,
   Menu,
@@ -15,24 +14,30 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Link,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import NextLink from "next/link";
 
-const Links = ["Nguyên liệu", "Quản lý Menu", "Ca làm", "Doanh thu", "Hóa đơn"];
+const LINKS = [
+  { title: "Nguyên liệu", path: "/dashboard/material" },
+  { title: "Quản lý Menu", path: "/dashboard/menu" },
+];
 
-const NavLink = ({ children }: { children: ReactNode }) => (
-  <Link
-    px={2}
-    py={1}
-    rounded={"md"}
-    _hover={{
-      textDecoration: "none",
-      bg: useColorModeValue("gray.200", "gray.700"),
-    }}
-    href={"#"}
-  >
-    {children}
-  </Link>
+const NavLink = ({ children, href }: { children: ReactNode; href: string }) => (
+  <NextLink href={href} passHref>
+    <Link
+      px={2}
+      py={1}
+      rounded={"md"}
+      _hover={{
+        textDecoration: "none",
+        bg: useColorModeValue("gray.200", "gray.700"),
+      }}
+    >
+      {children}
+    </Link>
+  </NextLink>
 );
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -52,8 +57,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <HStack spacing={8} alignItems={"center"}>
             <Box>Logo</Box>
             <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-              {Links.map(link => (
-                <NavLink key={link}>{link}</NavLink>
+              {LINKS.map(link => (
+                <NavLink key={link.title} href={link.path}>
+                  {link.title}
+                </NavLink>
               ))}
             </HStack>
           </HStack>
@@ -80,8 +87,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {isOpen ? (
           <Box pb={4} display={{ md: "none" }}>
             <Stack as={"nav"} spacing={4}>
-              {Links.map(link => (
-                <NavLink key={link}>{link}</NavLink>
+              {LINKS.map(link => (
+                <NavLink key={link.title} href={link.path}>
+                  {link.title}
+                </NavLink>
               ))}
             </Stack>
           </Box>
