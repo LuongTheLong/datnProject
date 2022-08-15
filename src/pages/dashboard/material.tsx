@@ -3,13 +3,13 @@ import DashboardLayout from "src/layout/dashboard-layout";
 import React from "react";
 import { trpc } from "src/utils/trpc";
 import { Badge } from "@chakra-ui/react";
-import { Button } from "@chakra-ui/react";
 
 import LoadingSpinner from "@components/loading-spinner";
 import AddMaterial from "@components/add-material";
 
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, Flex } from "@chakra-ui/react";
 import EditMaterial from "@components/edit-material";
+import DeleteMaterial from "@components/delete-material";
 
 const Material: NextPageWithLayout = () => {
   const { isLoading, data } = trpc.useQuery(["material.get-material", {}], {
@@ -45,16 +45,21 @@ const Material: NextPageWithLayout = () => {
                     <Td>{material.count}</Td>
                     <Td>{material.unit}</Td>
                     <Td>{material.description}</Td>
-                    <EditMaterial
-                      defaultValues={{
-                        codeName: material.codeName,
-                        name: material.name,
-                        count: material.count?.toString(),
-                        description: material.description,
-                        unit: material.unit,
-                      }}
-                      id={material.id}
-                    />
+                    <Td>
+                      <Flex alignItems={"center"} gap={4}>
+                        <EditMaterial
+                          defaultValues={{
+                            codeName: material.codeName,
+                            name: material.name,
+                            count: material.count?.toString(),
+                            description: material.description,
+                            unit: material.unit,
+                          }}
+                          id={material.id}
+                        />
+                        <DeleteMaterial id={material.id} />
+                      </Flex>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

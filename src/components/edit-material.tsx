@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, useDisclosure } from "@chakra-ui/react";
 import {
   Modal,
@@ -22,7 +21,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 type AddMaterialFields = inferMutationInput<"material.create-material">;
 
-export default function EditMaterial({ defaultValues, id }: { defaultValues: AddMaterialFields; id: string }) {
+type EditMaterialProps = {
+  defaultValues: AddMaterialFields;
+  id: string;
+};
+
+export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
   const client = trpc.useContext();
   const { isLoading, mutate } = trpc.useMutation(["material.create-material"], {
     onSuccess: () => {
@@ -51,7 +55,7 @@ export default function EditMaterial({ defaultValues, id }: { defaultValues: Add
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme="messenger">
+      <Button size={"sm"} onClick={onOpen} colorScheme="messenger">
         Sửa
       </Button>
 
