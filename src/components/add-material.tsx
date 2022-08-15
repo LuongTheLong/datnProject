@@ -49,7 +49,7 @@ export default function AddMaterial() {
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme="messenger">
+      <Button onClick={onOpen} colorScheme="messenger" mb={6}>
         Thêm nguyên liệu
       </Button>
 
