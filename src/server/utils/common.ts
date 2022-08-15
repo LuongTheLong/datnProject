@@ -27,6 +27,7 @@ const slugGenerator = (codeName: string) => {
     /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
     " "
   );
+  codeName = codeName.replaceAll(" ", "");
   return codeName;
 };
 
