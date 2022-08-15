@@ -19,7 +19,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { inferMutationInput } from "src/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type AddMaterialFields = inferMutationInput<"material.create-material">;
+type AddMaterialFields = inferMutationInput<"material.update-material">;
 
 type EditMaterialProps = {
   defaultValues: AddMaterialFields;
@@ -28,10 +28,10 @@ type EditMaterialProps = {
 
 export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
   const client = trpc.useContext();
-  const { isLoading, mutate } = trpc.useMutation(["material.create-material"], {
+  const { isLoading, mutate } = trpc.useMutation(["material.update-material"], {
     onSuccess: () => {
       client.invalidateQueries("material.get-material");
-      toast({ title: "Thêm nguyên liệu thành công", status: "success", position: "top" });
+      toast({ title: "Cập nhật thành công", status: "success", position: "top" });
       reset();
       onClose();
     },
@@ -47,7 +47,7 @@ export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
   } = useForm<AddMaterialFields>({ resolver: zodResolver(createMaterialValidator), defaultValues: defaultValues });
 
   const addMaterial: SubmitHandler<AddMaterialFields> = values => {
-    mutate(values);
+    mutate({ ...values, id });
   };
 
   const isButtonDisabled = isLoading || !!errors.count || !!errors.description || !!errors.name || !!errors.unit;
@@ -62,7 +62,7 @@ export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
         <ModalOverlay />
         <form onSubmit={handleSubmit(addMaterial)}>
           <ModalContent>
-            <ModalHeader>Create your account</ModalHeader>
+            <ModalHeader>Tạo nguyên liệu</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.name}>

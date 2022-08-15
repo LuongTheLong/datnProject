@@ -26,19 +26,18 @@ export const materialRouter = createProtectedRouter()
     },
   })
   .mutation("update-material", {
-    input: z.object({
-      id: z.string(),
-      name: z.string(),
-      codeName: z.string(),
-      count: z.number().optional(),
-      unit: z.string().optional(),
-      description: z.string().optional(),
-    }),
+    input: z
+      .object({
+        id: z.string(),
+      })
+      .merge(createMaterialValidator),
     async resolve({ ctx, input }) {
       const { id, ...rest } = input;
 
+      const code = slugGenerator(input.name);
+
       const res = await ctx.prisma.material.update({
-        data: rest,
+        data: { ...rest, codeName: code },
         where: {
           id,
         },
