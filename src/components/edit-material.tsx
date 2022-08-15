@@ -22,7 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 type AddMaterialFields = inferMutationInput<"material.update-material">;
 
 type EditMaterialProps = {
-  defaultValues: AddMaterialFields;
+  defaultValues: Omit<AddMaterialFields, "id">;
   id: string;
 };
 
@@ -62,7 +62,7 @@ export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
         <ModalOverlay />
         <form onSubmit={handleSubmit(addMaterial)}>
           <ModalContent>
-            <ModalHeader>Tạo nguyên liệu</ModalHeader>
+            <ModalHeader>Chỉnh sửa nguyên liệu</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.name}>
