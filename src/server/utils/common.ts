@@ -23,15 +23,11 @@ const slugGenerator = (codeName: string) => {
   codeName = codeName.trim();
   // Remove punctuations
   // Bỏ dấu câu, kí tự đặc biệt
-  codeName = codeName.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
+  codeName = codeName.replace(
+    /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+    " "
+  );
   return codeName;
 };
 
-type NameGeneratorParams = {
-  name: string;
-  age: number;
-};
-
-const nameGenerator = ({ name, age }: NameGeneratorParams) => { };
-
-export { slugGenerator, nameGenerator };
+export { slugGenerator };

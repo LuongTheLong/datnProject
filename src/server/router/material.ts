@@ -1,8 +1,7 @@
-import { createRouter } from "./context";
 import { z } from "zod";
 import { createMaterialValidator } from "@shared/create-material-validation-schema";
 import { createProtectedRouter } from "./protected-router";
-import { slugGenerator, nameGenerator } from "../utils/common";
+import { slugGenerator } from "../utils/common";
 
 export const materialRouter = createProtectedRouter()
   .query("get-material", {
@@ -10,7 +9,7 @@ export const materialRouter = createProtectedRouter()
       name: z.string().optional(),
       codeName: z.string().optional(),
     }),
-    async resolve({ ctx, input }) {
+    async resolve({ ctx }) {
       const res = await ctx.prisma.material.findMany();
       return res;
     },
@@ -21,7 +20,7 @@ export const materialRouter = createProtectedRouter()
       const code = slugGenerator(input.name);
 
       const res = await ctx.prisma.material.create({
-        data: { ...input, codeName: code, count: Number(input.count) },
+        data: { ...input, codeName: code },
       });
       return res;
     },

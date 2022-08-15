@@ -45,8 +45,7 @@ export default function AddMaterial() {
     mutate(values);
   };
 
-  const isButtonDisabled =
-    isLoading || !!errors.codeName || !!errors.count || !!errors.description || !!errors.name || !!errors.unit;
+  const isButtonDisabled = isLoading || !!errors.count || !!errors.description || !!errors.name || !!errors.unit;
 
   return (
     <>
@@ -65,14 +64,9 @@ export default function AddMaterial() {
                 <FormLabel>Tên nguyên liệu</FormLabel>
                 <Input {...register("name")} placeholder="Tên nguyên liệu" />
               </FormControl>
-
-              <FormControl mt={4} isInvalid={!!errors.codeName}>
-                <FormLabel>Mã nguyên liệu</FormLabel>
-                <Input {...register("codeName")} placeholder="Mã nguyên liệu" />
-              </FormControl>
               <FormControl mt={4} isInvalid={!!errors.count}>
                 <FormLabel>Số lượng</FormLabel>
-                <Input {...register("count")} type={"number"} placeholder="Số lượng" />
+                <Input {...register("count", { valueAsNumber: true })} type={"number"} placeholder="Số lượng" />
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.unit}>
                 <FormLabel>Đơn vị</FormLabel>

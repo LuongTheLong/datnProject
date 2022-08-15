@@ -71,9 +71,9 @@ model ToDo {
 model Material {
     id          String  @id @default(cuid())
     name        String
-    codeName    String?
-    count       Float?
-    unit        String?
+    codeName    String
+    count       Float
+    unit        String
     description String?
 }
 

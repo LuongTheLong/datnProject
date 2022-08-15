@@ -49,9 +49,8 @@ const Material: NextPageWithLayout = () => {
                       <Flex alignItems={"center"} gap={4}>
                         <EditMaterial
                           defaultValues={{
-                            codeName: material.codeName,
                             name: material.name,
-                            count: material.count?.toString(),
+                            count: material.count,
                             description: material.description,
                             unit: material.unit,
                           }}
