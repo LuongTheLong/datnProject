@@ -58,32 +58,34 @@ export default function NavBar() {
               ))}
             </HStack>
           </HStack>
-          <Flex alignItems={"center"}>
-            {session.data?.user ? (
-              <Menu>
-                <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
-                  <Avatar size={"sm"} src={session.data.user?.image as string} />
-                </MenuButton>
-                <MenuList>
-                  {USER_LINKS.map(link => (
-                    <NextLink href={link.path} key={link.title} passHref>
-                      <Link _hover={{ color: "teal.700" }}>
-                        <MenuItem>{link.title}</MenuItem>
-                      </Link>
-                    </NextLink>
-                  ))}
-                  <MenuDivider />
-                  <MenuItem onClick={() => signOut({ callbackUrl: "/" })}>Đăng xuất</MenuItem>
-                </MenuList>
-              </Menu>
-            ) : (
-              <NextLink href="/login" passHref>
-                <Button variant={"solid"} colorScheme={"teal"} size={"sm"} mr={4}>
-                  Đăng nhập
-                </Button>
-              </NextLink>
-            )}
-          </Flex>
+          {session.status !== "loading" && (
+            <Flex alignItems={"center"}>
+              {session.data?.user ? (
+                <Menu>
+                  <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
+                    <Avatar size={"sm"} src={session.data.user?.image as string} />
+                  </MenuButton>
+                  <MenuList>
+                    {USER_LINKS.map(link => (
+                      <NextLink href={link.path} key={link.title} passHref>
+                        <Link _hover={{ color: "teal.700" }}>
+                          <MenuItem>{link.title}</MenuItem>
+                        </Link>
+                      </NextLink>
+                    ))}
+                    <MenuDivider />
+                    <MenuItem onClick={() => signOut({ callbackUrl: "/" })}>Đăng xuất</MenuItem>
+                  </MenuList>
+                </Menu>
+              ) : (
+                <NextLink href="/login" passHref>
+                  <Button variant={"solid"} colorScheme={"teal"} size={"sm"} mr={4}>
+                    Đăng nhập
+                  </Button>
+                </NextLink>
+              )}
+            </Flex>
+          )}
         </Flex>
 
         {isOpen ? (
