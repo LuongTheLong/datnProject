@@ -19,18 +19,23 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { inferMutationInput } from "src/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type AddMaterialFields = inferMutationInput<"material.update-material">;
+type AddMaterialFields = inferMutationInput<"material.update">;
+type DefaultValues = Omit<AddMaterialFields, "id">;
 
 type EditMaterialProps = {
+<<<<<<< Updated upstream
   defaultValues: Omit<AddMaterialFields, "id">;
+=======
+  defaultValues: DefaultValues;
+>>>>>>> Stashed changes
   id: string;
 };
 
 export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
   const client = trpc.useContext();
-  const { isLoading, mutate } = trpc.useMutation(["material.update-material"], {
+  const { isLoading, mutate } = trpc.useMutation(["material.update"], {
     onSuccess: () => {
-      client.invalidateQueries("material.get-material");
+      client.invalidateQueries("material.get-all");
       toast({ title: "Cập nhật thành công", status: "success", position: "top" });
       reset();
       onClose();
@@ -44,9 +49,9 @@ export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
     register,
     formState: { errors },
     reset,
-  } = useForm<AddMaterialFields>({ resolver: zodResolver(createMaterialValidator), defaultValues: defaultValues });
+  } = useForm<DefaultValues>({ resolver: zodResolver(createMaterialValidator), defaultValues: defaultValues });
 
-  const addMaterial: SubmitHandler<AddMaterialFields> = values => {
+  const addMaterial: SubmitHandler<DefaultValues> = values => {
     mutate({ ...values, id });
   };
 

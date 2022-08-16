@@ -4,7 +4,7 @@ import { createProtectedRouter } from "./protected-router";
 import { slugGenerator } from "../utils/common";
 
 export const materialRouter = createProtectedRouter()
-  .query("get-material", {
+  .query("get-all", {
     input: z.object({
       name: z.string().optional(),
       codeName: z.string().optional(),
@@ -14,7 +14,7 @@ export const materialRouter = createProtectedRouter()
       return res;
     },
   })
-  .mutation("create-material", {
+  .mutation("create", {
     input: createMaterialValidator,
     async resolve({ ctx, input }) {
       const code = slugGenerator(input.name);
@@ -25,7 +25,7 @@ export const materialRouter = createProtectedRouter()
       return res;
     },
   })
-  .mutation("update-material", {
+  .mutation("update", {
     input: z
       .object({
         id: z.string(),
@@ -45,7 +45,7 @@ export const materialRouter = createProtectedRouter()
       return res;
     },
   })
-  .mutation("delete-material", {
+  .mutation("delete", {
     input: z.object({
       id: z.string(),
     }),

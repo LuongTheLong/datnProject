@@ -19,13 +19,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { inferMutationInput } from "src/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type AddMaterialFields = inferMutationInput<"material.create-material">;
+type AddMaterialFields = inferMutationInput<"material.create">;
 
 export default function AddMaterial() {
   const client = trpc.useContext();
-  const { isLoading, mutate } = trpc.useMutation(["material.create-material"], {
+  const { isLoading, mutate } = trpc.useMutation(["material.create"], {
     onSuccess: () => {
-      client.invalidateQueries("material.get-material");
+      client.invalidateQueries("material.get-all");
       toast({ title: "Thêm nguyên liệu thành công", status: "success", position: "top" });
       reset();
       onClose();

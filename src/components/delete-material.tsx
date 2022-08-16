@@ -22,9 +22,9 @@ const DeleteMaterial = ({ id }: DeleteMaterialProps) => {
   const toast = useToast();
   const client = trpc.useContext();
 
-  const { isLoading, mutate } = trpc.useMutation(["material.delete-material"], {
+  const { isLoading, mutate } = trpc.useMutation(["material.delete"], {
     onSuccess: () => {
-      client.invalidateQueries("material.get-material");
+      client.invalidateQueries("material.get-all");
       toast({ position: "top", title: "Đã xóa nguyên liệu", status: "success" });
       onClose();
     },
