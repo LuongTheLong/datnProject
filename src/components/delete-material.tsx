@@ -56,9 +56,9 @@ const DeleteMaterial = ({ id }: DeleteMaterialProps) => {
               isLoading={isLoading}
               loadingText={"Đang xử lý"}
             >
-              Delete
+              Xóa
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onClose}>Hủy</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

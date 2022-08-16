@@ -57,7 +57,7 @@ export default function AddMaterial() {
         <ModalOverlay />
         <form onSubmit={handleSubmit(addMaterial)}>
           <ModalContent>
-            <ModalHeader>Create your account</ModalHeader>
+            <ModalHeader>Thêm nguyên liệu</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.name}>

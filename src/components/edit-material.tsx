@@ -23,11 +23,7 @@ type AddMaterialFields = inferMutationInput<"material.update">;
 type DefaultValues = Omit<AddMaterialFields, "id">;
 
 type EditMaterialProps = {
-<<<<<<< Updated upstream
-  defaultValues: Omit<AddMaterialFields, "id">;
-=======
   defaultValues: DefaultValues;
->>>>>>> Stashed changes
   id: string;
 };
 

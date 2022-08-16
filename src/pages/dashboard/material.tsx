@@ -12,7 +12,7 @@ import EditMaterial from "@components/edit-material";
 import DeleteMaterial from "@components/delete-material";
 
 const Material: NextPageWithLayout = () => {
-  const { isLoading, data } = trpc.useQuery(["material.get-material", {}], {
+  const { isLoading, data } = trpc.useQuery(["material.get-all", {}], {
     refetchOnWindowFocus: false,
   });
 
