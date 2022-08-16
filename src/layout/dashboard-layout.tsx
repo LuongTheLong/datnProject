@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import {
   Box,
   Flex,
@@ -125,7 +125,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Box>
             ) : null}
           </Box>
-
           <Box p={4}>{children}</Box>
         </>
       )}
