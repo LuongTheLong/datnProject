@@ -19,7 +19,6 @@
     "baseUrl": ".",
     "paths": {
       "@pages/*": ["src/pages/*"],
-      "@constants/*": ["src/constants/*"],
       "@components/*": ["src/components/*"],
       "@shared/*": ["src/shared/*"],
       "@layout/*": ["src/layout/*"],

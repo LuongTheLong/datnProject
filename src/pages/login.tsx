@@ -21,12 +21,11 @@ import {
   Stack,
   useColorModeValue,
   Checkbox,
-  Flex
+  Flex,
 } from "@chakra-ui/react";
 
 import { LoginFields, loginFormValidator } from "@shared/login-form-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { authAPI } from "@constants/APIEndpoint";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -52,23 +51,19 @@ export default function Login(props: InferGetServerSidePropsType<typeof getServe
 
   const toast = useToast();
 
-  const [isShow, togglePassword] = useReducer((state: boolean) => !state, false);
-
-
   const {
     register,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
   } = useForm<LoginFields>({ resolver: zodResolver(loginFormValidator) });
 
-  const submitHandler: SubmitHandler<LoginFields> = (values) => {
+  const submitHandler: SubmitHandler<LoginFields> = values => {
     console.log(values);
-    toast({ title: "Success", status: "success", position: "top" })
+    toast({ title: "Success", status: "success", position: "top" });
   };
 
   return (
     <Flex minH={"100vh"} align={"center"} justify={"center"} bg={useColorModeValue("gray.50", "gray.800")}>
-
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
           <Heading fontSize={"3xl"}>Tham gia Coffee Data House</Heading>
@@ -146,7 +141,6 @@ export default function Login(props: InferGetServerSidePropsType<typeof getServe
           </Flex>
         </Box>
       </Stack>
-
     </Flex>
   );
 }
