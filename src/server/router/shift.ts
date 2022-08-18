@@ -28,12 +28,11 @@ export const shiftRouter = createProtectedRouter()
       idWorker: z.string(),
     }),
     async resolve({ ctx, input }) {
+      const { id, ...rest } = input;
       const res = await ctx.prisma.shift.update({
-        data: {
-          idWorker: input.idWorker,
-        },
+        data: rest,
         where: {
-          id: input.id,
+          id,
         },
       });
       return res;

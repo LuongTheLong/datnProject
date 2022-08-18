@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { createProtectedRouter } from "./protected-router";
-import { createBillValidator } from "@shared/create-bill-validation-schema";
+import { createBillValidator } from "@shared/bill-validator";
 
 export const billRouter = createProtectedRouter()
   .query("get-all-bill", {

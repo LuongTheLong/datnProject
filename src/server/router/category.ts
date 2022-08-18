@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createProtectedRouter } from "./protected-router";
-import { createCategoryValidator } from "@shared/create-category-validation-schema";
+import { createCategoryValidator } from "@shared/category-validator";
 import { slugGenerator } from "../utils/common";
 
 export const categoryRouter = createProtectedRouter()
@@ -10,17 +10,7 @@ export const categoryRouter = createProtectedRouter()
       codeName: z.string().optional(),
     }),
     async resolve({ ctx, input }) {
-      const res = await ctx.prisma.category.findMany({
-        include: {
-          items: {
-            select: {
-              name: true,
-              price: true,
-              description: true,
-            },
-          },
-        },
-      });
+      const res = await ctx.prisma.category.findMany();
       return res;
     },
   })

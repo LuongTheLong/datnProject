@@ -13,7 +13,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { createMaterialValidator } from "@shared/create-material-validation-schema";
+import { createMaterialValidator } from "@shared/material-validator";
 import { trpc } from "src/utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { inferMutationInput } from "src/utils/trpc";

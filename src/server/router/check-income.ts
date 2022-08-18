@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { createProtectedRouter } from "./protected-router";
+import { createCheckIncomeValidator } from "@shared/check-income-validator";
 
 export const incomeRouter = createProtectedRouter()
   .query("get-check-income", {
@@ -12,17 +13,7 @@ export const incomeRouter = createProtectedRouter()
     },
   })
   .mutation("create-check-income", {
-    input: z.object({
-      idShift: z.string(),
-      startIncome: z.number(),
-      income: z.number(),
-      totalDecrease: z.number(),
-      feeService: z.number(),
-      vat: z.number(),
-      totalBills: z.number(),
-      outcome: z.number(),
-      moneyRemaining: z.number(),
-    }),
+    input: createCheckIncomeValidator,
     async resolve({ ctx, input }) {
       const res = await ctx.prisma.income.create({
         data: input,
@@ -33,16 +24,7 @@ export const incomeRouter = createProtectedRouter()
   .mutation("update-incomes", {
     input: z.object({
       id: z.string(),
-      idShift: z.string(),
-      startIncome: z.number(),
-      income: z.number(),
-      totalDecrease: z.number(),
-      feeService: z.number(),
-      vat: z.number(),
-      totalBills: z.number(),
-      outcome: z.number(),
-      moneyRemaining: z.number(),
-    }),
+    }).merge(createCheckIncomeValidator),
     async resolve({ ctx, input }) {
       const { id, ...rest } = input;
       const res = await ctx.prisma.income.update({
