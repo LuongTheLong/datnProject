@@ -99,7 +99,7 @@ model Item {
     codeName    String
     price       Int
     description String?
-    category    Category     @relation(fields: [idCategory], references: [id])
+    category    Category?    @relation(fields: [idCategory], references: [id])
     billDetails BillDetail[]
 }
 

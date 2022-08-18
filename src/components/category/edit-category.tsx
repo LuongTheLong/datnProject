@@ -53,7 +53,7 @@ export default function EditCategory({ defaultValues, id }: EditCategoryProps) {
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme="messenger">
+      <Button size="sm" onClick={onOpen} colorScheme="messenger">
         Chỉnh sửa danh mục
       </Button>
 

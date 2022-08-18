@@ -1,13 +1,10 @@
 import { z } from "zod";
 import { createProtectedRouter } from "./protected-router";
 import { createItemValidator } from "@shared/item-validator";
+import { slugGenerator } from "@server/utils/common";
 
 export const itemRouter = createProtectedRouter()
   .query("get-item", {
-    input: z.object({
-      name: z.string().optional(),
-      codeName: z.string().optional(),
-    }),
     async resolve({ ctx, input }) {
       const res = await ctx.prisma.item.findMany({
         include: {
@@ -29,7 +26,7 @@ export const itemRouter = createProtectedRouter()
         data: {
           idCategory: input.idCategory,
           name: input.name,
-          codeName: input.codeName,
+          codeName: slugGenerator(input.name),
           price: input.price,
           description: input.description,
         },
@@ -38,9 +35,11 @@ export const itemRouter = createProtectedRouter()
     },
   })
   .mutation("update-item", {
-    input: z.object({
-      id: z.string(),
-    }).merge(createItemValidator),
+    input: z
+      .object({
+        id: z.string(),
+      })
+      .merge(createItemValidator),
     async resolve({ ctx, input }) {
       const { id, ...rest } = input;
       const res = await ctx.prisma.item.update({
