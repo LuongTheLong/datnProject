@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { createProtectedRouter } from "./protected-router";
+import { createCategoryValidator } from "@shared/create-category-validation-schema";
+import { slugGenerator } from "../utils/common";
 
 export const categoryRouter = createProtectedRouter()
   .query("get-category", {
@@ -23,16 +25,11 @@ export const categoryRouter = createProtectedRouter()
     },
   })
   .mutation("create-category", {
-    input: z.object({
-      name: z.string(),
-      codeName: z.string(),
-    }),
+    input: createCategoryValidator,
     async resolve({ ctx, input }) {
+      const code = slugGenerator(input.name);
       const res = await ctx.prisma.category.create({
-        data: {
-          name: input.name,
-          codeName: input.codeName,
-        },
+        data: { ...input, codeName: code },
       });
       return res;
     },
@@ -40,17 +37,14 @@ export const categoryRouter = createProtectedRouter()
   .mutation("update-category", {
     input: z.object({
       id: z.string(),
-      name: z.string(),
-      codeName: z.string(),
-    }),
+    }).merge(createCategoryValidator),
     async resolve({ ctx, input }) {
+      const { id, ...rest } = input;
+      const code = slugGenerator(input.name);
       const res = await ctx.prisma.category.update({
-        data: {
-          name: input.name,
-          codeName: input.codeName,
-        },
+        data: { ...rest, codeName: code },
         where: {
-          id: input.id,
+          id,
         },
       });
       return res;

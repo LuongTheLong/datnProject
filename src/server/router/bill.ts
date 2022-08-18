@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { createProtectedRouter } from "./protected-router";
+import { createBillValidator } from "@shared/create-bill-validation-schema";
 
 export const billRouter = createProtectedRouter()
   .query("get-all-bill", {
@@ -13,13 +14,7 @@ export const billRouter = createProtectedRouter()
     },
   })
   .mutation("create-bill", {
-    input: z.object({
-      numberDesk: z.string(),
-      idShift: z.string(),
-      vat: z.number(),
-      coupon: z.number(),
-      totalCount: z.number(),
-    }),
+    input: createBillValidator,
     async resolve({ ctx, input }) {
       const res = await ctx.prisma.bill.create({
         data: input,
@@ -30,12 +25,7 @@ export const billRouter = createProtectedRouter()
   .mutation("update-bill", {
     input: z.object({
       id: z.string(),
-      numberDesk: z.string(),
-      idShift: z.string(),
-      vat: z.number(),
-      coupon: z.number(),
-      totalCount: z.number(),
-    }),
+    }).merge(createBillValidator),
     async resolve({ ctx, input }) {
       const { id, ...rest } = input;
       const res = await ctx.prisma.bill.update({
