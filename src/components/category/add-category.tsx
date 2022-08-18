@@ -50,14 +50,14 @@ export default function AddCategory() {
   return (
     <>
       <Button onClick={onOpen} colorScheme="messenger" mb={6}>
-        Thêm nguyên liệu
+        Thêm danh mục
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <form onSubmit={handleSubmit(addMaterial)}>
           <ModalContent>
-            <ModalHeader>Thêm nguyên liệu</ModalHeader>
+            <ModalHeader>Thêm danh mục</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.name}>

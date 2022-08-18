@@ -30,16 +30,16 @@ const Categories: NextPageWithLayout = () => {
     <>
       {isLoading && <LoadingSpinner />}
       {!isLoading && data && (
-        <Container maxW={1400} mx={"auto"}>
+        <>
           <AddCategory />
           <TableContainer>
             <Table variant="simple">
               <TableCaption>Danh mục sản phẩm</TableCaption>
               <Thead>
                 <Tr>
-                  <Th>Tên</Th>
-                  <Th>Mã danh mục</Th>
-                  <Th>Hành động</Th>
+                  <Th width={"33%"}>Tên</Th>
+                  <Th width={"33%"}>Mã danh mục</Th>
+                  <Th width={"33%"}>Hành động</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -65,7 +65,7 @@ const Categories: NextPageWithLayout = () => {
               </Tbody>
             </Table>
           </TableContainer>
-        </Container>
+        </>
       )}
     </>
   );
