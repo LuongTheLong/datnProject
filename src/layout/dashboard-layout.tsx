@@ -18,20 +18,22 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 
-const LINKS: Array<{ title: string, path: string, children?: Array<{ title: string, path: string }> }> = [
+const LINKS: Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }> = [
   { title: "Nguyên liệu", path: "/dashboard/material" },
   {
-    title: "Quản lý Menu", path: "/dashboard/menu", children: [
-      { title: "Quản lý sản phẩm", path: "/dashboard/menu/item" },
-      { title: "Quản lý danh mục", path: "/dashboard/menu/category" }
-    ]
+    title: "Quản lý Menu",
+    path: "/dashboard/menu",
+    children: [
+      { title: "Quản lý sản phẩm", path: "/dashboard/menu/items" },
+      { title: "Quản lý danh mục", path: "/dashboard/menu/categories" },
+    ],
   },
 ];
 
@@ -90,54 +92,43 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <HStack spacing={8} alignItems={"center"}>
                 <Box>Logo</Box>
                 <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-                  {LINKS.map(link => (
-                    <>{link.children ? <Popover key={link.title} trigger={'hover'} placement={'bottom-start'}>
-                      <PopoverTrigger>
-                        <Link _hover={{ color: "teal.700" }}>
-                          {link.title}
-                        </Link>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        border={0}
-                        boxShadow={'xl'}
-                        bg={"white"}
-                        p={4}
-                        rounded={'xl'}
-                        minW={'sm'}>
-                        <Stack>
-                          {link.children.map((subLink) => (
-                            <NextLink href={subLink.path} key={subLink.title} passHref>
-                              <Link
-                                role={'group'}
-                                display={'block'}
-                                p={2}
-                                rounded={'md'}
-                                textDecoration={"none"}
-                                _hover={
-                                  { textColor: "teal.600" }
-                                }
-                              >
-                                <Stack direction={'row'} align={'center'}>
-                                  <Box>
-                                    <Text
-                                      transition={'all .15s ease'}
-                                      fontWeight={500}>
-                                      {subLink.title}
-                                    </Text>
-
-                                  </Box>
-                                </Stack>
-                              </Link>
-                            </NextLink>
-                          ))}
-                        </Stack>
-                      </PopoverContent>
-                    </Popover> :
+                  {LINKS.map(link =>
+                    link.children ? (
+                      <Popover key={link.title} trigger={"hover"} placement={"bottom-start"}>
+                        <PopoverTrigger>
+                          <Link _hover={{ color: "teal.700" }}>{link.title}</Link>
+                        </PopoverTrigger>
+                        <PopoverContent border={0} boxShadow={"xl"} bg={"white"} p={4} rounded={"xl"} minW={"sm"}>
+                          <Stack>
+                            {link.children.map(subLink => (
+                              <NextLink href={subLink.path} key={subLink.title} passHref>
+                                <Link
+                                  role={"group"}
+                                  display={"block"}
+                                  p={2}
+                                  rounded={"md"}
+                                  textDecoration={"none"}
+                                  _hover={{ textColor: "teal.600" }}
+                                >
+                                  <Stack direction={"row"} align={"center"}>
+                                    <Box>
+                                      <Text transition={"all .15s ease"} fontWeight={500}>
+                                        {subLink.title}
+                                      </Text>
+                                    </Box>
+                                  </Stack>
+                                </Link>
+                              </NextLink>
+                            ))}
+                          </Stack>
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
                       <NavLink key={link.title} href={link.path}>
                         {link.title}
-                      </NavLink>} </>
-
-                  ))}
+                      </NavLink>
+                    )
+                  )}
                 </HStack>
               </HStack>
               <Flex alignItems={"center"}>

@@ -13,20 +13,20 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { createMaterialValidator } from "@shared/material-validator";
+import { createCategoryValidator } from "@shared/category-validator";
 import { trpc } from "src/utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { inferMutationInput } from "src/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type AddMaterialFields = inferMutationInput<"material.create">;
+type AddCategoryFields = inferMutationInput<"category.create-category">;
 
-export default function AddMaterial() {
+export default function AddCategory() {
   const client = trpc.useContext();
-  const { isLoading, mutate } = trpc.useMutation(["material.create"], {
+  const { isLoading, mutate } = trpc.useMutation(["category.create-category"], {
     onSuccess: () => {
-      client.invalidateQueries("material.get-all");
-      toast({ title: "Thêm nguyên liệu thành công", status: "success", position: "top" });
+      client.invalidateQueries("category.get-category");
+      toast({ title: "Thêm danh mục thành công", status: "success", position: "top" });
       reset();
       onClose();
     },
@@ -39,13 +39,13 @@ export default function AddMaterial() {
     register,
     formState: { errors },
     reset,
-  } = useForm<AddMaterialFields>({ resolver: zodResolver(createMaterialValidator) });
+  } = useForm<AddCategoryFields>({ resolver: zodResolver(createCategoryValidator) });
 
-  const addMaterial: SubmitHandler<AddMaterialFields> = values => {
+  const addMaterial: SubmitHandler<AddCategoryFields> = values => {
     mutate(values);
   };
 
-  const isButtonDisabled = isLoading || !!errors.count || !!errors.description || !!errors.name || !!errors.unit;
+  const isButtonDisabled = isLoading || !!errors.name;
 
   return (
     <>
@@ -61,20 +61,8 @@ export default function AddMaterial() {
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.name}>
-                <FormLabel>Tên nguyên liệu</FormLabel>
-                <Input {...register("name")} placeholder="Tên nguyên liệu" />
-              </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.count}>
-                <FormLabel>Số lượng</FormLabel>
-                <Input {...register("count", { valueAsNumber: true })} type={"number"} placeholder="Số lượng" />
-              </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.unit}>
-                <FormLabel>Đơn vị</FormLabel>
-                <Input {...register("unit")} placeholder="Đơn vị" />
-              </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.description}>
-                <FormLabel>Mô tả</FormLabel>
-                <Input {...register("description")} placeholder="Mô tả" />
+                <FormLabel>Tên danh mục</FormLabel>
+                <Input {...register("name")} placeholder="Tên danh mục" />
               </FormControl>
             </ModalBody>
 
