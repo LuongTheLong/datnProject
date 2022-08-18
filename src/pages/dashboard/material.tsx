@@ -5,11 +5,11 @@ import { trpc } from "src/utils/trpc";
 import { Badge } from "@chakra-ui/react";
 
 import LoadingSpinner from "@components/loading-spinner";
-import AddMaterial from "@components/add-material";
+import AddMaterial from "@components/material/add-material";
 
 import { Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, Flex } from "@chakra-ui/react";
-import EditMaterial from "@components/edit-material";
-import DeleteMaterial from "@components/delete-material";
+import EditMaterial from "@components/material/edit-material";
+import DeleteMaterial from "@components/material/delete-material";
 
 const Material: NextPageWithLayout = () => {
   const { isLoading, data } = trpc.useQuery(["material.get-all", {}], {

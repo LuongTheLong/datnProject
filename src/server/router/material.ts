@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createMaterialValidator } from "@shared/create-material-validation-schema";
+import { createMaterialValidator } from "@shared/material-validator";
 import { createProtectedRouter } from "./protected-router";
 import { slugGenerator } from "../utils/common";
 

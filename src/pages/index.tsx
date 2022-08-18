@@ -17,7 +17,9 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import Logo from "../assets/logoCoffee.png";
 
 const LINKS = [
   { title: "Chill", path: "/chill" },
@@ -47,7 +49,13 @@ export default function NavBar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box>Logo</Box>
+            <Box>
+              <NextLink href={"/"} passHref>
+                <Link cursor={"pointer"}>
+                  <Image src={Logo} width={60} height={60} alt={"Logo"} />
+                </Link>
+              </NextLink>
+            </Box>
             <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
               {LINKS.map(link => (
                 <NextLink href={link.path} key={link.title} passHref>

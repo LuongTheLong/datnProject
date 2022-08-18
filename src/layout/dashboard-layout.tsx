@@ -15,15 +15,28 @@ import {
   useColorModeValue,
   Stack,
   Link,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Text,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
+import Image from "next/image";
+import Logo from "../assets/logoCoffee.png";
 
-const LINKS = [
+const LINKS: Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }> = [
   { title: "Nguyên liệu", path: "/dashboard/material" },
-  { title: "Quản lý Menu", path: "/dashboard/menu" },
+  {
+    title: "Quản lý Menu",
+    path: "/dashboard/menu",
+    children: [
+      { title: "Quản lý sản phẩm", path: "/dashboard/menu/items" },
+      { title: "Quản lý danh mục", path: "/dashboard/menu/categories" },
+    ],
+  },
 ];
 
 const USER_LINKS = [
@@ -79,13 +92,52 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={isOpen ? onClose : onOpen}
               />
               <HStack spacing={8} alignItems={"center"}>
-                <Box>Logo</Box>
+                <Box>
+                  <NextLink href={"/"}>
+                    <Link cursor={"pointer"}>
+                      {" "}
+                      <Image src={Logo} width={60} height={60} alt={"Logo"} />
+                    </Link>
+                  </NextLink>
+                </Box>
                 <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-                  {LINKS.map(link => (
-                    <NavLink key={link.title} href={link.path}>
-                      {link.title}
-                    </NavLink>
-                  ))}
+                  {LINKS.map(link =>
+                    link.children ? (
+                      <Popover key={link.title} trigger={"hover"} placement={"bottom-start"}>
+                        <PopoverTrigger>
+                          <Link _hover={{ color: "teal.700" }}>{link.title}</Link>
+                        </PopoverTrigger>
+                        <PopoverContent border={0} boxShadow={"xl"} bg={"white"} p={4} rounded={"xl"} minW={"sm"}>
+                          <Stack>
+                            {link.children.map(subLink => (
+                              <NextLink href={subLink.path} key={subLink.title} passHref>
+                                <Link
+                                  role={"group"}
+                                  display={"block"}
+                                  p={2}
+                                  rounded={"md"}
+                                  textDecoration={"none"}
+                                  _hover={{ textColor: "teal.600" }}
+                                >
+                                  <Stack direction={"row"} align={"center"}>
+                                    <Box>
+                                      <Text transition={"all .15s ease"} fontWeight={500}>
+                                        {subLink.title}
+                                      </Text>
+                                    </Box>
+                                  </Stack>
+                                </Link>
+                              </NextLink>
+                            ))}
+                          </Stack>
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
+                      <NavLink key={link.title} href={link.path}>
+                        {link.title}
+                      </NavLink>
+                    )
+                  )}
                 </HStack>
               </HStack>
               <Flex alignItems={"center"}>
@@ -94,6 +146,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <Avatar
                       size={"sm"}
                       src={
+                        session.data?.user?.image ||
                         "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
                       }
                     />

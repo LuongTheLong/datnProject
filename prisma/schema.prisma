@@ -16,6 +16,13 @@ model Example {
     id String @id @default(cuid())
 }
 
+enum ROLE {
+    ADMIN
+    MANAGER
+    WORKER
+    USER
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -53,6 +60,7 @@ model User {
     sessions      Session[]
     point         Int       @default(0)
     pointCurrent  Int       @default(0)
+    role          ROLE      @default(USER)
 }
 
 model VerificationToken {
@@ -78,9 +86,9 @@ model Material {
 }
 
 model Category {
-    id       String  @id @default(cuid())
+    id       String @id @default(cuid())
     name     String
-    codeName String?
+    codeName String
     items    Item[]
 }
 
@@ -88,10 +96,10 @@ model Item {
     id          String       @id @default(cuid())
     idCategory  String
     name        String
-    codeName    String?
+    codeName    String
     price       Int
     description String?
-    category    Category     @relation(fields: [idCategory], references: [id])
+    category    Category?    @relation(fields: [idCategory], references: [id])
     billDetails BillDetail[]
 }
 

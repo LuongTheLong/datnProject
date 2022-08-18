@@ -11,27 +11,26 @@ import {
   FormLabel,
   Input,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 
-import { createMaterialValidator } from "@shared/create-material-validation-schema";
-import { trpc } from "src/utils/trpc";
+import { createItemValidator } from "@shared/item-validator";
+import { inferQueryOutput, trpc, inferMutationInput } from "src/utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { inferMutationInput } from "src/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type AddMaterialFields = inferMutationInput<"material.update">;
-type DefaultValues = Omit<AddMaterialFields, "id">;
-
-type EditMaterialProps = {
-  defaultValues: DefaultValues;
-  id: string;
+type EditItemFields = inferMutationInput<"item.create-item">;
+type EditItemProps = {
+  data: Omit<inferQueryOutput<"item.get-item">[number], "category">;
 };
 
-export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
+export default function EditItem({ data }: EditItemProps) {
+  const { id, ...rest } = data;
   const client = trpc.useContext();
-  const { isLoading, mutate } = trpc.useMutation(["material.update"], {
+  const categoriesQuery = client.getQueryData(["category.get-category"]);
+  const { isLoading, mutate } = trpc.useMutation(["item.update-item"], {
     onSuccess: () => {
-      client.invalidateQueries("material.get-all");
+      client.invalidateQueries("item.get-item");
       toast({ title: "Cập nhật thành công", status: "success", position: "top" });
       reset();
       onClose();
@@ -45,45 +44,50 @@ export default function EditMaterial({ defaultValues, id }: EditMaterialProps) {
     register,
     formState: { errors },
     reset,
-  } = useForm<DefaultValues>({ resolver: zodResolver(createMaterialValidator), defaultValues: defaultValues });
+  } = useForm<EditItemFields>({ resolver: zodResolver(createItemValidator), defaultValues: rest });
 
-  const addMaterial: SubmitHandler<DefaultValues> = values => {
+  const addMaterial: SubmitHandler<EditItemFields> = values => {
     mutate({ ...values, id });
   };
 
-  const isButtonDisabled = isLoading || !!errors.count || !!errors.description || !!errors.name || !!errors.unit;
+  const isButtonDisabled = isLoading || !!errors.description || !!errors.name || !!errors.price || !!errors.idCategory;
 
   return (
     <>
       <Button size={"sm"} onClick={onOpen} colorScheme="messenger">
-        Sửa
+        Chỉnh sửa sản phẩm
       </Button>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <form onSubmit={handleSubmit(addMaterial)}>
           <ModalContent>
-            <ModalHeader>Chỉnh sửa nguyên liệu</ModalHeader>
+            <ModalHeader>Chỉnh sửa sản phẩm</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.name}>
-                <FormLabel>Tên nguyên liệu</FormLabel>
-                <Input {...register("name")} placeholder="Tên nguyên liệu" />
+                <FormLabel>Tên sản phẩm</FormLabel>
+                <Input {...register("name")} placeholder="Tên sản phẩm" />
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.count}>
-                <FormLabel>Số lượng</FormLabel>
-                <Input {...register("count", { valueAsNumber: true })} placeholder="Số lượng" />
+              <FormControl mt={4} isInvalid={!!errors.idCategory}>
+                <FormLabel>Danh mục sản phẩm</FormLabel>
+                <Select placeholder="Chọn danh mục" {...register("idCategory")}>
+                  {categoriesQuery &&
+                    categoriesQuery.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                </Select>
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.unit}>
-                <FormLabel>Đơn vị</FormLabel>
-                <Input {...register("unit")} placeholder="Đơn vị" />
+              <FormControl mt={4} isInvalid={!!errors.price}>
+                <FormLabel>Giá</FormLabel>
+                <Input {...register("price", { valueAsNumber: true })} placeholder="Đơn vị" />
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.description}>
                 <FormLabel>Mô tả</FormLabel>
                 <Input {...register("description")} placeholder="Mô tả" />
               </FormControl>
             </ModalBody>
-
             <ModalFooter>
               <Button
                 isDisabled={isButtonDisabled}

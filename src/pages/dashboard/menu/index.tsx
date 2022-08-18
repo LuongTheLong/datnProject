@@ -5,7 +5,7 @@ import DashboardLayout from "src/layout/dashboard-layout";
 import { trpc } from "src/utils/trpc";
 
 const Menu: NextPageWithLayout = () => {
-  const { isLoading, data } = trpc.useQuery(["category.get-category", {}]);
+  const { isLoading, data } = trpc.useQuery(["category.get-category"]);
 
   return (
     <>
