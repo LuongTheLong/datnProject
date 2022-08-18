@@ -24,6 +24,8 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
+import Image from "next/image";
+import Logo from "../assets/logoCoffee.png";
 
 const LINKS: Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }> = [
   { title: "Nguyên liệu", path: "/dashboard/material" },
@@ -90,7 +92,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={isOpen ? onClose : onOpen}
               />
               <HStack spacing={8} alignItems={"center"}>
-                <Box>Logo</Box>
+                <Box>
+                  <NextLink href={"/"}>
+                    <Link cursor={"pointer"}>
+                      {" "}
+                      <Image src={Logo} width={60} height={60} alt={"Logo"} />
+                    </Link>
+                  </NextLink>
+                </Box>
                 <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
                   {LINKS.map(link =>
                     link.children ? (
