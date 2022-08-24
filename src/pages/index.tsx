@@ -20,6 +20,8 @@ import NextLink from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import Logo from "../assets/logoCoffee.png";
+import GridListWithHeading from '../pages/main';
+import LargeWithNewsletter from '../pages/footer';
 
 const LINKS = [
   { title: "Chill", path: "/chill" },
@@ -111,7 +113,8 @@ export default function NavBar() {
         ) : null}
       </Box>
 
-      <Box p={4}>Main Content Here</Box>
+      <GridListWithHeading />
+      <LargeWithNewsletter />
     </>
   );
 }

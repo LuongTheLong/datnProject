@@ -26,6 +26,7 @@ import { useRouter } from "next/router";
 import NextLink from "next/link";
 import Image from "next/image";
 import Logo from "../assets/logoCoffee.png";
+import LargeWithNewsletter from '../pages/footer';
 
 const LINKS: Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }> = [
   { title: "Nguyên liệu", path: "/dashboard/material" },
@@ -179,6 +180,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ) : null}
           </Box>
           <Box p={4}>{children}</Box>
+          <LargeWithNewsletter />
         </>
       )}
     </>

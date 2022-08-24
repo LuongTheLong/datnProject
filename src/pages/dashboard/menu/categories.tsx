@@ -75,4 +75,8 @@ Categories.getLayout = function getLayout(page: React.ReactElement): React.React
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
+// Categories.getLayout = function getLayout(page: React.ReactElement): React.ReactNode {
+//   return <LargeWithNewsletter>{page}</LargeWithNewsletter>;
+// };
+
 export default Categories;
