@@ -1,6 +1,6 @@
+import DashboardLayout from "@layout/dashboard-layout";
 import { NextPageWithLayout } from "@pages/_app";
 import React from "react";
-import DashboardLayout from "src/layout/dashboard-layout";
 
 const Dashboard: NextPageWithLayout = () => {
   return <div>hELLO</div>;

@@ -27,9 +27,6 @@ import {
 import { LoginFields, loginFormValidator } from "@shared/login-form-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const CFaUserAlt = chakra(FaUserAlt);
-const CFaLock = chakra(FaLock);
-
 type Providers = Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
