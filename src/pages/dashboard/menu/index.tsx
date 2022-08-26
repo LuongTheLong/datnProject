@@ -1,6 +1,6 @@
 import LoadingSpinner from "@components/loading-spinner";
+import DashboardLayout from "@layout/dashboard-layout";
 import { NextPageWithLayout } from "@pages/_app";
-import DashboardLayout from "src/layout/dashboard-layout";
 
 import { trpc } from "src/utils/trpc";
 

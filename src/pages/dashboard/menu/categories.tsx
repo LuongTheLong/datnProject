@@ -2,19 +2,7 @@ import type { NextPageWithLayout } from "@pages/_app";
 import DashboardLayout from "src/layout/dashboard-layout";
 import React from "react";
 import { trpc } from "src/utils/trpc";
-import {
-  Badge,
-  Container,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  Flex,
-} from "@chakra-ui/react";
+import { Badge, Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, Flex } from "@chakra-ui/react";
 
 import LoadingSpinner from "@components/loading-spinner";
 import EditCategory from "@components/category/edit-category";

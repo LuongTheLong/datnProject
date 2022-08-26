@@ -8,7 +8,6 @@ import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import "../styles/globals.css";
-import '../pages/main.css';
 import React from "react";
 
 export type NextPageWithLayout = NextPage & {
