@@ -98,6 +98,7 @@ model Item {
     name        String
     codeName    String
     price       Int
+    image       String?
     description String?
     category    Category?    @relation(fields: [idCategory], references: [id])
     billDetails BillDetail[]

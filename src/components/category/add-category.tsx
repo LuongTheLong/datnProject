@@ -49,7 +49,7 @@ export default function AddCategory() {
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme="messenger" mb={6}>
+      <Button onClick={onOpen} colorScheme="messenger" my={6}>
         Thêm danh mục
       </Button>
 

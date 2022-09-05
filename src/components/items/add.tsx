@@ -12,15 +12,17 @@ import {
   Input,
   useToast,
   Select,
+  Flex,
+  Text,
+  Box,
+  Alert,
 } from "@chakra-ui/react";
 
-import { createItemValidator } from "@shared/item-validator";
+import { createItemValidatorWithFile, ItemValidatorWithFile } from "@shared/item-validator";
 import { trpc } from "src/utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { inferMutationInput } from "src/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-type AddItemFields = inferMutationInput<"item.create-item">;
+import { imgToBase64 } from "src/utils/common";
 
 export default function AddItem() {
   const client = trpc.useContext();
@@ -33,6 +35,7 @@ export default function AddItem() {
       onClose();
     },
   });
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -41,17 +44,31 @@ export default function AddItem() {
     register,
     formState: { errors },
     reset,
-  } = useForm<AddItemFields>({ resolver: zodResolver(createItemValidator) });
+    setValue,
+    watch,
+  } = useForm<ItemValidatorWithFile>({
+    resolver: zodResolver(createItemValidatorWithFile),
+    defaultValues: {
+      price: 0,
+    },
+  });
 
-  const addItem: SubmitHandler<AddItemFields> = values => {
-    mutate(values);
+  const addItem: SubmitHandler<ItemValidatorWithFile> = async values => {
+    const { files, ...rest } = values;
+
+    const image = await imgToBase64(values.files && values.files[0]);
+
+    mutate({ ...rest, image });
   };
+
+  const files = watch().files;
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme="messenger" mb={6}>
+      <Button onClick={onOpen} colorScheme="messenger" my={6}>
         Thêm sản phẩm
       </Button>
+
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <form onSubmit={handleSubmit(addItem)}>
@@ -59,11 +76,11 @@ export default function AddItem() {
             <ModalHeader>Thêm sản phẩm</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <FormControl isInvalid={!!errors.name}>
+              <FormControl isInvalid={!!errors.name} isRequired>
                 <FormLabel>Tên sản phẩm</FormLabel>
                 <Input {...register("name")} placeholder="Tên sản phẩm" />
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.idCategory}>
+              <FormControl mt={4} isInvalid={!!errors.idCategory} isRequired>
                 <FormLabel>Danh mục sản phẩm</FormLabel>
                 <Select placeholder="Chọn danh mục" {...register("idCategory")}>
                   {categoriesQuery &&
@@ -74,14 +91,84 @@ export default function AddItem() {
                     ))}
                 </Select>
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.price}>
+              <FormControl mt={4} isInvalid={!!errors.price} isRequired>
                 <FormLabel>Giá</FormLabel>
-                <Input {...register("price", { valueAsNumber: true })} placeholder="Đơn vị" />
+                <Input {...register("price", { valueAsNumber: true })} placeholder="Giá tiền" />
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.description}>
                 <FormLabel>Mô tả</FormLabel>
                 <Input {...register("description")} placeholder="Mô tả" />
               </FormControl>
+
+              <FormControl mt={4} isInvalid={!!errors.files}>
+                <FormLabel
+                  onDrop={event => {
+                    event.preventDefault();
+                    console.log(event.dataTransfer.files);
+                    setValue("files", event.dataTransfer.files);
+                  }}
+                  onDragOver={event => event.preventDefault()}
+                  m={0}
+                >
+                  <Text>Hình ảnh</Text>
+                  {errors.files && (
+                    <Alert fontSize={"sm"} fontWeight={400} my={2} px={4} py={2} rounded={"md"} status="error">
+                      {errors.files.message}
+                    </Alert>
+                  )}
+
+                  <Flex
+                    justifyContent={"center"}
+                    alignItems="center"
+                    p={6}
+                    border={1}
+                    borderColor={"gray.400"}
+                    borderStyle={"dashed"}
+                    rounded={"md"}
+                    cursor={"pointer"}
+                    mt={2}
+                  >
+                    <Box>
+                      <Text fontSize={15} mb={1} fontWeight={"medium"} textAlign={"center"} color={"gray.500"}>
+                        Ấn vào hoặc kéo thả hình
+                      </Text>
+
+                      <Text fontSize={12} fontWeight={"medium"} textAlign={"center"}>
+                        PNG, JPEG, JPG, WEBP (2MB)
+                      </Text>
+                    </Box>
+                  </Flex>
+                </FormLabel>
+                <Input
+                  {...register("files")}
+                  onChange={event => {
+                    if (event.target.files && event.target.files.length > 0) {
+                      register("files").onChange(event);
+                    }
+                  }}
+                  type="file"
+                  srOnly
+                />
+              </FormControl>
+
+              {files && files[0] && (
+                <Flex
+                  p={2}
+                  bg={"gray.100"}
+                  rounded={"md"}
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                  gap={6}
+                  mt={2}
+                >
+                  <Text fontSize={14} noOfLines={1}>
+                    {files[0].name}
+                  </Text>{" "}
+                  <Button size={"sm"} colorScheme="red" onClick={() => setValue("files", undefined)}>
+                    Xóa
+                  </Button>
+                </Flex>
+              )}
             </ModalBody>
             <ModalFooter>
               <Button isLoading={isLoading} loadingText={"Đang lưu..."} type="submit" colorScheme="blue" mr={3}>
