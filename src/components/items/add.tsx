@@ -18,6 +18,7 @@ import {
   Alert,
 } from "@chakra-ui/react";
 
+import Image from "next/image";
 import { createItemValidatorWithFile, ItemValidatorWithFile } from "@shared/item-validator";
 import { trpc } from "src/utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -55,6 +56,7 @@ export default function AddItem() {
 
   const addItem: SubmitHandler<ItemValidatorWithFile> = async values => {
     const { files, ...rest } = values;
+    console.log(files);
 
     const image = await imgToBase64(values.files && values.files[0]);
 
@@ -62,6 +64,8 @@ export default function AddItem() {
   };
 
   const files = watch().files;
+
+  console.log(files);
 
   return (
     <>
@@ -100,74 +104,77 @@ export default function AddItem() {
                 <Input {...register("description")} placeholder="Mô tả" />
               </FormControl>
 
-              <FormControl mt={4} isInvalid={!!errors.files}>
-                <FormLabel
-                  onDrop={event => {
-                    event.preventDefault();
-                    console.log(event.dataTransfer.files);
-                    setValue("files", event.dataTransfer.files);
-                  }}
-                  onDragOver={event => event.preventDefault()}
-                  m={0}
-                >
-                  <Text>Hình ảnh</Text>
-                  {errors.files && (
-                    <Alert fontSize={"sm"} fontWeight={400} my={2} px={4} py={2} rounded={"md"} status="error">
-                      {errors.files.message}
-                    </Alert>
-                  )}
+              <Text fontWeight={600} mt={4} my={2}>
+                Hình ảnh
+              </Text>
 
+              {files && files[0] ? (
+                <Flex flexDir={"column"} alignItems={"center"}>
                   <Flex
-                    justifyContent={"center"}
-                    alignItems="center"
-                    p={6}
-                    border={1}
-                    borderColor={"gray.400"}
-                    borderStyle={"dashed"}
+                    p={2}
+                    bg={"gray.100"}
                     rounded={"md"}
-                    cursor={"pointer"}
-                    mt={2}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                    gap={6}
+                    my={2}
+                    width={"full"}
                   >
-                    <Box>
-                      <Text fontSize={15} mb={1} fontWeight={"medium"} textAlign={"center"} color={"gray.500"}>
-                        Ấn vào hoặc kéo thả hình
-                      </Text>
-
-                      <Text fontSize={12} fontWeight={"medium"} textAlign={"center"}>
-                        PNG, JPEG, JPG, WEBP (2MB)
-                      </Text>
-                    </Box>
+                    <Text fontSize={14} noOfLines={1}>
+                      {files[0].name}
+                    </Text>{" "}
+                    <Button
+                      size={"sm"}
+                      colorScheme="red"
+                      onClick={() => {
+                        setValue("files", undefined), reset({ files: undefined });
+                      }}
+                    >
+                      Xóa
+                    </Button>
                   </Flex>
-                </FormLabel>
-                <Input
-                  {...register("files")}
-                  onChange={event => {
-                    if (event.target.files && event.target.files.length > 0) {
-                      register("files").onChange(event);
-                    }
-                  }}
-                  type="file"
-                  srOnly
-                />
-              </FormControl>
-
-              {files && files[0] && (
-                <Flex
-                  p={2}
-                  bg={"gray.100"}
-                  rounded={"md"}
-                  alignItems={"center"}
-                  justifyContent={"space-between"}
-                  gap={6}
-                  mt={2}
-                >
-                  <Text fontSize={14} noOfLines={1}>
-                    {files[0].name}
-                  </Text>{" "}
-                  <Button size={"sm"} colorScheme="red" onClick={() => setValue("files", undefined)}>
-                    Xóa
-                  </Button>
+                  <Image src={URL.createObjectURL(files[0])} alt={"product-image"} width={80} height={80} />
                 </Flex>
+              ) : (
+                <FormControl mt={4} isInvalid={!!errors.files}>
+                  <FormLabel
+                    onDrop={event => {
+                      event.preventDefault();
+                      setValue("files", event.dataTransfer.files);
+                    }}
+                    onDragOver={event => event.preventDefault()}
+                    m={0}
+                  >
+                    <Flex
+                      justifyContent={"center"}
+                      alignItems="center"
+                      p={6}
+                      border={1}
+                      borderColor={"gray.400"}
+                      borderStyle={"dashed"}
+                      rounded={"md"}
+                      cursor={"pointer"}
+                      mt={2}
+                    >
+                      <Box>
+                        <Text fontSize={15} mb={1} fontWeight={"medium"} textAlign={"center"} color={"gray.500"}>
+                          Ấn vào hoặc kéo thả hình
+                        </Text>
+
+                        <Text fontSize={12} fontWeight={"medium"} textAlign={"center"}>
+                          PNG, JPEG, JPG, WEBP (1MB)
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </FormLabel>
+                  <Input {...register("files")} type="file" srOnly accept=".jpg, .jpeg, .png, .webp" />
+                </FormControl>
+              )}
+
+              {errors.files && (
+                <Alert fontSize={"sm"} fontWeight={400} my={2} px={4} py={2} rounded={"md"} status="error">
+                  {errors.files.message}
+                </Alert>
               )}
             </ModalBody>
             <ModalFooter>
