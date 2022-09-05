@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, Container } from "@chakra-ui/react";
 import Header from "@components/header";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -27,11 +27,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {isAuthorized && (
         <Flex flexDirection={"column"} minH={"100vh"}>
           <Header />
-          {children}
+          <Container maxW={1740}>{children}</Container>
         </Flex>
       )}
 
-      {!isAuthorized && (
+      {session.status !== "loading" && !isAuthorized && (
         <Text fontSize={48} fontWeight={"bold"} textAlign={"center"}>
           Không phải admin, cút
         </Text>

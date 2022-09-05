@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createProtectedRouter } from "./protected-router";
 import { createItemValidator } from "@shared/item-validator";
 import { slugGenerator } from "@server/utils/common";
+import { v2 as cloudinary } from "cloudinary";
 
 export const itemRouter = createProtectedRouter()
   .query("get-item", {
@@ -22,6 +23,8 @@ export const itemRouter = createProtectedRouter()
   .mutation("create-item", {
     input: createItemValidator,
     async resolve({ ctx, input }) {
+      const imageURL = input.image && (await cloudinary.uploader.upload(input.image)).url;
+
       const res = await ctx.prisma.item.create({
         data: {
           idCategory: input.idCategory,
@@ -29,6 +32,7 @@ export const itemRouter = createProtectedRouter()
           codeName: slugGenerator(input.name),
           price: input.price,
           description: input.description,
+          image: imageURL,
         },
       });
       return res;
