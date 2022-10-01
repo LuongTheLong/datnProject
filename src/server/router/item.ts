@@ -45,9 +45,17 @@ export const itemRouter = createProtectedRouter()
       })
       .merge(createItemValidator),
     async resolve({ ctx, input }) {
+      const imageURL = input.image && (await cloudinary.uploader.upload(input.image)).url;
       const { id, ...rest } = input;
       const res = await ctx.prisma.item.update({
-        data: rest,
+        data: {
+          idCategory: input.idCategory,
+          name: input.name,
+          codeName: slugGenerator(input.name),
+          price: input.price,
+          description: input.description,
+          image: imageURL,
+        },
         where: {
           id,
         },
