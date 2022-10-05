@@ -56,16 +56,12 @@ export default function AddItem() {
 
   const addItem: SubmitHandler<ItemValidatorWithFile> = async values => {
     const { files, ...rest } = values;
-    console.log(files);
-
     const image = await imgToBase64(values.files && values.files[0]);
 
     mutate({ ...rest, image });
   };
 
   const files = watch().files;
-
-  console.log(files);
 
   return (
     <>
