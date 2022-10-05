@@ -110,22 +110,38 @@ const ProductCarousel = () => {
 
   return (
     <Box mb={6}>
-      <Heading as="h3" size="lg" mb={2}>
-        Đồ ăn nhanh
-      </Heading>
       <div>
-        <Flex alignItems={"center"} gap={2} justifyContent="end" mb={4}>
-          <div ref={navigationPrevRef}>
-            <IconButton bg={"gray.100"} rounded="full" aria-label="Search database" icon={<MdOutlineArrowBackIos />} />
-          </div>
-          <div ref={navigationNextRef}>
-            <IconButton
-              bg={"gray.100"}
-              rounded="full"
-              aria-label="Search database"
-              icon={<MdOutlineArrowForwardIos />}
-            />
-          </div>
+        <Flex alignItems={"center"} mb={4}>
+          <Heading as="h3" size="lg" mb={2}>
+            Đồ ăn nhanh
+          </Heading>
+          <Flex alignItems={"center"} gap={2} ml={"auto"}>
+            <Text
+              cursor={"pointer"}
+              _hover={{ color: "crimson" }}
+              transition={"all 250ms ease"}
+              fontWeight={"medium"}
+              mr={2}
+            >
+              Xem tất cả
+            </Text>
+            <div ref={navigationPrevRef}>
+              <IconButton
+                bg={"gray.100"}
+                rounded="full"
+                aria-label="Search database"
+                icon={<MdOutlineArrowBackIos />}
+              />
+            </div>
+            <div ref={navigationNextRef}>
+              <IconButton
+                bg={"gray.100"}
+                rounded="full"
+                aria-label="Search database"
+                icon={<MdOutlineArrowForwardIos />}
+              />
+            </div>
+          </Flex>
         </Flex>
 
         <Swiper
@@ -152,11 +168,9 @@ const ProductCarousel = () => {
           }}
           onInit={swiper => {
             // @ts-ignore
-            // eslint-disable-next-line no-param-reassign
             swiper.params.navigation.prevEl = navigationPrevRef.current;
 
             // @ts-ignore
-            // eslint-disable-next-line no-param-reassign
             swiper.params.navigation.nextEl = navigationNextRef.current;
             swiper.navigation.init();
             swiper.navigation.update();
@@ -164,7 +178,7 @@ const ProductCarousel = () => {
         >
           <SwiperSlide>
             <div>
-              <Box mb={3}>
+              <Box mb={3} rounded={"md"} overflow={"hidden"}>
                 <Image
                   src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
                   alt={"pic-1"}
@@ -185,7 +199,7 @@ const ProductCarousel = () => {
           </SwiperSlide>
           <SwiperSlide>
             <div>
-              <Box mb={3}>
+              <Box mb={3} rounded={"md"} overflow={"hidden"}>
                 <Image
                   src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
                   alt={"pic-1"}
@@ -206,7 +220,7 @@ const ProductCarousel = () => {
           </SwiperSlide>
           <SwiperSlide>
             <div>
-              <Box mb={3}>
+              <Box mb={3} rounded={"md"} overflow={"hidden"}>
                 <Image
                   src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
                   alt={"pic-1"}
@@ -227,7 +241,7 @@ const ProductCarousel = () => {
           </SwiperSlide>
           <SwiperSlide>
             <div>
-              <Box mb={3}>
+              <Box mb={3} rounded={"md"} overflow={"hidden"}>
                 <Image
                   src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
                   alt={"pic-1"}

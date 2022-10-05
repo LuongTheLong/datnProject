@@ -18,6 +18,7 @@ const SearchBar = () => {
         focusBorderColor="crimson"
         borderColor={"transparent"}
         bg={"rgb(247, 247, 247)"}
+        maxW={400}
       />
     </InputGroup>
   );
