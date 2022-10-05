@@ -19,12 +19,25 @@ import {
   Box,
   Link,
   Text,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
 } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
+import { useRef } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Logo from "../assets/logoCoffee.png";
+import { IoMdMenu } from "react-icons/io";
+import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport } from "react-icons/ai";
+import SearchBar from "./search-bar";
+
+import Logo from "../assets/logo.png";
+import SmallCart from "./small-cart";
 
 type NavLinks = Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }>;
 
@@ -107,102 +120,69 @@ const Header = () => {
   const role = session.data?.user?.role || "USER";
 
   return (
-    <Box bg={bgColor} px={4}>
-      <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-        <IconButton
-          size={"md"}
-          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          aria-label={"Open Menu"}
-          display={{ md: "none" }}
-          onClick={isOpen ? onClose : onOpen}
-        />
-        <HStack spacing={8} alignItems={"center"}>
-          <Box>
-            <NextLink href={"/"}>
-              <Link cursor={"pointer"}>
-                {" "}
-                <Image src={Logo} width={60} height={60} alt={"Logo"} />
-              </Link>
-            </NextLink>
-          </Box>
-          <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-            {LINKS[role].map(link =>
-              link.children ? (
-                <Popover key={link.title} trigger={"hover"} placement={"bottom-start"}>
-                  <PopoverTrigger>
-                    <Link _hover={{ color: "teal.700" }}>{link.title}</Link>
-                  </PopoverTrigger>
-                  <PopoverContent border={0} boxShadow={"xl"} bg={"white"} p={4} rounded={"xl"} minW={"sm"}>
-                    <Stack>
-                      {link.children.map(subLink => (
-                        <NextLink href={subLink.path} key={subLink.title} passHref>
-                          <Link
-                            role={"group"}
-                            display={"block"}
-                            p={2}
-                            rounded={"md"}
-                            textDecoration={"none"}
-                            _hover={{ textColor: "teal.600" }}
-                          >
-                            <Stack direction={"row"} align={"center"}>
-                              <Box>
-                                <Text transition={"all .15s ease"} fontWeight={500}>
-                                  {subLink.title}
-                                </Text>
-                              </Box>
-                            </Stack>
-                          </Link>
-                        </NextLink>
-                      ))}
-                    </Stack>
-                  </PopoverContent>
-                </Popover>
-              ) : (
-                <NavLink key={link.title} href={link.path}>
-                  {link.title}
-                </NavLink>
-              )
-            )}
-          </HStack>
-        </HStack>
-        <Flex alignItems={"center"}>
-          <Menu>
-            <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
-              <Avatar
-                size={"sm"}
-                src={
-                  session.data?.user?.image ||
-                  "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                }
-              />
-            </MenuButton>
-            <MenuList>
-              {MENUS[role].map(link => (
-                <NextLink href={link.path} key={link.title} passHref>
-                  <Link _hover={{ color: "teal.700" }}>
-                    <MenuItem>{link.title}</MenuItem>
+    <>
+      <Flex gap={16} px={4} py={2} alignItems={"center"}>
+        <Box>
+          <IoMdMenu fontSize={28} onClick={onOpen} />
+          <Drawer placement={"left"} onClose={onClose} isOpen={isOpen}>
+            <DrawerOverlay />
+            <DrawerContent>
+              <DrawerHeader borderBottomWidth="1px">
+                <Image src={Logo} width={80} height={80} alt={"logo"} />
+              </DrawerHeader>
+              <DrawerBody>
+                <NextLink href={"/"} passHref>
+                  <Link _hover={{ textColor: "crimson" }}>
+                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                      <AiOutlineHome fontSize={24} />
+                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                        Trang chủ
+                      </Text>
+                    </Flex>
                   </Link>
                 </NextLink>
-              ))}
-              <MenuDivider />
-              <MenuItem onClick={() => signOut({ callbackUrl: "/" })}>Đăng xuất</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-      </Flex>
-
-      {isOpen ? (
-        <Box pb={4} display={{ md: "none" }}>
-          <Stack as={"nav"} spacing={4}>
-            {LINKS[role].map(link => (
-              <NavLink key={link.title} href={link.path}>
-                {link.title}
-              </NavLink>
-            ))}
-          </Stack>
+                <NextLink href={"/"} passHref>
+                  <Link _hover={{ textColor: "crimson" }}>
+                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                      <AiOutlineUser fontSize={24} />
+                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                        Tài khoản
+                      </Text>
+                    </Flex>
+                  </Link>
+                </NextLink>
+                <NextLink href={"/"} passHref>
+                  <Link _hover={{ textColor: "crimson" }}>
+                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                      <AiOutlineFileDone fontSize={24} />
+                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                        Đơn hàng
+                      </Text>
+                    </Flex>
+                  </Link>
+                </NextLink>
+                <NextLink href={"/"} passHref>
+                  <Link _hover={{ textColor: "crimson" }}>
+                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                      <AiOutlineExport fontSize={24} />
+                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                        Đăng xuất
+                      </Text>
+                    </Flex>
+                  </Link>
+                </NextLink>
+              </DrawerBody>
+            </DrawerContent>
+          </Drawer>
         </Box>
-      ) : null}
-    </Box>
+        <Box>
+          <Image src={Logo} width={90} height={90} alt="logo" />
+        </Box>
+
+        <SearchBar />
+        <SmallCart />
+      </Flex>
+    </>
   );
 };
 
