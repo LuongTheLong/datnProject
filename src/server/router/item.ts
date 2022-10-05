@@ -3,6 +3,7 @@ import { createProtectedRouter } from "./protected-router";
 import { createItemValidator } from "@shared/item-validator";
 import { slugGenerator } from "@server/utils/common";
 import { v2 as cloudinary } from "cloudinary";
+import { resolve } from "path";
 
 export const itemRouter = createProtectedRouter()
   .query("get-item", {
@@ -17,6 +18,13 @@ export const itemRouter = createProtectedRouter()
           },
         },
       });
+      return res;
+    },
+  })
+  .query("get-item-by-categories", {
+    async resolve({ ctx, input }) {
+      const res = await ctx.prisma.category.findMany({ include: { items: { take: 5 } } });
+
       return res;
     },
   })

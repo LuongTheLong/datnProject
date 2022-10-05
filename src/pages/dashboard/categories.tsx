@@ -35,7 +35,9 @@ const Categories: NextPageWithLayout = () => {
                   <Tr key={category.id}>
                     <Td>{category.name}</Td>
                     <Td>
-                      <Badge colorScheme="purple">{category.codeName}</Badge>
+                      <Badge textTransform={"lowercase"} colorScheme="purple">
+                        {category.codeName}
+                      </Badge>
                     </Td>
                     <Td>
                       <Flex alignItems={"center"} gap={4}>

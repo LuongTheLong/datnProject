@@ -4,8 +4,10 @@ import CommonLayout from "@layout/common-layout";
 import { Flex, Container, Text, IconButton, Heading, Box } from "@chakra-ui/react";
 import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from "react-icons/md";
 import { Navigation } from "swiper";
+import { trpc } from "src/utils/trpc";
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import { inferQueryOutput } from "src/utils/trpc";
 
 // Import Swiper styles
 import "swiper/css";
@@ -24,6 +26,8 @@ import Pizza from "../assets/pizza.svg";
 import Dessert from "../assets/trang-mieng.svg";
 import Breakfast from "../assets/breakfast.svg";
 import Filter from "@components/filter";
+
+type CategoryItemsOutput = inferQueryOutput<"item.get-item-by-categories">[number];
 
 const CategoryList = () => {
   return (
@@ -104,16 +108,18 @@ const CategoryList = () => {
   );
 };
 
-const ProductCarousel = () => {
+const ProductCarousel = (props: CategoryItemsOutput) => {
   const navigationPrevRef = useRef<HTMLDivElement>(null);
   const navigationNextRef = useRef<HTMLDivElement>(null);
+
+  const { name, codeName, items } = props;
 
   return (
     <Box mb={6}>
       <div>
         <Flex alignItems={"center"} mb={4}>
-          <Heading as="h3" size="lg" mb={2}>
-            Đồ ăn nhanh
+          <Heading as="h3" size="lg" mb={2} textTransform={"capitalize"}>
+            {name}
           </Heading>
           <Flex alignItems={"center"} gap={2} ml={"auto"}>
             <Text
@@ -176,90 +182,30 @@ const ProductCarousel = () => {
             swiper.navigation.update();
           }}
         >
-          <SwiperSlide>
-            <div>
-              <Box mb={3} rounded={"md"} overflow={"hidden"}>
-                <Image
-                  src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
-                  alt={"pic-1"}
-                  width={400}
-                  height={220}
-                  objectFit={"cover"}
-                  layout="responsive"
-                />
-              </Box>
+          {items.length > 0 &&
+            items.map(item => (
+              <SwiperSlide key={item.id}>
+                <div>
+                  <Box mb={3} rounded={"md"} overflow={"hidden"}>
+                    <Image
+                      src={item.image!}
+                      alt={item.name}
+                      width={400}
+                      height={220}
+                      objectFit={"cover"}
+                      layout="responsive"
+                    />
+                  </Box>
 
-              <Heading as="h5" size="sm" mb={1}>
-                Bánh Hamburger
-              </Heading>
-              <Text color={"gray.600"} fontWeight={500}>
-                40.000 VNĐ
-              </Text>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div>
-              <Box mb={3} rounded={"md"} overflow={"hidden"}>
-                <Image
-                  src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
-                  alt={"pic-1"}
-                  width={400}
-                  height={220}
-                  objectFit={"cover"}
-                  layout="responsive"
-                />
-              </Box>
-
-              <Heading as="h5" size="sm" mb={1}>
-                Bánh Hamburger
-              </Heading>
-              <Text color={"gray.600"} fontWeight={500}>
-                40.000 VNĐ
-              </Text>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div>
-              <Box mb={3} rounded={"md"} overflow={"hidden"}>
-                <Image
-                  src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
-                  alt={"pic-1"}
-                  width={400}
-                  height={220}
-                  objectFit={"cover"}
-                  layout="responsive"
-                />
-              </Box>
-
-              <Heading as="h5" size="sm" mb={1}>
-                Bánh Hamburger
-              </Heading>
-              <Text color={"gray.600"} fontWeight={500}>
-                40.000 VNĐ
-              </Text>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div>
-              <Box mb={3} rounded={"md"} overflow={"hidden"}>
-                <Image
-                  src={"https://res.cloudinary.com/dlbkvfo8l/image/upload/v1664931321/pic-4_wh93ii.jpg"}
-                  alt={"pic-1"}
-                  width={400}
-                  height={220}
-                  objectFit={"cover"}
-                  layout="responsive"
-                />
-              </Box>
-
-              <Heading as="h5" size="sm" mb={1}>
-                Bánh Hamburger
-              </Heading>
-              <Text color={"gray.600"} fontWeight={500}>
-                40.000 VNĐ
-              </Text>
-            </div>
-          </SwiperSlide>
+                  <Heading as="h5" size="sm" mb={1}>
+                    {item.name}
+                  </Heading>
+                  <Text color={"gray.600"} fontWeight={500}>
+                    {item.price} VNĐ
+                  </Text>
+                </div>
+              </SwiperSlide>
+            ))}
         </Swiper>
       </div>
     </Box>
@@ -267,14 +213,17 @@ const ProductCarousel = () => {
 };
 
 const Home: NextPageWithLayout = () => {
+  const itemsQuery = trpc.useQuery(["item.get-item-by-categories"]);
+
   return (
     <Container maxW={"6xl"}>
       <Flex flexDirection={"column"} gap={8}>
         <CategoryList />
         <Filter />
-        <ProductCarousel />
-        <ProductCarousel />
-        <ProductCarousel />
+
+        {!itemsQuery.isLoading &&
+          itemsQuery.data &&
+          itemsQuery.data.map(categoryItems => <ProductCarousel key={categoryItems.id} {...categoryItems} />)}
       </Flex>
     </Container>
   );

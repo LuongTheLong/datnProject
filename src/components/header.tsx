@@ -103,19 +103,8 @@ const NavLink = ({ children, href }: { children: React.ReactNode; href: string }
 const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  const bgColor = useColorModeValue("gray.100", "gray.900");
 
-  const session = useSession({
-    onUnauthenticated() {
-      router.push({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
-    },
-    required: true,
-  });
+  const session = useSession();
 
   const role = session.data?.user?.role || "USER";
 
