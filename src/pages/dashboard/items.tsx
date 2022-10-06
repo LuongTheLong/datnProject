@@ -9,7 +9,7 @@ import LoadingSpinner from "@components/loading-spinner";
 import EditItem from "@components/items/edit";
 import DeleteItem from "@components/items/delete";
 import AddItem from "@components/items/add";
-import placeholder from "../../../assets/placeholder.jpg";
+import placeholder from "../../assets/placeholder.jpg";
 
 const Items: NextPageWithLayout = () => {
   const { isLoading, data } = trpc.useQuery(["item.get-item"], {
