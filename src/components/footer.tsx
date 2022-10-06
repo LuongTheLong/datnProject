@@ -12,7 +12,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { BiMailSend } from "react-icons/bi";
 
 const SocialButton = ({ children, label, href }: { children: ReactNode; label: string; href: string }) => {
@@ -53,15 +53,15 @@ const Footer = () => {
       <Container as={Stack} maxW={"6xl"} py={10}>
         <SimpleGrid templateColumns={{ sm: "1fr 1fr", md: "2fr 1fr 1fr 2fr" }} spacing={8}>
           <Stack spacing={6}>
-            <Text fontSize={"sm"}>© 2022 Data Coffee House. All rights reserved</Text>
+            <Text fontSize={"sm"}>© 2022 Fast Food Service. All rights reserved</Text>
             <Stack direction={"row"} spacing={6}>
-              <SocialButton label={"Twitter"} href={"#"}>
-                <FaTwitter />
+              <SocialButton label={"Facebook"} href={"https://www.facebook.com/obitorossander/"}>
+                <FaFacebook />
               </SocialButton>
-              <SocialButton label={"YouTube"} href={"#"}>
+              <SocialButton label={"YouTube"} href={"https://www.youtube.com/c/MixiGamingofficial"}>
                 <FaYoutube />
               </SocialButton>
-              <SocialButton label={"Instagram"} href={"#"}>
+              <SocialButton label={"Instagram"} href={"https://www.instagram.com/tob1_da.luver/"}>
                 <FaInstagram />
               </SocialButton>
             </Stack>

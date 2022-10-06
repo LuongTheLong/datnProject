@@ -110,7 +110,7 @@ const Header = () => {
 
   return (
     <>
-      <Flex gap={16} px={4} py={2} alignItems={"center"}>
+      <Flex gap={16} px={4} py={2} alignItems={"center"} className="sticky top-0" background="white" zIndex={"1000"}>
         <Box>
           <IoMdMenu fontSize={28} onClick={onOpen} />
           <Drawer placement={"left"} onClose={onClose} isOpen={isOpen}>
