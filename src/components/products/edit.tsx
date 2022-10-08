@@ -29,7 +29,7 @@ export default function EditItem({ data }: EditItemProps) {
   const t = trpc.useContext();
 
   const { category, id, categoryId, ...rest } = data;
-  const categories = t.category.get.getData();
+  const categories = t.category.getAll.getData();
 
   const { isLoading, mutate } = trpc.product.update.useMutation({
     onSuccess: () => {
