@@ -5,9 +5,10 @@ import { Flex, Container, Text, IconButton, Heading, Box } from "@chakra-ui/reac
 import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from "react-icons/md";
 import { Navigation } from "swiper";
 import { trpc } from "src/utils/trpc";
+import NextLink from "next/link";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { inferQueryOutput } from "src/utils/trpc";
+import { InferProcedures } from "src/utils/trpc";
 
 // Import Swiper styles
 import "swiper/css";
@@ -27,110 +28,89 @@ import Dessert from "../assets/trang-mieng.svg";
 import Breakfast from "../assets/breakfast.svg";
 import Filter from "@components/filter";
 
-type CategoryItemsOutput = inferQueryOutput<"item.get-item-by-categories">[number];
+const CATEGORIES = [
+  {
+    title: "Đồ ăn nhanh",
+    slug: "do-an-nhanh",
+    image: FastFood,
+  },
+  {
+    title: "Thức uống",
+    slug: "thuc-uong",
+    image: Drink,
+  },
+  {
+    title: "Dessert",
+    slug: "dessert",
+    image: Dessert,
+  },
+  {
+    title: "Pizza",
+    slug: "pizza",
+    image: Pizza,
+  },
+  {
+    title: "Bánh mì",
+    slug: "banh-mi",
+    image: Hamburger,
+  },
+  {
+    title: "Ăn sáng",
+    slug: "an-sang",
+    image: Breakfast,
+  },
+];
 
 const CategoryList = () => {
   return (
     <Flex alignItems={"center"} gap={6} justifyContent="center">
-      <Flex
-        flexDir={"column"}
-        alignItems="center"
-        cursor={"pointer"}
-        transition={"all 250ms ease"}
-        _hover={{ color: "crimson" }}
-      >
-        <Image width={100} height={100} src={FastFood} alt="do-an-nhanh" layout="fixed" />
-        <Text fontSize={15} fontWeight={600}>
-          Đồ ăn nhanh
-        </Text>
-      </Flex>
-      <Flex
-        flexDir={"column"}
-        alignItems="center"
-        cursor={"pointer"}
-        transition={"all 250ms ease"}
-        _hover={{ color: "crimson" }}
-      >
-        <Image width={100} height={100} src={Drink} alt="nuoc-uong" layout="fixed" />
-        <Text fontSize={15} fontWeight={600}>
-          Thức uống
-        </Text>
-      </Flex>
-      <Flex
-        flexDir={"column"}
-        alignItems="center"
-        cursor={"pointer"}
-        transition={"all 250ms ease"}
-        _hover={{ color: "crimson" }}
-      >
-        <Image width={100} height={100} src={Dessert} alt="trang-mieng" layout="fixed" />
-        <Text fontSize={15} fontWeight={600}>
-          Dessert
-        </Text>
-      </Flex>
-      <Flex
-        flexDir={"column"}
-        alignItems="center"
-        cursor={"pointer"}
-        transition={"all 250ms ease"}
-        _hover={{ color: "crimson" }}
-      >
-        <Image width={100} height={100} src={Pizza} alt="pizza" layout="fixed" />
-        <Text fontSize={15} fontWeight={600}>
-          Pizza
-        </Text>
-      </Flex>
-      <Flex
-        flexDir={"column"}
-        alignItems="center"
-        cursor={"pointer"}
-        transition={"all 250ms ease"}
-        _hover={{ color: "crimson" }}
-      >
-        <Image width={100} height={100} src={Hamburger} alt="banh-mi" layout="fixed" />
-        <Text fontSize={15} fontWeight={600}>
-          Bánh mì
-        </Text>
-      </Flex>
-      <Flex
-        flexDir={"column"}
-        alignItems="center"
-        cursor={"pointer"}
-        transition={"all 250ms ease"}
-        _hover={{ color: "crimson" }}
-      >
-        <Image width={100} height={100} src={Breakfast} alt="an-sang" layout="fixed" />
-        <Text fontSize={15} fontWeight={600}>
-          Ăn sáng
-        </Text>
-      </Flex>
+      {CATEGORIES.map(category => (
+        <Flex
+          key={category.slug}
+          flexDir={"column"}
+          alignItems="center"
+          cursor={"pointer"}
+          transition={"all 250ms ease"}
+          _hover={{ color: "crimson" }}
+        >
+          <Image width={100} height={100} src={category.image} alt={category.slug} layout="fixed" />
+          <Text fontSize={15} fontWeight={600}>
+            {category.title}
+          </Text>
+        </Flex>
+      ))}
     </Flex>
   );
 };
 
-const ProductCarousel = (props: CategoryItemsOutput) => {
+type CategoryProductsOutput = InferProcedures["category"]["getProductsByCategories"]["output"][number];
+
+const ProductCarousel = (props: CategoryProductsOutput) => {
   const navigationPrevRef = useRef<HTMLDivElement>(null);
   const navigationNextRef = useRef<HTMLDivElement>(null);
 
-  const { name, codeName, items } = props;
+  const { products, slug, title } = props;
 
   return (
     <Box mb={6}>
       <div>
         <Flex alignItems={"center"} mb={4}>
-          <Heading as="h3" size="lg" mb={2} textTransform={"capitalize"}>
-            {name}
+          <Heading as="h3" size="lg" mb={2} textTransform={"initial"}>
+            {title}
           </Heading>
           <Flex alignItems={"center"} gap={2} ml={"auto"}>
-            <Text
-              cursor={"pointer"}
-              _hover={{ color: "crimson" }}
-              transition={"all 250ms ease"}
-              fontWeight={"medium"}
-              mr={2}
-            >
-              Xem tất cả
-            </Text>
+            <NextLink href={{ pathname: "/[category]", query: { category: slug } }} passHref>
+              <Text
+                cursor={"pointer"}
+                _hover={{ color: "crimson" }}
+                transition={"all 250ms ease"}
+                fontWeight={"medium"}
+                mr={2}
+              >
+                Xem tất cả
+              </Text>
+            </NextLink>
+
             <div ref={navigationPrevRef}>
               <IconButton
                 bg={"gray.100"}
@@ -182,14 +162,14 @@ const ProductCarousel = (props: CategoryItemsOutput) => {
             swiper.navigation.update();
           }}
         >
-          {items.length > 0 &&
-            items.map(item => (
-              <SwiperSlide key={item.id}>
+          {products.length > 0 &&
+            products.map(product => (
+              <SwiperSlide key={product.id}>
                 <div>
                   <Box mb={3} rounded={"md"} overflow={"hidden"}>
                     <Image
-                      src={item.image!}
-                      alt={item.name}
+                      src={product.image}
+                      alt={product.title}
                       width={400}
                       height={220}
                       objectFit={"cover"}
@@ -198,10 +178,10 @@ const ProductCarousel = (props: CategoryItemsOutput) => {
                   </Box>
 
                   <Heading as="h5" size="sm" mb={1}>
-                    {item.name}
+                    {product.title}
                   </Heading>
                   <Text color={"gray.600"} fontWeight={500}>
-                    {item.price} VNĐ
+                    {product.price} VNĐ
                   </Text>
                 </div>
               </SwiperSlide>
@@ -213,7 +193,9 @@ const ProductCarousel = (props: CategoryItemsOutput) => {
 };
 
 const Home: NextPageWithLayout = () => {
-  const itemsQuery = trpc.useQuery(["item.get-item-by-categories"]);
+  const itemsQuery = trpc.category.getProductsByCategories.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <Container maxW={"6xl"}>
@@ -223,7 +205,7 @@ const Home: NextPageWithLayout = () => {
 
         {!itemsQuery.isLoading &&
           itemsQuery.data &&
-          itemsQuery.data.map(categoryItems => <ProductCarousel key={categoryItems.id} {...categoryItems} />)}
+          itemsQuery.data.map(category => <ProductCarousel key={category.id} {...category} />)}
       </Flex>
     </Container>
   );

@@ -32,6 +32,7 @@ const SmallCart = () => {
         gap={4}
         cursor="pointer"
         _hover={{ bg: "#ba0f31" }}
+        visibility={isOpen ? "hidden" : "visible"}
       >
         <FaShoppingCart fontSize={18} color={"white"} />
         <Text lineHeight={0} fontWeight={"medium"} color={"white"} fontSize={18}>

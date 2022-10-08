@@ -2,27 +2,26 @@ import type { NextPageWithLayout } from "@pages/_app";
 import DashboardLayout from "src/layout/dashboard-layout";
 import React from "react";
 import Image from "next/image";
-import { trpc } from "src/utils/trpc";
+import { trpc } from "@utils/trpc";
 import { Badge, Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, Flex } from "@chakra-ui/react";
 
 import LoadingSpinner from "@components/loading-spinner";
-import EditItem from "@components/items/edit";
-import DeleteItem from "@components/items/delete";
-import AddItem from "@components/items/add";
+import EditProduct from "@components/products/edit";
+import DeleteProduct from "@components/products/delete";
+import AddProduct from "@components/products/add";
 import placeholder from "../../assets/placeholder.jpg";
 
-const Items: NextPageWithLayout = () => {
-  const { isLoading, data } = trpc.useQuery(["item.get-item"], {
-    refetchOnWindowFocus: false,
-  });
-  trpc.useQuery(["category.get-category"], { refetchOnWindowFocus: false });
+const products: NextPageWithLayout = () => {
+  const { isLoading, data } = trpc.product.getAll.useQuery(undefined, { refetchOnWindowFocus: false });
+
+  trpc.category.getAll.useQuery(undefined, { refetchOnWindowFocus: false });
 
   return (
     <>
       {isLoading && <LoadingSpinner />}
       {!isLoading && data && (
         <>
-          <AddItem />
+          <AddProduct />
           <TableContainer>
             <Table variant="simple">
               <TableCaption>Danh sách sản phẩm</TableCaption>
@@ -38,22 +37,22 @@ const Items: NextPageWithLayout = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {data.map(({ category, ...item }) => (
-                  <Tr key={item.id}>
-                    <Td>{item.name}</Td>
+                {data.map(product => (
+                  <Tr key={product.id}>
+                    <Td>{product.title}</Td>
                     <Td>
-                      <Image src={item.image || placeholder} width={60} height={60} alt={item.name} />
+                      <Image src={product.image || placeholder} width={60} height={60} alt={product.title} />
                     </Td>
                     <Td>
-                      <Badge colorScheme="purple">{item.codeName}</Badge>
+                      <Badge colorScheme="purple">{product.code}</Badge>
                     </Td>
-                    <Td>{category?.name}</Td>
-                    <Td>{item.price}</Td>
-                    <Td>{item.description ? item.description : "Không có mô tả"}</Td>
+                    <Td>{product.category?.title}</Td>
+                    <Td>{product.price}</Td>
+                    <Td>{product.description ? product.description : "Không có mô tả"}</Td>
                     <Td>
                       <Flex alignItems={"center"} gap={4}>
-                        <EditItem data={item} />
-                        <DeleteItem id={item.id} />
+                        <EditProduct data={product} />
+                        <DeleteProduct id={product.id} />
                       </Flex>
                     </Td>
                   </Tr>
@@ -67,8 +66,8 @@ const Items: NextPageWithLayout = () => {
   );
 };
 
-Items.getLayout = function getLayout(page: React.ReactElement): React.ReactNode {
+products.getLayout = function getLayout(page: React.ReactElement): React.ReactNode {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-export default Items;
+export default products;

@@ -59,8 +59,10 @@ model User {
     accounts      Account[]
     sessions      Session[]
     point         Int       @default(0)
-    pointCurrent  Int       @default(0)
     role          ROLE      @default(USER)
+    orders        Order[]
+    products      Cart[]
+    createdAt     DateTime  @default(now())
 }
 
 model VerificationToken {
@@ -71,76 +73,63 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model ToDo {
-    id   String @id @default(cuid())
-    name String
-}
-
-model Material {
-    id          String  @id @default(cuid())
-    name        String
-    codeName    String
-    count       Float
-    unit        String
-    description String?
-}
-
 model Category {
-    id       String @id @default(cuid())
-    name     String
-    codeName String
-    items    Item[]
+    id        String    @id @default(cuid())
+    title     String
+    slug      String
+    products  Product[]
+    isDeleted Boolean   @default(false)
 }
 
-model Item {
-    id          String       @id @default(cuid())
-    idCategory  String
-    name        String
-    codeName    String
-    price       Int
-    image       String?
-    description String?
-    category    Category?    @relation(fields: [idCategory], references: [id])
-    billDetails BillDetail[]
+model Cart {
+    id        String  @id @default(cuid())
+    productId String
+    userId    String
+    quantity  Int
+    product   Product @relation(fields: [productId], references: [id])
+    user      User    @relation(fields: [userId], references: [id])
+
+    @@index([productId, userId])
 }
 
-model Shift {
-    id       String   @id @default(cuid())
-    idWorker String
-    incomes  Income[]
-    bills    Bill[]
+model Product {
+    id           String        @id @default(cuid())
+    title        String
+    code         String
+    price        Int
+    image        String
+    description  String?
+    categoryId   String
+    isDeleted    Boolean       @default(false)
+    category     Category?     @relation(fields: [categoryId], references: [id])
+    orderDetails OrderDetail[]
+    cart         Cart[]
+    createdAt    DateTime      @default(now())
+
+    @@index([categoryId])
 }
 
-model Income {
-    id             String @id @default(cuid())
-    idShift        String
-    startIncome    Int
-    income         Int
-    totalDecrease  Int
-    feeService     Int
-    vat            Float
-    totalBills     Int
-    outcome        Int
-    moneyRemaining Int
-    shift          Shift  @relation(fields: [idShift], references: [id])
+model Order {
+    id         String        @id @default(cuid())
+    userId     String
+    user       User          @relation(fields: [userId], references: [id])
+    grandTotal Int
+    tax        Int
+    products   OrderDetail[]
+    createdAt  DateTime      @default(now())
+    updatedAt  DateTime?     @default(now())
+
+    @@index([userId])
 }
 
-model Bill {
-    id          String       @id @default(cuid())
-    numberDesk  String
-    idShift     String
-    vat         Float
-    coupon      Int
-    totalCount  Int
-    shift       Shift        @relation(fields: [idShift], references: [id])
-    billDetails BillDetail[]
-}
+model OrderDetail {
+    id        String  @id @default(cuid())
+    quantity  Int
+    price     Int
+    productId String
+    product   Product @relation(fields: [productId], references: [id])
+    orderId   String
+    order     Order   @relation(fields: [orderId], references: [id])
 
-model BillDetail {
-    id     String @id @default(cuid())
-    idBill String
-    idItem String
-    count  Int
-    bill   Bill   @relation(fields: [idBill], references: [id])
-    item   Item   @relation(fields: [idItem], references: [id])
+    @@index([productId, orderId])
 }

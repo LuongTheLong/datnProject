@@ -20,11 +20,11 @@ type DeleteCategoryProps = {
 const DeleteCategory = ({ id }: DeleteCategoryProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const client = trpc.useContext();
+  const t = trpc.useContext();
 
-  const { isLoading, mutate } = trpc.useMutation(["category.delete-category"], {
+  const { isLoading, mutate } = trpc.category.delete.useMutation({
     onSuccess: () => {
-      client.invalidateQueries("category.get-category");
+      t.category.invalidate();
       toast({ position: "top", title: "Đã xóa danh mục", status: "success" });
       onClose();
     },

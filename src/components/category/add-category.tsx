@@ -12,40 +12,39 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-
-import { createCategoryValidator } from "@shared/category-validator";
-import { trpc } from "src/utils/trpc";
+import { InferProcedures, trpc } from "@utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { inferMutationInput } from "src/utils/trpc";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type AddCategoryFields = inferMutationInput<"category.create-category">;
+type AddCategoryFields = InferProcedures["category"]["create"]["input"];
 
 export default function AddCategory() {
-  const client = trpc.useContext();
-  const { isLoading, mutate } = trpc.useMutation(["category.create-category"], {
+  const t = trpc.useContext();
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { isLoading, mutate } = trpc.category.create.useMutation({
     onSuccess: () => {
-      client.invalidateQueries("category.get-category");
+      t.category.invalidate();
       toast({ title: "Thêm danh mục thành công", status: "success", position: "top" });
       reset();
       onClose();
     },
   });
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
 
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
-  } = useForm<AddCategoryFields>({ resolver: zodResolver(createCategoryValidator) });
+  } = useForm<AddCategoryFields>({ resolver: zodResolver(z.object({ title: z.string() })) });
 
-  const addMaterial: SubmitHandler<AddCategoryFields> = values => {
+  const addCategory: SubmitHandler<AddCategoryFields> = values => {
     mutate(values);
   };
 
-  const isButtonDisabled = isLoading || !!errors.name;
+  const isButtonDisabled = isLoading || !!errors.title;
 
   return (
     <>
@@ -55,14 +54,14 @@ export default function AddCategory() {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <form onSubmit={handleSubmit(addMaterial)}>
+        <form onSubmit={handleSubmit(addCategory)}>
           <ModalContent>
             <ModalHeader>Thêm danh mục</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <FormControl isInvalid={!!errors.name}>
+              <FormControl isInvalid={!!errors.title}>
                 <FormLabel>Tên danh mục</FormLabel>
-                <Input {...register("name")} placeholder="Tên danh mục" />
+                <Input {...register("title")} placeholder="Tên danh mục" />
               </FormControl>
             </ModalBody>
 
