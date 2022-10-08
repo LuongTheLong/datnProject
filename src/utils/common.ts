@@ -1,4 +1,4 @@
-const imgToBase64 = (file: File | undefined): Promise<string | null> => {
+const imgToBase64 = (file: File | undefined): Promise<string> => {
   return new Promise(resolve => {
     if (file) {
       const reader = new FileReader();
@@ -8,7 +8,7 @@ const imgToBase64 = (file: File | undefined): Promise<string | null> => {
       };
     }
 
-    return resolve(null);
+    return resolve("");
   });
 };
 
