@@ -20,18 +20,18 @@ type DeleteProductProps = {
 const DeleteItem = ({ id }: DeleteProductProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const client = trpc.useContext();
+  const t = trpc.useContext();
 
-  const { isLoading, mutate } = trpc.useMutation(["item.delete-item"], {
+  const { isLoading, mutate } = trpc.product.delete.useMutation({
     onSuccess: () => {
-      client.invalidateQueries("item.get-item");
+      t.product.invalidate();
       toast({ position: "top", title: "Đã xóa sản phẩm", status: "success" });
       onClose();
     },
   });
 
   const handleDelete = () => {
-    mutate({ id });
+    mutate({ productId: id });
   };
 
   return (

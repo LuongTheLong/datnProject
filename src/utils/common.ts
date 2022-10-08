@@ -4,10 +4,8 @@ const imgToBase64 = (file: File | undefined): Promise<string | null> => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        resolve(reader.result as string);
+        return resolve(reader.result as string);
       };
-
-      return;
     }
 
     return resolve(null);

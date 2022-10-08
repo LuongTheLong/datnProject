@@ -1,19 +1,5 @@
-import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   Flex,
-  IconButton,
-  HStack,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  Stack,
-  Menu,
-  MenuButton,
-  Button,
-  Avatar,
-  MenuList,
-  MenuItem,
-  MenuDivider,
   useColorModeValue,
   useDisclosure,
   Box,
@@ -21,14 +7,12 @@ import {
   Text,
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
 } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
-import { useRef } from "react";
+
 import NextLink from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -39,66 +23,50 @@ import SearchBar from "./search-bar";
 import Logo from "../assets/logo.png";
 import SmallCart from "./small-cart";
 
-type NavLinks = Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }>;
+// type NavLinks = Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }>;
 
-const DASHBOARD_LINKS: NavLinks = [
-  { title: "Nguyên liệu", path: "/dashboard/material" },
-  {
-    title: "Quản lý Menu",
-    path: "/dashboard/menu",
-    children: [
-      { title: "Quản lý sản phẩm", path: "/dashboard/menu/items" },
-      { title: "Quản lý danh mục", path: "/dashboard/menu/categories" },
-    ],
-  },
-];
+// const DASHBOARD_LINKS: NavLinks = [
+//   { title: "Nguyên liệu", path: "/dashboard/material" },
+//   {
+//     title: "Quản lý Menu",
+//     path: "/dashboard/menu",
+//     children: [
+//       { title: "Quản lý sản phẩm", path: "/dashboard/menu/items" },
+//       { title: "Quản lý danh mục", path: "/dashboard/menu/categories" },
+//     ],
+//   },
+// ];
 
-const COMMON_LINKS: NavLinks = [
-  { title: "Chill", path: "/chill" },
-  { title: "Đặt bàn", path: "/booking" },
-  { title: "Đánh giá", path: "/review" },
-];
+// const COMMON_LINKS: NavLinks = [
+//   { title: "Chill", path: "/chill" },
+//   { title: "Đặt bàn", path: "/booking" },
+//   { title: "Đánh giá", path: "/review" },
+// ];
 
-const COMMON_MENUS: NavLinks = [
-  { title: "Trang cá nhân", path: "/profile" },
-  { title: "Cài đặt", path: "/settings" },
-];
+// const COMMON_MENUS: NavLinks = [
+//   { title: "Trang cá nhân", path: "/profile" },
+//   { title: "Cài đặt", path: "/settings" },
+// ];
 
-const MANAGER_MENUS: NavLinks = [
-  { title: "Trang cá nhân", path: "/profile" },
-  { title: "Quản lý", path: "/dashboard" },
-  { title: "Cài đặt", path: "/settings" },
-];
+// const MANAGER_MENUS: NavLinks = [
+//   { title: "Trang cá nhân", path: "/profile" },
+//   { title: "Quản lý", path: "/dashboard" },
+//   { title: "Cài đặt", path: "/settings" },
+// ];
 
-const MENUS = {
-  ADMIN: MANAGER_MENUS,
-  MANAGER: MANAGER_MENUS,
-  WORKER: MANAGER_MENUS,
-  USER: COMMON_MENUS,
-};
+// const MENUS = {
+//   ADMIN: MANAGER_MENUS,
+//   MANAGER: MANAGER_MENUS,
+//   WORKER: MANAGER_MENUS,
+//   USER: COMMON_MENUS,
+// };
 
-const LINKS = {
-  ADMIN: DASHBOARD_LINKS,
-  MANAGER: DASHBOARD_LINKS,
-  WORKER: DASHBOARD_LINKS,
-  USER: COMMON_LINKS,
-};
-
-const NavLink = ({ children, href }: { children: React.ReactNode; href: string }) => (
-  <NextLink href={href} passHref>
-    <Link
-      px={2}
-      py={1}
-      rounded={"md"}
-      _hover={{
-        textDecoration: "none",
-        bg: useColorModeValue("gray.200", "gray.700"),
-      }}
-    >
-      {children}
-    </Link>
-  </NextLink>
-);
+// const LINKS = {
+//   ADMIN: DASHBOARD_LINKS,
+//   MANAGER: DASHBOARD_LINKS,
+//   WORKER: DASHBOARD_LINKS,
+//   USER: COMMON_LINKS,
+// };
 
 const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -112,7 +80,7 @@ const Header = () => {
     <>
       <Flex gap={16} px={4} py={2} alignItems={"center"}>
         <Box>
-          <IoMdMenu fontSize={28} onClick={onOpen} />
+          <IoMdMenu fontSize={28} onClick={onOpen} cursor={"pointer"} />
           <Drawer placement={"left"} onClose={onClose} isOpen={isOpen}>
             <DrawerOverlay />
             <DrawerContent>

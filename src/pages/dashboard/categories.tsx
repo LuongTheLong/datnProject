@@ -10,9 +10,7 @@ import AddCategory from "@components/category/add-category";
 import DeleteCategory from "@components/category/delete-category";
 
 const Categories: NextPageWithLayout = () => {
-  const { isLoading, data } = trpc.useQuery(["category.get-category"], {
-    refetchOnWindowFocus: false,
-  });
+  const { isLoading, data } = trpc.category.getAll.useQuery(undefined, { refetchOnWindowFocus: false });
 
   return (
     <>
@@ -33,17 +31,17 @@ const Categories: NextPageWithLayout = () => {
               <Tbody>
                 {data.map(category => (
                   <Tr key={category.id}>
-                    <Td>{category.name}</Td>
+                    <Td>{category.title}</Td>
                     <Td>
                       <Badge textTransform={"lowercase"} colorScheme="purple">
-                        {category.codeName}
+                        {category.slug}
                       </Badge>
                     </Td>
                     <Td>
                       <Flex alignItems={"center"} gap={4}>
                         <EditCategory
                           defaultValues={{
-                            name: category.name,
+                            title: category.title,
                           }}
                           id={category.id}
                         />

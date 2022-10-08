@@ -1,4 +1,3 @@
-import { Button, useDisclosure } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
@@ -16,21 +15,23 @@ import {
   Text,
   Box,
   Alert,
+  Button,
+  useDisclosure,
 } from "@chakra-ui/react";
-
 import Image from "next/image";
-import { createItemValidatorWithFile, ItemValidatorWithFile } from "@shared/item-validator";
-import { trpc } from "src/utils/trpc";
+import { FormProductValidator, createProductValidator } from "@shared/validators/product-validator";
+import { trpc } from "@utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { imgToBase64 } from "src/utils/common";
+import { imgToBase64 } from "@utils/common";
 
-export default function AddItem() {
-  const client = trpc.useContext();
-  const categoriesQuery = client.getQueryData(["category.get-category"]);
-  const { isLoading, mutate } = trpc.useMutation(["item.create-item"], {
+const AddItem = () => {
+  const t = trpc.useContext();
+  const categories = t.category.getAll.getData();
+
+  const { isLoading, mutate } = trpc.product.create.useMutation({
     onSuccess: () => {
-      client.invalidateQueries("item.get-item");
+      t.product.invalidate();
       toast({ title: "Thêm sản phẩm thành công", status: "success", position: "top" });
       reset();
       onClose();
@@ -47,16 +48,16 @@ export default function AddItem() {
     reset,
     setValue,
     watch,
-  } = useForm<ItemValidatorWithFile>({
-    resolver: zodResolver(createItemValidatorWithFile),
+  } = useForm<FormProductValidator>({
+    resolver: zodResolver(createProductValidator),
     defaultValues: {
       price: 0,
     },
   });
 
-  const addItem: SubmitHandler<ItemValidatorWithFile> = async values => {
+  const addItem: SubmitHandler<FormProductValidator> = async values => {
     const { files, ...rest } = values;
-    const image = await imgToBase64(values.files && values.files[0]);
+    const image = (await imgToBase64(values.files && values.files[0])) || "";
 
     mutate({ ...rest, image });
   };
@@ -76,17 +77,17 @@ export default function AddItem() {
             <ModalHeader>Thêm sản phẩm</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <FormControl isInvalid={!!errors.name} isRequired>
+              <FormControl isInvalid={!!errors.title} isRequired>
                 <FormLabel>Tên sản phẩm</FormLabel>
-                <Input {...register("name")} placeholder="Tên sản phẩm" />
+                <Input {...register("title")} placeholder="Tên sản phẩm" />
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.idCategory} isRequired>
+              <FormControl mt={4} isInvalid={!!errors.categoryId} isRequired>
                 <FormLabel>Danh mục sản phẩm</FormLabel>
-                <Select placeholder="Chọn danh mục" {...register("idCategory")}>
-                  {categoriesQuery &&
-                    categoriesQuery.map(category => (
+                <Select placeholder="Chọn danh mục" {...register("categoryId")}>
+                  {categories &&
+                    categories.map(category => (
                       <option key={category.id} value={category.id}>
-                        {category.name}
+                        {category.title}
                       </option>
                     ))}
                 </Select>
@@ -184,4 +185,6 @@ export default function AddItem() {
       </Modal>
     </>
   );
-}
+};
+
+export default AddItem;
