@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { useRouter } from "next/router";
 import { signIn, getProviders, ClientSafeProvider, LiteralUnion } from "next-auth/react";
-import { Heading, Text, Box, useToast, Stack, useColorModeValue, Flex } from "@chakra-ui/react";
+import { Heading, Text, Box, Stack, useColorModeValue, Flex } from "@chakra-ui/react";
 
 type Providers = Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>;
 
