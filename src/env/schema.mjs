@@ -14,6 +14,7 @@ export const serverSchema = z.object({
   CLOUDINARY_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
+  SENDGRID_API_KEY: z.string(),
 });
 
 /**
