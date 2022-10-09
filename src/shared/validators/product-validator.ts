@@ -5,7 +5,7 @@ const createProductValidator = z.object({
   title: z.string(),
   price: z.number().min(0),
   description: z.string().nullable(),
-  image: z.string(),
+  image: z.string().optional(),
 });
 
 const IMAGE_TYPES = ["image/jpg", "image/jpeg", "image/png", "image/webp"];

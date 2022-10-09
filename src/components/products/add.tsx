@@ -19,7 +19,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import { FormProductValidator, createProductValidator } from "@shared/validators/product-validator";
+import { createProductValidator, FormProductValidator } from "@shared/validators/product-validator";
 import { trpc } from "@utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,14 +55,17 @@ const AddItem = () => {
     },
   });
 
+  const imgFile = watch().files;
+
   const addItem: SubmitHandler<FormProductValidator> = async values => {
     const { files, ...rest } = values;
-    const image = (await imgToBase64(values.files && values.files[0])) || "";
+    let image = "";
+    if (imgFile && imgFile[0]) {
+      image = await imgToBase64(imgFile[0]);
+    }
 
-    mutate({ ...rest, image });
+    mutate({ ...rest, image: image });
   };
-
-  const files = watch().files;
 
   return (
     <>
@@ -105,7 +108,7 @@ const AddItem = () => {
                 Hình ảnh
               </Text>
 
-              {files && files[0] ? (
+              {imgFile && imgFile[0] ? (
                 <Flex flexDir={"column"} alignItems={"center"}>
                   <Flex
                     p={2}
@@ -118,7 +121,7 @@ const AddItem = () => {
                     width={"full"}
                   >
                     <Text fontSize={14} noOfLines={1}>
-                      {files[0].name}
+                      {imgFile[0].name}
                     </Text>{" "}
                     <Button
                       size={"sm"}
@@ -130,7 +133,7 @@ const AddItem = () => {
                       Xóa
                     </Button>
                   </Flex>
-                  <Image src={URL.createObjectURL(files[0])} alt={"product-image"} width={80} height={80} />
+                  <Image src={URL.createObjectURL(imgFile[0])} alt={"product-image"} width={80} height={80} />
                 </Flex>
               ) : (
                 <FormControl mt={4} isInvalid={!!errors.files}>

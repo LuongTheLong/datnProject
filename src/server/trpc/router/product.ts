@@ -6,7 +6,8 @@ import { slugGenerator } from "@server/utils/common";
 
 export const productRouter = t.router({
   create: adminRouter.input(createProductValidator).mutation(async ({ input, ctx }) => {
-    const product = await ctx.prisma.product.create({ data: { ...input, code: slugGenerator(input.title) } });
+    const image = (await cloudinary.uploader.upload(input.image as string)).url;
+    const product = await ctx.prisma.product.create({ data: { ...input, code: slugGenerator(input.title), image } });
 
     return product;
   }),
@@ -15,7 +16,7 @@ export const productRouter = t.router({
     .mutation(async ({ input, ctx }) => {
       const { data, productId } = input;
 
-      let image = data.image;
+      let image = data.image as string;
 
       if (image && !data.image?.includes("cloudinary")) {
         image = (await cloudinary.uploader.upload(image)).url;
