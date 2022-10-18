@@ -12,13 +12,21 @@ import {
   Link,
   Text,
   useDisclosure,
+  Radio,
+  RadioGroup,
+  Input
 } from "@chakra-ui/react";
+
+
+import { useState } from "react";
 import { BiPlus, BiMinus } from "react-icons/bi";
 import { FaShoppingCart } from "react-icons/fa";
 import NextLink from "next/link";
+import { date } from "zod";
 
 const SmallCart = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [value, setValue] = useState('inside');
 
   return (
     <>
@@ -56,6 +64,25 @@ const SmallCart = () => {
             </Button>
           </DrawerHeader>
           <DrawerBody>
+            <Text mb={2} fontWeight="700">
+              Chọn phương thức đặt:
+            </Text>
+            <RadioGroup onChange={setValue} value={value}>
+              <HStack direction='row'>
+                <Radio value='take-away'>Mang đi</Radio>
+                <Radio value='inside' defaultChecked>Tại chỗ</Radio>
+              </HStack>
+            </RadioGroup>
+            <Text mb={2} fontWeight="700">
+              Chọn thời gian nhận:
+            </Text>
+            <Input
+              placeholder="Chọn thời gian nhận"
+              size="md"
+              type="time"
+              min={Date.now()}
+              required
+            />
             <Flex
               justifyContent={"space-between"}
               alignItems={"center"}

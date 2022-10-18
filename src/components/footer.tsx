@@ -53,7 +53,7 @@ const Footer = () => {
       <Container as={Stack} maxW={"6xl"} py={10}>
         <SimpleGrid templateColumns={{ sm: "1fr 1fr", md: "2fr 1fr 1fr 2fr" }} spacing={8}>
           <Stack spacing={6}>
-            <Text fontSize={"sm"}>© 2022 Data Coffee House. All rights reserved</Text>
+            <Text fontSize={"sm"}>© 2022 Fast Food Service. All rights reserved</Text>
             <Stack direction={"row"} spacing={6}>
               <SocialButton label={"Twitter"} href={"#"}>
                 <FaTwitter />
