@@ -26,8 +26,8 @@ export const authOptions: NextAuthOptions = {
         await sgMail.send({
           to: user.email!,
           from: "lrollking1@gmail.com",
-          subject: "Chào mừng bạn đến với dịch vụ thức ăn nhanh Long Food",
-          text: "Welcome",
+          subject: "Chào mừng bạn đến với dịch vụ thức ăn nhanh Fast Food",
+          text: "Welcome", // can insert html tag into here
         });
 
         await prisma.user.update({
