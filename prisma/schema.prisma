@@ -75,11 +75,12 @@ model VerificationToken {
 }
 
 model Category {
-    id        String    @id @default(cuid())
-    title     String
-    slug      String
-    products  Product[]
-    isDeleted Boolean   @default(false)
+    id             String           @id @default(cuid())
+    title          String
+    slug           String
+    products       Product[]
+    isDeleted      Boolean          @default(false)
+    OptionCategory OptionCategory[]
 }
 
 model Cart {
@@ -133,4 +134,23 @@ model OrderDetail {
     order     Order   @relation(fields: [orderId], references: [id])
 
     @@index([productId, orderId])
+}
+
+model OptionCategory {
+    id         String   @id @default(cuid())
+    title      String
+    code       String
+    categoryId String
+    category   Category @relation(fields: [categoryId], references: [id])
+    Choice     Choice[]
+
+    @@index([categoryId])
+}
+
+model Choice {
+    id               String         @id @default(cuid())
+    title            String
+    price            Int
+    optionCategoryId String
+    optionCategory   OptionCategory @relation(fields: [optionCategoryId], references: [id])
 }
