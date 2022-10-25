@@ -1,15 +1,3 @@
-import {
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  HStack,
-  Link,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { BiPlus, BiMinus } from "react-icons/bi";
 import { NextPageWithLayout } from "./_app";
 import { useRef } from "react";
 import CommonLayout from "@layout/common-layout";
@@ -99,9 +87,9 @@ type CategoryProductsOutput = InferProcedures["category"]["getProductsByCategori
 const ProductCarousel = (props: CategoryProductsOutput) => {
   const navigationPrevRef = useRef<HTMLDivElement>(null);
   const navigationNextRef = useRef<HTMLDivElement>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const { products, slug, title } = props;
-  console.log(props);
+
   return (
     <>
       <Box mb={6}>
@@ -177,92 +165,28 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
             {products.length > 0 &&
               products.map(product => (
                 <SwiperSlide key={product.id}>
-                  <Box onClick={onOpen} cursor="pointer">
-                    <Box mb={3} rounded={"md"} overflow={"hidden"}>
-                      <Image
-                        src={product.image}
-                        alt={product.title}
-                        width={400}
-                        height={220}
-                        objectFit={"cover"}
-                        layout="responsive"
-                      />
-                    </Box>
-
-                    <Heading as="h5" size="sm" mb={1}>
-                      {product.title}
-                    </Heading>
-                    <Text color={"gray.600"} fontWeight={500}>
-                      {product.price} VNĐ
-                    </Text>
+                  <Box mb={3} rounded={"md"} overflow={"hidden"}>
+                    <Image
+                      src={product.image}
+                      alt={product.title}
+                      width={400}
+                      height={220}
+                      objectFit={"cover"}
+                      layout="responsive"
+                    />
                   </Box>
+
+                  <Heading as="h5" size="sm" mb={1}>
+                    {product.title}
+                  </Heading>
+                  <Text color={"gray.600"} fontWeight={500}>
+                    {product.price} VNĐ
+                  </Text>
                 </SwiperSlide>
               ))}
           </Swiper>
         </div>
       </Box>
-      <Drawer placement={"bottom"} onClose={onClose} isOpen={isOpen} size={"sm"}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px" fontSize={24}>
-            Thêm món mới
-            <Button bg={"crimson"} _hover={{ bg: "#ba0f31" }} rounded={"full"} width={"full"} mt={4}>
-              <Flex alignItems={"center"} justifyContent="space-between" width={"full"}>
-                <Text color={"white"} fontWeight={700}>
-                  Thêm vào giỏ hàng
-                </Text>
-                <Text color={"white"} fontWeight={700}>
-                  20.000 VNĐ
-                </Text>
-              </Flex>
-            </Button>
-          </DrawerHeader>
-          <DrawerBody>
-            <Flex
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              gap={2}
-              py={3}
-              borderBottom={"1px"}
-              borderColor={"gray.200"}
-            >
-              <Box>
-                <Text mb={2} fontWeight="500">
-                  Bánh mì kẹp Long
-                </Text>
-                <Text fontSize={14} fontWeight={500}>
-                  20.000 VNĐ
-                </Text>
-              </Box>
-              <HStack boxShadow={"rgb(0 0 0 / 20%) 0px 2px 8px"} rounded={"full"} overflow="hidden" bg={"white"}>
-                <Box>
-                  <IconButton
-                    bg={"transparent"}
-                    rounded="none"
-                    size="sm"
-                    aria-label="Search database"
-                    icon={<BiMinus fontSize={20} />}
-                    _hover={{ color: "crimson", bg: "transparent" }}
-                  />
-                </Box>
-                <Box>
-                  <Text fontWeight={"medium"}>2</Text>
-                </Box>
-                <Box>
-                  <IconButton
-                    bg={"transparent"}
-                    rounded="none"
-                    size="sm"
-                    aria-label="Search database"
-                    icon={<BiPlus fontSize={20} />}
-                    _hover={{ color: "crimson", bg: "transparent" }}
-                  />
-                </Box>
-              </HStack>
-            </Flex>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
     </>
   );
 };
