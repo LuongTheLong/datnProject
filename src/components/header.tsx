@@ -12,14 +12,12 @@ import {
   DrawerContent,
 } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
-
 import NextLink from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { IoMdMenu } from "react-icons/io";
 import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport } from "react-icons/ai";
 import SearchBar from "./search-bar";
-
 import Logo from "../assets/logo.png";
 import SmallCart from "./small-cart";
 

@@ -82,7 +82,6 @@ const CategoryList = () => {
     </Flex>
   );
 };
-
 type CategoryProductsOutput = InferProcedures["category"]["getProductsByCategories"]["output"][number];
 
 const ProductCarousel = (props: CategoryProductsOutput) => {
@@ -92,80 +91,80 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
   const { products, slug, title } = props;
 
   return (
-    <Box mb={6}>
-      <div>
-        <Flex alignItems={"center"} mb={4}>
-          <Heading as="h3" size="lg" mb={2} textTransform={"initial"}>
-            {title}
-          </Heading>
-          <Flex alignItems={"center"} gap={2} ml={"auto"}>
-            <NextLink href={{ pathname: "/[category]", query: { category: slug } }} passHref>
-              <Text
-                cursor={"pointer"}
-                _hover={{ color: "crimson" }}
-                transition={"all 250ms ease"}
-                fontWeight={"medium"}
-                mr={2}
-              >
-                Xem tất cả
-              </Text>
-            </NextLink>
+    <>
+      <Box mb={6}>
+        <div>
+          <Flex alignItems={"center"} mb={4}>
+            <Heading as="h3" size="lg" mb={2} textTransform={"initial"}>
+              {title}
+            </Heading>
+            <Flex alignItems={"center"} gap={2} ml={"auto"}>
+              <NextLink href={{ pathname: "/[category]", query: { category: slug } }} passHref>
+                <Text
+                  cursor={"pointer"}
+                  _hover={{ color: "crimson" }}
+                  transition={"all 250ms ease"}
+                  fontWeight={"medium"}
+                  mr={2}
+                >
+                  Xem tất cả
+                </Text>
+              </NextLink>
 
-            <div ref={navigationPrevRef}>
-              <IconButton
-                bg={"gray.100"}
-                rounded="full"
-                aria-label="Search database"
-                icon={<MdOutlineArrowBackIos />}
-              />
-            </div>
-            <div ref={navigationNextRef}>
-              <IconButton
-                bg={"gray.100"}
-                rounded="full"
-                aria-label="Search database"
-                icon={<MdOutlineArrowForwardIos />}
-              />
-            </div>
+              <div ref={navigationPrevRef}>
+                <IconButton
+                  bg={"gray.100"}
+                  rounded="full"
+                  aria-label="Search database"
+                  icon={<MdOutlineArrowBackIos />}
+                />
+              </div>
+              <div ref={navigationNextRef}>
+                <IconButton
+                  bg={"gray.100"}
+                  rounded="full"
+                  aria-label="Search database"
+                  icon={<MdOutlineArrowForwardIos />}
+                />
+              </div>
+            </Flex>
           </Flex>
-        </Flex>
 
-        <Swiper
-          // install Swiper modules
-          modules={[Navigation]}
-          spaceBetween={10}
-          slidesPerView={3}
-          navigation={{
-            prevEl: navigationPrevRef.current!, // Assert non-null
-            nextEl: navigationNextRef.current!, // Assert non-null
-          }}
-          breakpoints={{
-            640: {
-              slidesPerView: 1,
-            },
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 20,
-            },
-          }}
-          onInit={swiper => {
-            // @ts-ignore
-            swiper.params.navigation.prevEl = navigationPrevRef.current;
+          <Swiper
+            // install Swiper modules
+            modules={[Navigation]}
+            spaceBetween={10}
+            slidesPerView={3}
+            navigation={{
+              prevEl: navigationPrevRef.current!, // Assert non-null
+              nextEl: navigationNextRef.current!, // Assert non-null
+            }}
+            breakpoints={{
+              640: {
+                slidesPerView: 1,
+              },
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 20,
+              },
+            }}
+            onInit={swiper => {
+              // @ts-ignore
+              swiper.params.navigation.prevEl = navigationPrevRef.current;
 
-            // @ts-ignore
-            swiper.params.navigation.nextEl = navigationNextRef.current;
-            swiper.navigation.init();
-            swiper.navigation.update();
-          }}
-        >
-          {products.length > 0 &&
-            products.map(product => (
-              <SwiperSlide key={product.id}>
-                <div>
+              // @ts-ignore
+              swiper.params.navigation.nextEl = navigationNextRef.current;
+              swiper.navigation.init();
+              swiper.navigation.update();
+            }}
+          >
+            {products.length > 0 &&
+              products.map(product => (
+                <SwiperSlide key={product.id}>
                   <Box mb={3} rounded={"md"} overflow={"hidden"}>
                     <Image
                       src={product.image}
@@ -183,12 +182,12 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
                   <Text color={"gray.600"} fontWeight={500}>
                     {product.price} VNĐ
                   </Text>
-                </div>
-              </SwiperSlide>
-            ))}
-        </Swiper>
-      </div>
-    </Box>
+                </SwiperSlide>
+              ))}
+          </Swiper>
+        </div>
+      </Box>
+    </>
   );
 };
 
@@ -198,16 +197,18 @@ const Home: NextPageWithLayout = () => {
   });
 
   return (
-    <Container maxW={"6xl"}>
-      <Flex flexDirection={"column"} gap={8}>
-        <CategoryList />
-        <Filter />
+    <>
+      <Container maxW={"6xl"}>
+        <Flex flexDirection={"column"} gap={8}>
+          <CategoryList />
+          <Filter />
 
-        {!itemsQuery.isLoading &&
-          itemsQuery.data &&
-          itemsQuery.data.map(category => <ProductCarousel key={category.id} {...category} />)}
-      </Flex>
-    </Container>
+          {!itemsQuery.isLoading &&
+            itemsQuery.data &&
+            itemsQuery.data.map(category => <ProductCarousel key={category.id} {...category} />)}
+        </Flex>
+      </Container>
+    </>
   );
 };
 
