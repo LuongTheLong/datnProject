@@ -17,148 +17,237 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  RadioGroup,
   Radio,
   Stack,
   FormLabel,
   Input,
+  Checkbox,
+  RadioGroup,
+  Icon,
 } from "@chakra-ui/react";
+import { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "./_app";
 import { trpc } from "src/utils/trpc";
 import { Product } from "@prisma/client";
-import { useForm, Controller } from "react-hook-form";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 
 const OPTIONS = [
   {
+    id: 1,
     title: "Kích cỡ",
     code: "size",
+    kind: "radio",
+    limit: 1,
     choices: [
-      { title: "Vừa", price: 0 },
-      { title: "Lớn", price: 10000 },
+      { id: 3, title: "Vừa", price: 0 },
+      { id: 4, title: "Lớn", price: 10000 },
     ],
   },
   {
-    title: "Tương ớt",
-    code: "tuong-ot",
+    id: 2,
+    title: "Sốt",
+    code: "sauce",
+    kind: "checkbox",
+    limit: 2,
     choices: [
-      { title: "Có", price: 0 },
-      { title: "Không", price: 0 },
-    ],
-  },
-  {
-    title: "Sốt tiêu đen",
-    code: "sot-tieu-den",
-    choices: [
-      { title: "Có", price: 0 },
-      { title: "Không", price: 0 },
+      { id: 5, title: "Tương ớt", price: 1000 },
+      { id: 6, title: "Sốt tiêu đen", price: 2000 },
+      { id: 7, title: "Sốt bò", price: 3000 },
     ],
   },
 ];
 
+const OptionsCheckbox = ({
+  option,
+  selectedOptions,
+  setSelectedOptions,
+}: {
+  option: typeof OPTIONS[number];
+  selectedOptions: { id: number; title: string; price: number }[];
+  setSelectedOptions: Dispatch<
+    SetStateAction<
+      {
+        id: number;
+        title: string;
+        price: number;
+      }[]
+    >
+  >;
+}) => {
+  const [checkCount, setCheckCount] = useState(0);
+  const ALLOWED_SELECTION = 2;
+
+  const isChecked = (id: number) => {
+    return selectedOptions.some(option => option.id === id);
+  };
+
+  return (
+    <Flex flexDirection={"column"} gap={4}>
+      {option.choices.map(choice => (
+        <Checkbox
+          isDisabled={!isChecked(choice.id) && checkCount === ALLOWED_SELECTION}
+          key={choice.id}
+          value={choice.id}
+          colorScheme="red"
+          checked={isChecked(choice.id)}
+          onChange={event => {
+            if (event.target.checked) {
+              setSelectedOptions(prev => prev.concat(choice));
+              setCheckCount(prev => prev + 1);
+            } else {
+              setSelectedOptions(prev => prev.filter(item => item.id !== choice.id));
+              setCheckCount(prev => prev - 1);
+            }
+          }}
+        >
+          <Text fontSize={14} color={"rgb(25, 25, 25)"} fontWeight={500}>{`${choice.title} (+${choice.price})`}</Text>
+        </Checkbox>
+      ))}
+    </Flex>
+  );
+};
+
 const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [price, setPrice] = useState(item.price);
+  const [selectedOptions, setSelectedOptions] = useState<{ id: number; title: string; price: number }[]>([]);
+  const [quantity, setQuantity] = useState(1);
 
-  const { handleSubmit, control, watch } = useForm();
-
-  const onSubmit = (data: any) => console.log(data);
+  const choicesId = selectedOptions.map(option => option.id);
+  const total = quantity * (selectedOptions.reduce((prev, curr) => prev + curr.price, 0) + price);
 
   return (
     <>
       {isOpen && (
         <Box position={"fixed"}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader></ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Heading as="h3" size="lg" mb={4}>
-                    {item.title}
-                  </Heading>
+          <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader></ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Heading as="h3" size="lg" mb={4}>
+                  {item.title}
+                </Heading>
 
-                  <Text fontSize={14} lineHeight={1.5} fontWeight={500} mb={8}>
-                    Món ăn này vừa gọn nhẹ, thuận tiện, nhanh no, dễ ăn và phù hợp với khẩu vị của nhiều người. Nếu bạn
-                    cần dinh dưỡng thì hãy nghĩ ngay đến chiếc bánh này cho khẩu phần ăn nhé!
-                  </Text>
+                <Text fontSize={14} lineHeight={1.5} fontWeight={500} mb={8}>
+                  Món ăn này vừa gọn nhẹ, thuận tiện, nhanh no, dễ ăn và phù hợp với khẩu vị của nhiều người. Nếu bạn
+                  cần dinh dưỡng thì hãy nghĩ ngay đến chiếc bánh này cho khẩu phần ăn nhé!
+                </Text>
 
-                  <Box mb={8}>
-                    <Image
-                      src={item.image!}
-                      alt={item.title}
-                      width={500}
-                      height={300}
-                      objectFit={"cover"}
-                      layout="responsive"
+                <Box mb={8}>
+                  <Image
+                    src={item.image!}
+                    alt={item.title}
+                    width={500}
+                    height={300}
+                    objectFit={"cover"}
+                    layout="responsive"
+                  />
+                </Box>
+                {OPTIONS.map(option => (
+                  <Box
+                    key={option.code}
+                    pb={4}
+                    mb={4}
+                    borderBottom={"1px solid"}
+                    borderBottomColor={"rgb(231, 231, 231)"}
+                  >
+                    <FormLabel htmlFor={option.code} fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={700} mb={2}>
+                      {option.title}
+                    </FormLabel>
+
+                    {option.kind === "checkbox" ? (
+                      <OptionsCheckbox
+                        option={option}
+                        setSelectedOptions={setSelectedOptions}
+                        selectedOptions={selectedOptions}
+                      />
+                    ) : (
+                      <RadioGroup
+                        name={option.code}
+                        onChange={event => {
+                          const selectedOption = option.choices.find(choice => choice.id === parseInt(event));
+
+                          const ids = option.choices.map(choice => choice.id);
+
+                          if (selectedOption) {
+                            setSelectedOptions(prev =>
+                              prev.filter(item => !ids.includes(item.id)).concat(selectedOption)
+                            );
+                          }
+                        }}
+                        value={option.choices.find(choice => choicesId.includes(choice.id))?.id}
+                      >
+                        <Stack spacing={4} direction="row">
+                          {option.choices.map(choice => (
+                            <Radio key={choice.id} value={choice.id} colorScheme="red">
+                              <Text
+                                fontSize={14}
+                                color={"rgb(25, 25, 25)"}
+                                fontWeight={500}
+                              >{`${choice.title} (+${choice.price})`}</Text>
+                            </Radio>
+                          ))}
+                        </Stack>
+                      </RadioGroup>
+                    )}
+                  </Box>
+                ))}
+              </ModalBody>
+              <ModalFooter>
+                <Stack direction={"row"} spacing={2} alignItems="center" mr={4}>
+                  <Icon
+                    as={AiOutlineMinusCircle}
+                    width={6}
+                    height={6}
+                    cursor="pointer"
+                    _hover={{ color: "crimson" }}
+                    onClick={() => setQuantity(prev => (prev === 1 ? prev : prev - 1))}
+                    color={quantity === 1 ? "gray" : "black"}
+                    pointerEvents={quantity === 1 ? "none" : "auto"}
+                  />
+
+                  <Box
+                    height={"40px"}
+                    display="flex"
+                    justifyContent={"center"}
+                    alignItems="center"
+                    bg={"rgb(247, 247, 247)"}
+                    rounded="md"
+                    width={"64px"}
+                  >
+                    <Input
+                      width={"100%"}
+                      defaultValue={1}
+                      focusBorderColor="black"
+                      textAlign="center"
+                      pattern="[0-9]*"
+                      fontWeight={600}
+                      pointerEvents={"none"}
+                      value={quantity}
                     />
                   </Box>
-                  {OPTIONS.map(option => (
-                    <Box
-                      key={option.code}
-                      pb={4}
-                      mb={4}
-                      borderBottom={"1px solid"}
-                      borderBottomColor={"rgb(231, 231, 231)"}
-                    >
-                      <FormLabel htmlFor={option.code} fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={700} mb={2}>
-                        {option.title}
-                      </FormLabel>
-                      <Controller
-                        control={control}
-                        name={option.code}
-                        render={({ field }) => (
-                          <RadioGroup {...field}>
-                            <Stack spacing={4} direction="row">
-                              {option.choices.map(choice => (
-                                <Radio key={choice.title} value={choice.title} colorScheme="red">
-                                  <Text
-                                    fontSize={14}
-                                    color={"rgb(25, 25, 25)"}
-                                    fontWeight={500}
-                                  >{`${choice.title} (+${choice.price})`}</Text>
-                                </Radio>
-                              ))}
-                            </Stack>
-                          </RadioGroup>
-                        )}
-                      />
-                    </Box>
-                  ))}
-                </ModalBody>
-                <ModalFooter>
-                  <Stack direction={"row"} spacing={2} alignItems="center" mr={4}>
-                    <AiOutlineMinusCircle fontSize={24} />
-                    <Box
-                      height={"40px"}
-                      display="flex"
-                      justifyContent={"center"}
-                      alignItems="center"
-                      bg={"rgb(247, 247, 247)"}
-                      rounded="md"
-                      width={"64px"}
-                    >
-                      <Input
-                        width={"100%"}
-                        defaultValue={1}
-                        focusBorderColor="black"
-                        textAlign="center"
-                        pattern="[0-9]*"
-                        fontWeight={600}
-                      />
-                    </Box>
 
-                    <AiOutlinePlusCircle fontSize={24} />
-                  </Stack>
-                  <Button fontWeight={700} colorScheme="red" rounded={"full"} onClick={onClose}>
-                    Thêm vào giỏ - 120.000 VNĐ
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          </form>
+                  <Icon
+                    as={AiOutlinePlusCircle}
+                    width={6}
+                    height={6}
+                    cursor="pointer"
+                    _hover={{ color: "crimson" }}
+                    onClick={() => setQuantity(prev => (prev === 10 ? prev : prev + 1))}
+                    color={quantity === 15 ? "gray" : "black"}
+                    pointerEvents={quantity === 15 ? "none" : "auto"}
+                  />
+                </Stack>
+                <Button fontWeight={700} colorScheme="red" rounded={"full"} onClick={onClose}>
+                  Thêm vào giỏ - {total} VNĐ
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </Box>
       )}
 
@@ -185,12 +274,13 @@ const Categories: NextPageWithLayout = () => {
     { slug: router.query.category as string },
     {
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
     }
   );
 
   const productsQuery = trpc.product.getInfiniteProducts.useInfiniteQuery(
     { slug: router.query.category as string, limit: 7 },
-    { getNextPageParam: lastPage => lastPage.nextCursor }
+    { getNextPageParam: lastPage => lastPage.nextCursor, refetchOnWindowFocus: false, refetchOnMount: false }
   );
 
   return (

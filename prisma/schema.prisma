@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider        = "prisma-client-js"
     previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-    provider             = "mysql" // NOTE: sqlite does not work with NextAuth.js
+    provider             = "mysql"
     url                  = env("DATABASE_URL")
     referentialIntegrity = "prisma"
 }
@@ -21,6 +18,11 @@ enum ROLE {
     MANAGER
     WORKER
     USER
+}
+
+enum KIND {
+    CHECKBOX
+    RADIO
 }
 
 // Necessary for Next auth
@@ -88,6 +90,7 @@ model Cart {
     productId String
     userId    String
     quantity  Int
+    option    Json
     product   Product @relation(fields: [productId], references: [id])
     user      User    @relation(fields: [userId], references: [id])
 
@@ -132,6 +135,7 @@ model OrderDetail {
     product   Product @relation(fields: [productId], references: [id])
     orderId   String
     order     Order   @relation(fields: [orderId], references: [id])
+    options   Json
 
     @@index([productId, orderId])
 }
@@ -140,9 +144,11 @@ model OptionCategory {
     id         String   @id @default(cuid())
     title      String
     code       String
+    kind       KIND     @default(RADIO)
+    limit      Int      @default(0)
     categoryId String
     category   Category @relation(fields: [categoryId], references: [id])
-    Choice     Choice[]
+    choices    Choice[]
 
     @@index([categoryId])
 }
