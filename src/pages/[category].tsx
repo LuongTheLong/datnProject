@@ -91,6 +91,7 @@ const OptionsCheckbox = ({
           key={choice.id}
           value={choice.id}
           colorScheme="red"
+          borderColor={"black"}
           checked={isChecked(choice.id)}
           onChange={event => {
             if (event.target.checked) {
@@ -102,7 +103,12 @@ const OptionsCheckbox = ({
             }
           }}
         >
-          <Text fontSize={14} color={"rgb(25, 25, 25)"} fontWeight={500}>{`${choice.title} (+${choice.price})`}</Text>
+          <Text
+            ml={2}
+            fontSize={14}
+            color={"rgb(25, 25, 25)"}
+            fontWeight={500}
+          >{`${choice.title} (+${choice.price})`}</Text>
         </Checkbox>
       ))}
     </Flex>
@@ -125,9 +131,11 @@ const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
           <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader></ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
+              <ModalHeader px={4} py={2} position={"relative"}>
+                <ModalCloseButton position={"unset"} />
+              </ModalHeader>
+
+              <ModalBody padding={4}>
                 <Heading as="h3" size="lg" mb={4}>
                   {item.title}
                 </Heading>
@@ -181,9 +189,9 @@ const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
                         }}
                         value={option.choices.find(choice => choicesId.includes(choice.id))?.id}
                       >
-                        <Stack spacing={4} direction="row">
+                        <Flex flexDirection={"column"} gap={4}>
                           {option.choices.map(choice => (
-                            <Radio key={choice.id} value={choice.id} colorScheme="red">
+                            <Radio key={choice.id} value={choice.id} colorScheme="red" borderColor={"black"}>
                               <Text
                                 fontSize={14}
                                 color={"rgb(25, 25, 25)"}
@@ -191,7 +199,7 @@ const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
                               >{`${choice.title} (+${choice.price})`}</Text>
                             </Radio>
                           ))}
-                        </Stack>
+                        </Flex>
                       </RadioGroup>
                     )}
                   </Box>
