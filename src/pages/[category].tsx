@@ -29,57 +29,25 @@ import { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "./_app";
-import { trpc } from "src/utils/trpc";
-import { Product } from "@prisma/client";
+import { trpc, InferProcedures } from "src/utils/trpc";
+import { Product, Choice } from "@prisma/client";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 
-const OPTIONS = [
-  {
-    id: 1,
-    title: "Kích cỡ",
-    code: "size",
-    kind: "radio",
-    limit: 1,
-    choices: [
-      { id: 3, title: "Vừa", price: 0 },
-      { id: 4, title: "Lớn", price: 10000 },
-    ],
-  },
-  {
-    id: 2,
-    title: "Sốt",
-    code: "sauce",
-    kind: "checkbox",
-    limit: 2,
-    choices: [
-      { id: 5, title: "Tương ớt", price: 1000 },
-      { id: 6, title: "Sốt tiêu đen", price: 2000 },
-      { id: 7, title: "Sốt bò", price: 3000 },
-    ],
-  },
-];
+type Options = InferProcedures["options"]["getByCategory"]["output"];
 
 const OptionsCheckbox = ({
   option,
   selectedOptions,
   setSelectedOptions,
 }: {
-  option: typeof OPTIONS[number];
-  selectedOptions: { id: number; title: string; price: number }[];
-  setSelectedOptions: Dispatch<
-    SetStateAction<
-      {
-        id: number;
-        title: string;
-        price: number;
-      }[]
-    >
-  >;
+  option: Options[number];
+  selectedOptions: Choice[];
+  setSelectedOptions: Dispatch<SetStateAction<Choice[]>>;
 }) => {
   const [checkCount, setCheckCount] = useState(0);
-  const ALLOWED_SELECTION = 2;
+  const ALLOWED_SELECTION = option.limit;
 
-  const isChecked = (id: number) => {
+  const isChecked = (id: string) => {
     return selectedOptions.some(option => option.id === id);
   };
 
@@ -115,149 +83,179 @@ const OptionsCheckbox = ({
   );
 };
 
-const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+type ModalProps = {
+  item: Product;
+  categoryId: string;
+  onClose: () => void;
+  isOpen: boolean;
+};
+
+const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
   const [price, setPrice] = useState(item.price);
-  const [selectedOptions, setSelectedOptions] = useState<{ id: number; title: string; price: number }[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<Choice[]>([]);
   const [quantity, setQuantity] = useState(1);
 
   const choicesId = selectedOptions.map(option => option.id);
   const total = quantity * (selectedOptions.reduce((prev, curr) => prev + curr.price, 0) + price);
 
+  const optionsQuery = trpc.options.getByCategory.useQuery(
+    {
+      categoryId: item.categoryId,
+    },
+    {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  return (
+    <Box position={"fixed"}>
+      <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader px={4} py={2} position={"relative"}>
+            <ModalCloseButton position={"unset"} />
+          </ModalHeader>
+
+          <ModalBody padding={4}>
+            <Heading as="h3" size="lg" mb={4}>
+              {item.title}
+            </Heading>
+
+            <Text fontSize={14} lineHeight={1.5} fontWeight={500} mb={8}>
+              Món ăn này vừa gọn nhẹ, thuận tiện, nhanh no, dễ ăn và phù hợp với khẩu vị của nhiều người. Nếu bạn cần
+              dinh dưỡng thì hãy nghĩ ngay đến chiếc bánh này cho khẩu phần ăn nhé!
+            </Text>
+
+            <Box mb={8}>
+              <Image
+                src={item.image!}
+                alt={item.title}
+                width={500}
+                height={300}
+                objectFit={"cover"}
+                layout="responsive"
+              />
+            </Box>
+
+            {optionsQuery.isLoading && (
+              <Flex justifyContent={"center"} alignItems="center">
+                <Spinner color="crimson" size="lg" />
+              </Flex>
+            )}
+
+            {optionsQuery.data &&
+              optionsQuery.data.map(option => (
+                <Box
+                  key={option.code}
+                  pb={4}
+                  mb={4}
+                  borderBottom={"1px solid"}
+                  borderBottomColor={"rgb(231, 231, 231)"}
+                >
+                  <FormLabel htmlFor={option.code} fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={700} mb={2}>
+                    {option.title}
+                  </FormLabel>
+
+                  {option.kind === "CHECKBOX" ? (
+                    <OptionsCheckbox
+                      option={option}
+                      setSelectedOptions={setSelectedOptions}
+                      selectedOptions={selectedOptions}
+                    />
+                  ) : (
+                    <RadioGroup
+                      name={option.code}
+                      onChange={event => {
+                        const selectedOption = option.choices.find(choice => choice.id === event);
+
+                        const ids = option.choices.map(choice => choice.id);
+
+                        if (selectedOption) {
+                          setSelectedOptions(prev =>
+                            prev.filter(item => !ids.includes(item.id)).concat(selectedOption)
+                          );
+                        }
+                      }}
+                      value={option.choices.find(choice => choicesId.includes(choice.id))?.id}
+                    >
+                      <Flex flexDirection={"column"} gap={4}>
+                        {option.choices.map(choice => (
+                          <Radio key={choice.id} value={choice.id} colorScheme="red" borderColor={"black"}>
+                            <Text
+                              fontSize={14}
+                              color={"rgb(25, 25, 25)"}
+                              fontWeight={500}
+                            >{`${choice.title} (+${choice.price})`}</Text>
+                          </Radio>
+                        ))}
+                      </Flex>
+                    </RadioGroup>
+                  )}
+                </Box>
+              ))}
+          </ModalBody>
+          <ModalFooter>
+            <Stack direction={"row"} spacing={2} alignItems="center" mr={4}>
+              <Icon
+                as={AiOutlineMinusCircle}
+                width={6}
+                height={6}
+                cursor="pointer"
+                _hover={{ color: "crimson" }}
+                onClick={() => setQuantity(prev => (prev === 1 ? prev : prev - 1))}
+                color={quantity === 1 ? "gray" : "black"}
+                pointerEvents={quantity === 1 ? "none" : "auto"}
+              />
+
+              <Box
+                height={"40px"}
+                display="flex"
+                justifyContent={"center"}
+                alignItems="center"
+                bg={"rgb(247, 247, 247)"}
+                rounded="md"
+                width={"64px"}
+              >
+                <Input
+                  width={"100%"}
+                  defaultValue={1}
+                  focusBorderColor="black"
+                  textAlign="center"
+                  pattern="[0-9]*"
+                  fontWeight={600}
+                  pointerEvents={"none"}
+                  value={quantity}
+                />
+              </Box>
+
+              <Icon
+                as={AiOutlinePlusCircle}
+                width={6}
+                height={6}
+                cursor="pointer"
+                _hover={{ color: "crimson" }}
+                onClick={() => setQuantity(prev => (prev === 10 ? prev : prev + 1))}
+                color={quantity === 15 ? "gray" : "black"}
+                pointerEvents={quantity === 15 ? "none" : "auto"}
+              />
+            </Stack>
+            <Button fontWeight={700} colorScheme="red" rounded={"full"} onClick={onClose}>
+              Thêm vào giỏ - {total} VNĐ
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
+};
+
+const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
-      {isOpen && (
-        <Box position={"fixed"}>
-          <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader px={4} py={2} position={"relative"}>
-                <ModalCloseButton position={"unset"} />
-              </ModalHeader>
-
-              <ModalBody padding={4}>
-                <Heading as="h3" size="lg" mb={4}>
-                  {item.title}
-                </Heading>
-
-                <Text fontSize={14} lineHeight={1.5} fontWeight={500} mb={8}>
-                  Món ăn này vừa gọn nhẹ, thuận tiện, nhanh no, dễ ăn và phù hợp với khẩu vị của nhiều người. Nếu bạn
-                  cần dinh dưỡng thì hãy nghĩ ngay đến chiếc bánh này cho khẩu phần ăn nhé!
-                </Text>
-
-                <Box mb={8}>
-                  <Image
-                    src={item.image!}
-                    alt={item.title}
-                    width={500}
-                    height={300}
-                    objectFit={"cover"}
-                    layout="responsive"
-                  />
-                </Box>
-                {OPTIONS.map(option => (
-                  <Box
-                    key={option.code}
-                    pb={4}
-                    mb={4}
-                    borderBottom={"1px solid"}
-                    borderBottomColor={"rgb(231, 231, 231)"}
-                  >
-                    <FormLabel htmlFor={option.code} fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={700} mb={2}>
-                      {option.title}
-                    </FormLabel>
-
-                    {option.kind === "checkbox" ? (
-                      <OptionsCheckbox
-                        option={option}
-                        setSelectedOptions={setSelectedOptions}
-                        selectedOptions={selectedOptions}
-                      />
-                    ) : (
-                      <RadioGroup
-                        name={option.code}
-                        onChange={event => {
-                          const selectedOption = option.choices.find(choice => choice.id === parseInt(event));
-
-                          const ids = option.choices.map(choice => choice.id);
-
-                          if (selectedOption) {
-                            setSelectedOptions(prev =>
-                              prev.filter(item => !ids.includes(item.id)).concat(selectedOption)
-                            );
-                          }
-                        }}
-                        value={option.choices.find(choice => choicesId.includes(choice.id))?.id}
-                      >
-                        <Flex flexDirection={"column"} gap={4}>
-                          {option.choices.map(choice => (
-                            <Radio key={choice.id} value={choice.id} colorScheme="red" borderColor={"black"}>
-                              <Text
-                                fontSize={14}
-                                color={"rgb(25, 25, 25)"}
-                                fontWeight={500}
-                              >{`${choice.title} (+${choice.price})`}</Text>
-                            </Radio>
-                          ))}
-                        </Flex>
-                      </RadioGroup>
-                    )}
-                  </Box>
-                ))}
-              </ModalBody>
-              <ModalFooter>
-                <Stack direction={"row"} spacing={2} alignItems="center" mr={4}>
-                  <Icon
-                    as={AiOutlineMinusCircle}
-                    width={6}
-                    height={6}
-                    cursor="pointer"
-                    _hover={{ color: "crimson" }}
-                    onClick={() => setQuantity(prev => (prev === 1 ? prev : prev - 1))}
-                    color={quantity === 1 ? "gray" : "black"}
-                    pointerEvents={quantity === 1 ? "none" : "auto"}
-                  />
-
-                  <Box
-                    height={"40px"}
-                    display="flex"
-                    justifyContent={"center"}
-                    alignItems="center"
-                    bg={"rgb(247, 247, 247)"}
-                    rounded="md"
-                    width={"64px"}
-                  >
-                    <Input
-                      width={"100%"}
-                      defaultValue={1}
-                      focusBorderColor="black"
-                      textAlign="center"
-                      pattern="[0-9]*"
-                      fontWeight={600}
-                      pointerEvents={"none"}
-                      value={quantity}
-                    />
-                  </Box>
-
-                  <Icon
-                    as={AiOutlinePlusCircle}
-                    width={6}
-                    height={6}
-                    cursor="pointer"
-                    _hover={{ color: "crimson" }}
-                    onClick={() => setQuantity(prev => (prev === 10 ? prev : prev + 1))}
-                    color={quantity === 15 ? "gray" : "black"}
-                    pointerEvents={quantity === 15 ? "none" : "auto"}
-                  />
-                </Stack>
-                <Button fontWeight={700} colorScheme="red" rounded={"full"} onClick={onClose}>
-                  Thêm vào giỏ - {total} VNĐ
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </Box>
-      )}
+      {isOpen && <AddToCartModal categoryId={item.categoryId} isOpen={isOpen} item={item} onClose={onClose} />}
 
       <GridItem w="100%" h="100%" onClick={onOpen} cursor="pointer">
         <Box mb={3} rounded={"md"} overflow={"hidden"}>
