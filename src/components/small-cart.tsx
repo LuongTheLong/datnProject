@@ -171,7 +171,16 @@ const SmallCart = () => {
             <DrawerContent>
               <DrawerHeader borderBottomWidth="1px" fontSize={24}>
                 Giỏ hàng
-                <Button bg={"crimson"} _hover={{ bg: "#ba0f31" }} rounded={"full"} width={"full"} mt={4}>
+                <Button
+                  bg={"crimson"}
+                  _hover={{ bg: "#ba0f31" }}
+                  rounded={"full"}
+                  width={"full"}
+                  mt={4}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = "/checkout";
+                  }}>
                   <Flex alignItems={"center"} justifyContent="space-between" width={"full"}>
                     <Text color={"white"} fontWeight={700}>
                       Thanh toán

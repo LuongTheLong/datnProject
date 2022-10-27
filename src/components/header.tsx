@@ -81,7 +81,7 @@ const Header = () => {
       py={2}
       alignItems={"center"}
       position={"sticky"}
-      zIndex={2}
+      zIndex={3}
       top={0}
       bg={"white"}
       shadow={"md"}
