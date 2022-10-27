@@ -1,4 +1,4 @@
-import CommonLayout from "@layout/common-layout";
+import { useState, Dispatch, SetStateAction } from "react";
 import {
   Container,
   Heading,
@@ -25,13 +25,16 @@ import {
   RadioGroup,
   Icon,
 } from "@chakra-ui/react";
-import { useState, Dispatch, SetStateAction } from "react";
+import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { NextPageWithLayout } from "./_app";
 import { trpc, InferProcedures } from "src/utils/trpc";
 import { Product, Choice } from "@prisma/client";
-import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
+import { useRouter } from "next/router";
+import { NextPageWithLayout } from "./_app";
+import CommonLayout from "@layout/common-layout";
+import { useToast } from "@chakra-ui/react";
+
+import { isEqual, differenceWith } from "lodash-es";
 
 type Options = InferProcedures["options"]["getByCategory"]["output"];
 
@@ -91,12 +94,14 @@ type ModalProps = {
 };
 
 const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
-  const [price, setPrice] = useState(item.price);
   const [selectedOptions, setSelectedOptions] = useState<Choice[]>([]);
   const [quantity, setQuantity] = useState(1);
 
+  const t = trpc.useContext();
+  const toast = useToast();
+
   const choicesId = selectedOptions.map(option => option.id);
-  const total = quantity * (selectedOptions.reduce((prev, curr) => prev + curr.price, 0) + price);
+  const total = quantity * (selectedOptions.reduce((prev, curr) => prev + curr.price, 0) + item.price);
 
   const optionsQuery = trpc.options.getByCategory.useQuery(
     {
@@ -107,6 +112,46 @@ const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
       refetchOnWindowFocus: false,
     }
   );
+
+  const cartMutation = trpc.cart.add.useMutation({
+    onSuccess: () => {
+      t.cart.getAll.invalidate();
+      toast({
+        title: "Thêm sản phẩm thành công",
+        status: "success",
+        isClosable: true,
+        position: "top",
+        duration: 2500,
+      });
+      onClose();
+    },
+  });
+
+  const addToCart = () => {
+    const itemsInCart = t.cart.getAll.getData();
+
+    const itemExisted = itemsInCart?.cart.find(
+      cartItem =>
+        cartItem.product.id === item.id &&
+        differenceWith(selectedOptions, cartItem.option as Choice[], isEqual).length === 0
+    );
+
+    if (itemExisted) {
+      cartMutation.mutate({
+        id: itemExisted.id,
+        option: selectedOptions,
+        productId: item.id,
+        quantity,
+      });
+    } else {
+      cartMutation.mutate({
+        id: null,
+        option: selectedOptions,
+        productId: item.id,
+        quantity,
+      });
+    }
+  };
 
   return (
     <Box position={"fixed"}>
@@ -216,17 +261,11 @@ const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
                 bg={"rgb(247, 247, 247)"}
                 rounded="md"
                 width={"64px"}
+                pointerEvents={"none"}
               >
-                <Input
-                  width={"100%"}
-                  defaultValue={1}
-                  focusBorderColor="black"
-                  textAlign="center"
-                  pattern="[0-9]*"
-                  fontWeight={600}
-                  pointerEvents={"none"}
-                  value={quantity}
-                />
+                <Text width={"100%"} textAlign="center" fontWeight={600}>
+                  {quantity}
+                </Text>
               </Box>
 
               <Icon
@@ -240,7 +279,14 @@ const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
                 pointerEvents={quantity === 15 ? "none" : "auto"}
               />
             </Stack>
-            <Button fontWeight={700} colorScheme="red" rounded={"full"} onClick={onClose}>
+            <Button
+              fontWeight={700}
+              colorScheme="red"
+              rounded={"full"}
+              onClick={addToCart}
+              isLoading={cartMutation.isLoading}
+              isDisabled={cartMutation.isLoading}
+            >
               Thêm vào giỏ - {total} VNĐ
             </Button>
           </ModalFooter>
@@ -273,11 +319,9 @@ const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
   );
 };
 
-const Categories: NextPageWithLayout = () => {
-  const router = useRouter();
-
+const ProductGrid = ({ category }: { category: string }) => {
   const categoryQuery = trpc.category.getBySlug.useQuery(
-    { slug: router.query.category as string },
+    { slug: category },
     {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
@@ -285,12 +329,12 @@ const Categories: NextPageWithLayout = () => {
   );
 
   const productsQuery = trpc.product.getInfiniteProducts.useInfiniteQuery(
-    { slug: router.query.category as string, limit: 7 },
+    { slug: category, limit: 7 },
     { getNextPageParam: lastPage => lastPage.nextCursor, refetchOnWindowFocus: false, refetchOnMount: false }
   );
 
   return (
-    <Container maxW={"6xl"} my={8}>
+    <>
       {productsQuery.data && categoryQuery.data && (
         <>
           <Heading as="h2" size="2xl" mb={8}>
@@ -324,6 +368,16 @@ const Categories: NextPageWithLayout = () => {
           <Spinner color="crimson" size="xl" />
         </Flex>
       )}
+    </>
+  );
+};
+
+const Categories: NextPageWithLayout = () => {
+  const router = useRouter();
+
+  return (
+    <Container maxW={"6xl"} my={8}>
+      {router.isReady && <ProductGrid category={router.query.category as string} />}
     </Container>
   );
 };
