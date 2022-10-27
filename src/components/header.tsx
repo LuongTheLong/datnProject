@@ -75,69 +75,77 @@ const Header = () => {
   const role = session.data?.user?.role || "USER";
 
   return (
-    <>
-      <Flex gap={16} px={4} py={2} alignItems={"center"}>
-        <Box>
-          <IoMdMenu fontSize={28} onClick={onOpen} cursor={"pointer"} />
-          <Drawer placement={"left"} onClose={onClose} isOpen={isOpen}>
-            <DrawerOverlay />
-            <DrawerContent>
-              <DrawerHeader borderBottomWidth="1px">
-                <Image src={Logo} width={80} height={80} alt={"logo"} />
-              </DrawerHeader>
-              <DrawerBody>
-                <NextLink href={"/"} passHref>
-                  <Link _hover={{ textColor: "crimson" }}>
-                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                      <AiOutlineHome fontSize={24} />
-                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                        Trang chủ
-                      </Text>
-                    </Flex>
-                  </Link>
-                </NextLink>
-                <NextLink href={"/"} passHref>
-                  <Link _hover={{ textColor: "crimson" }}>
-                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                      <AiOutlineUser fontSize={24} />
-                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                        Tài khoản
-                      </Text>
-                    </Flex>
-                  </Link>
-                </NextLink>
-                <NextLink href={"/"} passHref>
-                  <Link _hover={{ textColor: "crimson" }}>
-                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                      <AiOutlineFileDone fontSize={24} />
-                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                        Đơn hàng
-                      </Text>
-                    </Flex>
-                  </Link>
-                </NextLink>
-                <NextLink href={"/"} passHref>
-                  <Link _hover={{ textColor: "crimson" }}>
-                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                      <AiOutlineExport fontSize={24} />
-                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                        Đăng xuất
-                      </Text>
-                    </Flex>
-                  </Link>
-                </NextLink>
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
-        </Box>
-        <Box>
-          <Image src={Logo} width={90} height={90} alt="logo" />
-        </Box>
+    <Flex
+      gap={16}
+      px={4}
+      py={2}
+      alignItems={"center"}
+      position={"sticky"}
+      zIndex={2}
+      top={0}
+      bg={"white"}
+      shadow={"md"}
+    >
+      <Box>
+        <IoMdMenu fontSize={28} onClick={onOpen} cursor={"pointer"} />
+        <Drawer placement={"left"} onClose={onClose} isOpen={isOpen}>
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerHeader borderBottomWidth="1px">
+              <Image src={Logo} width={80} height={80} alt={"logo"} />
+            </DrawerHeader>
+            <DrawerBody>
+              <NextLink href={"/"} passHref>
+                <Link _hover={{ textColor: "crimson" }}>
+                  <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                    <AiOutlineHome fontSize={24} />
+                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                      Trang chủ
+                    </Text>
+                  </Flex>
+                </Link>
+              </NextLink>
+              <NextLink href={"/"} passHref>
+                <Link _hover={{ textColor: "crimson" }}>
+                  <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                    <AiOutlineUser fontSize={24} />
+                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                      Tài khoản
+                    </Text>
+                  </Flex>
+                </Link>
+              </NextLink>
+              <NextLink href={"/"} passHref>
+                <Link _hover={{ textColor: "crimson" }}>
+                  <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                    <AiOutlineFileDone fontSize={24} />
+                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                      Đơn hàng
+                    </Text>
+                  </Flex>
+                </Link>
+              </NextLink>
+              <NextLink href={"/"} passHref>
+                <Link _hover={{ textColor: "crimson" }}>
+                  <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                    <AiOutlineExport fontSize={24} />
+                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                      Đăng xuất
+                    </Text>
+                  </Flex>
+                </Link>
+              </NextLink>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Box>
+      <Box>
+        <Image src={Logo} width={90} height={90} alt="logo" />
+      </Box>
 
-        <SearchBar />
-        <SmallCart />
-      </Flex>
-    </>
+      <SearchBar />
+      <SmallCart />
+    </Flex>
   );
 };
 
