@@ -111,6 +111,7 @@ export const cartRouter = t.router({
       });
       return { ...item, total: item.quantity * item.product.price + optionTotal };
     });
+
     const grandTotal = itemsWithPrice.reduce((prev, curr) => {
       return prev + curr.total;
     }, 0);

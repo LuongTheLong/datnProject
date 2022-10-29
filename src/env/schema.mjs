@@ -15,6 +15,9 @@ export const serverSchema = z.object({
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
   SENDGRID_API_KEY: z.string(),
+  VNP_CODE: z.string(),
+  VNP_HASH: z.string(),
+  VNP_URL: z.string(),
 });
 
 /**
