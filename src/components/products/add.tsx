@@ -17,6 +17,7 @@ import {
   Alert,
   Button,
   useDisclosure,
+  Checkbox
 } from "@chakra-ui/react";
 import Image from "next/image";
 import { createProductValidator, FormProductValidator } from "@shared/validators/product-validator";
@@ -52,6 +53,7 @@ const AddItem = () => {
     resolver: zodResolver(createProductValidator),
     defaultValues: {
       price: 0,
+      stock: 0,
     },
   });
 
@@ -98,6 +100,14 @@ const AddItem = () => {
               <FormControl mt={4} isInvalid={!!errors.price} isRequired>
                 <FormLabel>Giá</FormLabel>
                 <Input {...register("price", { valueAsNumber: true })} placeholder="Giá tiền" />
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel>Đang giảm giá?</FormLabel>
+                <Checkbox {...register("isSaling")} placeholder="Đang giảm giá?" />
+              </FormControl>
+              <FormControl mt={4} isInvalid={!!errors.stock} isRequired>
+                <FormLabel>Số lượng hàng tồn</FormLabel>
+                <Input {...register("stock", { valueAsNumber: true })} placeholder="Số lượng hàng tồn" />
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.description}>
                 <FormLabel>Mô tả</FormLabel>

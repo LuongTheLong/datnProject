@@ -20,6 +20,7 @@ import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport } from
 import SearchBar from "./search-bar";
 import Logo from "../assets/logo.png";
 import SmallCart from "./small-cart";
+import CategoryList from "../components/category-list"
 
 // type NavLinks = Array<{ title: string; path: string; children?: Array<{ title: string; path: string }> }>;
 
@@ -144,6 +145,7 @@ const Header = () => {
       </Box>
 
       <SearchBar />
+      <CategoryList />
       <SmallCart />
     </Flex>
   );

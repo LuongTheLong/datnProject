@@ -6,6 +6,7 @@ import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from "react-icons/md"
 import { Navigation } from "swiper";
 import { trpc } from "src/utils/trpc";
 import NextLink from "next/link";
+import CaptionCarousel from "../components/slide"
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { InferProcedures } from "src/utils/trpc";
@@ -28,60 +29,7 @@ import Dessert from "../assets/trang-mieng.svg";
 import Breakfast from "../assets/breakfast.svg";
 import Filter from "@components/filter";
 
-const CATEGORIES = [
-  {
-    title: "Đồ ăn nhanh",
-    slug: "do-an-nhanh",
-    image: FastFood,
-  },
-  {
-    title: "Thức uống",
-    slug: "thuc-uong",
-    image: Drink,
-  },
-  {
-    title: "Dessert",
-    slug: "dessert",
-    image: Dessert,
-  },
-  {
-    title: "Pizza",
-    slug: "pizza",
-    image: Pizza,
-  },
-  {
-    title: "Bánh mì",
-    slug: "banh-mi",
-    image: Hamburger,
-  },
-  {
-    title: "Ăn sáng",
-    slug: "an-sang",
-    image: Breakfast,
-  },
-];
 
-const CategoryList = () => {
-  return (
-    <Flex alignItems={"center"} gap={6} justifyContent="center">
-      {CATEGORIES.map(category => (
-        <Flex
-          key={category.slug}
-          flexDir={"column"}
-          alignItems="center"
-          cursor={"pointer"}
-          transition={"all 250ms ease"}
-          _hover={{ color: "crimson" }}
-        >
-          <Image width={100} height={100} src={category.image} alt={category.slug} layout="fixed" />
-          <Text fontSize={15} fontWeight={600}>
-            {category.title}
-          </Text>
-        </Flex>
-      ))}
-    </Flex>
-  );
-};
 type CategoryProductsOutput = InferProcedures["category"]["getProductsByCategories"]["output"][number];
 
 const ProductCarousel = (props: CategoryProductsOutput) => {
@@ -198,9 +146,9 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
+      <CaptionCarousel />
       <Container maxW={"6xl"}>
         <Flex flexDirection={"column"} gap={8}>
-          <CategoryList />
           <Filter />
 
           {!itemsQuery.isLoading &&
