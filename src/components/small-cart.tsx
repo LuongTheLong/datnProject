@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { FaShoppingCart, FaTrash } from "react-icons/fa";
 import Image from "next/image";
-import NextLink from "next/link";
 import { trpc, InferProcedures } from "@utils/trpc";
 import { Choice } from "@prisma/client";
 

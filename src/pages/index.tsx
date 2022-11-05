@@ -1,15 +1,30 @@
 import { NextPageWithLayout } from "./_app";
 import { useRef } from "react";
 import CommonLayout from "@layout/common-layout";
-import { Flex, Container, Text, IconButton, Heading, Box } from "@chakra-ui/react";
+import {
+  Flex,
+  Container,
+  Text,
+  IconButton,
+  Heading,
+  Box,
+  Icon,
+  Divider,
+  useDisclosure,
+  Button,
+} from "@chakra-ui/react";
 import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from "react-icons/md";
+import { BsFillPatchCheckFill } from "react-icons/bs";
+import { AiFillStar } from "react-icons/ai";
 import { Navigation } from "swiper";
+import { Product } from "@prisma/client";
 import { trpc } from "src/utils/trpc";
 import NextLink from "next/link";
-import CaptionCarousel from "../components/slide"
-
+import CaptionCarousel from "../components/slide";
+import AddToCartModal from "@components/add-to-cart";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { InferProcedures } from "src/utils/trpc";
+import { CATEGORIES } from "src/constant/categories";
 
 // Import Swiper styles
 import "swiper/css";
@@ -21,16 +36,108 @@ import "swiper/css/scrollbar";
 import "swiper/css";
 
 import Image from "next/image";
-import FastFood from "../assets/fast-food.svg";
-import Drink from "../assets/drink.svg";
-import Hamburger from "../assets/banh-mi.svg";
-import Pizza from "../assets/pizza.svg";
-import Dessert from "../assets/trang-mieng.svg";
-import Breakfast from "../assets/breakfast.svg";
+import FoodServe from "../assets/food-serve.svg";
+import Fresh from "../assets/fresh.svg";
+import Discount from "../assets/discount.svg";
 import Filter from "@components/filter";
+import FoodPlate from "../assets/food-plate.png";
+import Ramsay from "../assets/ramsay.jpg";
+import LoadingSpinner from "@components/loading-spinner";
 
+const FEATURES = [
+  {
+    id: 1,
+    title: " Discount Voucher",
+    text: "Competently orchestrate integrated schema for quickly create.",
+    image: Discount,
+  },
+  {
+    id: 2,
+    title: " Discount Voucher",
+    text: "Competently orchestrate integrated schema for quickly create.",
+    image: FoodServe,
+  },
+  {
+    id: 3,
+    title: " Discount Voucher",
+    text: "Competently orchestrate integrated schema for quickly create.",
+    image: Fresh,
+  },
+];
+
+const QUALITIES = [
+  {
+    id: 1,
+    title: "Thực phẩm sạch",
+  },
+  {
+    id: 2,
+    title: "Thực phẩm sạch",
+  },
+  {
+    id: 3,
+    title: "Thực phẩm sạch",
+  },
+];
 
 type CategoryProductsOutput = InferProcedures["category"]["getProductsByCategories"]["output"][number];
+
+type ProductCardProps = {
+  product: Product;
+  slug: string;
+  title: string;
+};
+const ProductCard = (props: ProductCardProps) => {
+  const { product, slug, title } = props;
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
+  return (
+    <>
+      <Box boxShadow={"0px 6px 15px rgb(1 15 28 / 6%)"} rounded={"lg"} overflow={"hidden"} onClick={onOpen}>
+        <Box overflow={"hidden"}>
+          <Image
+            src={product.image}
+            alt={product.title}
+            objectFit={"cover"}
+            width={100}
+            height={100}
+            layout="responsive"
+          />
+        </Box>
+        <Flex direction={"column"} gap={2} px={2} py={4} textAlign={"center"}>
+          <Text
+            textAlign={"center"}
+            _hover={{
+              color: "crimson",
+            }}
+            cursor={"pointer"}
+            width={"fit-content"}
+            mx={"auto"}
+            as={"span"}
+          >
+            <NextLink href={{ pathname: "/[category]", query: { category: slug } }}>{title}</NextLink>
+          </Text>
+
+          <Flex alignItems={"center"} justifyContent="center">
+            {new Array(5).fill("").map((_, idx) => (
+              <Icon key={idx} as={AiFillStar} w={5} h={5} color={"orange.300"} />
+            ))}
+          </Flex>
+          <Heading textAlign={"center"} as="h5" size="md">
+            {product.title}
+          </Heading>
+
+          <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"crimson"}>
+            {product.price} VNĐ
+          </Text>
+
+          <Button colorScheme={"red"}>Thêm vào giỏ</Button>
+        </Flex>
+      </Box>
+      {isOpen && <AddToCartModal isOpen={isOpen} item={product} onClose={onClose} />}
+    </>
+  );
+};
 
 const ProductCarousel = (props: CategoryProductsOutput) => {
   const navigationPrevRef = useRef<HTMLDivElement>(null);
@@ -80,9 +187,10 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
 
           <Swiper
             // install Swiper modules
+            style={{ padding: "20px 0" }}
             modules={[Navigation]}
-            spaceBetween={10}
-            slidesPerView={3}
+            spaceBetween={20}
+            slidesPerView={4}
             navigation={{
               prevEl: navigationPrevRef.current!, // Assert non-null
               nextEl: navigationNextRef.current!, // Assert non-null
@@ -113,23 +221,7 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
             {products.length > 0 &&
               products.map(product => (
                 <SwiperSlide key={product.id}>
-                  <Box mb={3} rounded={"md"} overflow={"hidden"}>
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      width={400}
-                      height={220}
-                      objectFit={"cover"}
-                      layout="responsive"
-                    />
-                  </Box>
-
-                  <Heading as="h5" size="sm" mb={1}>
-                    {product.title}
-                  </Heading>
-                  <Text color={"gray.600"} fontWeight={500}>
-                    {product.price} VNĐ
-                  </Text>
+                  <ProductCard slug={slug} title={title} product={product} />
                 </SwiperSlide>
               ))}
           </Swiper>
@@ -148,12 +240,123 @@ const Home: NextPageWithLayout = () => {
     <>
       <CaptionCarousel />
       <Container maxW={"6xl"}>
-        <Flex flexDirection={"column"} gap={8}>
-          <Filter />
+        <Flex alignItems={"flex-start"} gap={6} mt={20} mb={100}>
+          {FEATURES.map(feature => (
+            <Flex
+              key={feature.id}
+              flex={1}
+              alignItems="center"
+              _notLast={{
+                borderRight: "1px dashed #CBD5E0",
+              }}
+            >
+              <Box
+                display={"flex"}
+                justifyContent="center"
+                alignItems={"center"}
+                minWidth={"80px"}
+                width={"80px"}
+                height={"80px"}
+                rounded={"full"}
+                bg={"#faf7f2"}
+                mr={4}
+              >
+                <Image alt={feature.title} src={feature.image} layout={"fixed"} width={50} height={50} />
+              </Box>
+              <Flex flexDirection={"column"} gap={2}>
+                <Heading as="h4" size="md">
+                  {feature.title}
+                </Heading>
+                <Text color={"gray.500"}>{feature.text}</Text>
+              </Flex>
+            </Flex>
+          ))}
+        </Flex>
+      </Container>
 
-          {!itemsQuery.isLoading &&
-            itemsQuery.data &&
-            itemsQuery.data.map(category => <ProductCarousel key={category.id} {...category} />)}
+      <Box py={20} bgColor={"#faf7f2"} mb={20}>
+        <Container maxW={"6xl"}>
+          <Flex alignItems={"center"} gap={2} position={"relative"}>
+            <Box flex={1} position="relative" width={"100%"} height={"100%"}>
+              <Image src={FoodPlate} alt={"food-plate"} layout={"fixed"} objectFit="cover" priority={true} />
+            </Box>
+            <Box flex={1}>
+              <Heading as="h2" size="xl" mb={4}>
+                Real Delicious Food Straight To{" "}
+                <Text color={"crimson"} as={"span"}>
+                  Your Table
+                </Text>
+              </Heading>
+              <Text fontSize={18} color={"gray.600"} mb={4}>
+                Assertively envisioneer high-payoff architectures after interactive service. Collaboratively whiteboard
+                pandemic intellectual capital without cross-platform channels.
+              </Text>
+
+              <Flex flexDirection={"column"} gap={2}>
+                {QUALITIES.map(quality => (
+                  <Text key={quality.id} fontWeight={600}>
+                    <Icon as={BsFillPatchCheckFill} verticalAlign={"middle"} w={4} h={4} color={"crimson"} mr={2} />
+                    {quality.title}
+                  </Text>
+                ))}
+              </Flex>
+
+              <Divider my={4} />
+
+              <Text fontStyle={"italic"} fontSize={18} mb={4}>
+                {'"Food is symbolic of love when words are inadequate."'}
+              </Text>
+
+              <Flex>
+                <Box width={50} height={50} position={"relative"} rounded={"full"} overflow={"hidden"} mr={4}>
+                  <Image src={Ramsay} layout={"fill"} alt={"ramsay"} />
+                </Box>
+                <Flex direction={"column"}>
+                  <Text fontWeight={"bold"}>Lương Thế Long</Text>
+                  <Text>CEO Long Food</Text>
+                </Flex>
+              </Flex>
+            </Box>
+          </Flex>
+        </Container>
+      </Box>
+
+      <Container maxW={"6xl"}>
+        <Heading as="h2" size="xl" textAlign={"center"} mb={6}>
+          Menu
+        </Heading>
+
+        <Flex flexDirection={"column"} gap={8}>
+          {itemsQuery.isLoading && (
+            <Flex justifyContent={"center"}>
+              <LoadingSpinner />
+            </Flex>
+          )}
+          {!itemsQuery.isLoading && itemsQuery.data && (
+            <>
+              <Flex alignItems={"center"} gap={6} justifyContent="center">
+                {CATEGORIES.map(category => (
+                  <Flex
+                    key={category.slug}
+                    flexDir={"column"}
+                    alignItems="center"
+                    cursor={"pointer"}
+                    transition={"all 250ms ease"}
+                    _hover={{ color: "crimson" }}
+                  >
+                    <Image width={100} height={100} src={category.image} alt={category.slug} layout="fixed" />
+                    <Text fontSize={15} fontWeight={600}>
+                      {category.title}
+                    </Text>
+                  </Flex>
+                ))}
+              </Flex>
+              <Filter />
+              {itemsQuery.data.map(category => (
+                <ProductCarousel key={category.id} {...category} />
+              ))}
+            </>
+          )}
         </Flex>
       </Container>
     </>

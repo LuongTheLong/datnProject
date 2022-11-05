@@ -17,9 +17,9 @@ const fileValidator =
   typeof window === "undefined"
     ? z.undefined()
     : z
-      .instanceof(FileList)
-      .refine(files => !files?.[0] || IMAGE_TYPES.includes(files[0]!.type), "Định dạng không được hỗ trợ")
-      .refine(files => !files?.[0] || files[0]!.size < MAX_SIZE, "Kích thước file phải nhỏ hơn 1MB");
+        .instanceof(FileList)
+        .refine(files => !files?.[0] || IMAGE_TYPES.includes(files[0]!.type), "Định dạng không được hỗ trợ")
+        .refine(files => !files?.[0] || files[0]!.size < MAX_SIZE, "Kích thước file phải nhỏ hơn 1MB");
 
 const createProductFormValidator = createProductValidator.merge(z.object({ files: fileValidator }));
 
