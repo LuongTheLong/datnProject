@@ -106,6 +106,8 @@ export const productRouter = t.router({
         title: true,
         image: true,
         price: true,
+        isSaling: true,
+        stock: true,
         id: true,
         description: true,
         code: true,

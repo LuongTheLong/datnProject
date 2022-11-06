@@ -4,6 +4,8 @@ const createProductValidator = z.object({
   categoryId: z.string().min(1),
   title: z.string(),
   price: z.number().min(0),
+  isSaling: z.boolean().default(false),
+  stock: z.number().min(0),
   description: z.string().nullable(),
   image: z.string().optional(),
 });

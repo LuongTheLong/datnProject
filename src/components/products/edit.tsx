@@ -13,6 +13,7 @@ import {
   useToast,
   Select,
   Text,
+  Checkbox,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import NextImage from "next/image";
@@ -67,7 +68,7 @@ export default function EditItem({ data }: EditItemProps) {
     mutate({ data: { ...data, image }, productId: id });
   };
 
-  const isButtonDisabled = isLoading || !!errors.description || !!errors.title || !!errors.price || !!errors.categoryId;
+  const isButtonDisabled = isLoading || !!errors.description || !!errors.title || !!errors.price || !!errors.categoryId || !!errors.stock;
 
   return (
     <>
@@ -109,6 +110,14 @@ export default function EditItem({ data }: EditItemProps) {
               <FormControl mt={4} isInvalid={!!errors.price}>
                 <FormLabel>Giá</FormLabel>
                 <Input {...register("price", { valueAsNumber: true })} placeholder="Đơn vị" />
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel>Đang giảm giá?</FormLabel>
+                <Checkbox {...register("isSaling")} placeholder="Đang giảm giá?" />
+              </FormControl>
+              <FormControl mt={4} isInvalid={!!errors.stock} isRequired>
+                <FormLabel>Số lượng hàng tồn</FormLabel>
+                <Input {...register("stock", { valueAsNumber: true })} placeholder="Số lượng hàng tồn" />
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.description}>
                 <FormLabel>Mô tả</FormLabel>

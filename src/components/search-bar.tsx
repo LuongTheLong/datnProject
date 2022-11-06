@@ -3,7 +3,7 @@ import { InputGroup, InputLeftElement, Input } from "@chakra-ui/react";
 
 const SearchBar = () => {
   return (
-    <InputGroup>
+    <InputGroup minW={300} maxW={400}>
       <InputLeftElement>
         <BsSearch fontSize={17} />
       </InputLeftElement>
