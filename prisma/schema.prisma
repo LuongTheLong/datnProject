@@ -104,7 +104,6 @@ model Cart {
     option    Json
     product   Product @relation(fields: [productId], references: [id])
     user      User    @relation(fields: [userId], references: [id])
-    Order     Order[]
 
     @@index([productId, userId])
 }
@@ -133,14 +132,11 @@ model Order {
     userId        String
     user          User          @relation(fields: [userId], references: [id])
     grandTotal    Int
-    option        Json
     paymentType   PAYMENTTYPE   @default(VNPAY)
     paymentStatus PAYMENTSTATUS @default(SUCCESS)
-    cart          Cart          @relation(fields: [cartId], references: [id])
     createdAt     DateTime      @default(now())
     updatedAt     DateTime?     @default(now())
     OrderDetail   OrderDetail[]
-    cartId        String
 
     @@index([userId])
 }
