@@ -4,6 +4,7 @@ import { categoryRouter } from "./category";
 import { cartRouter } from "./cart";
 import { optionsRouter } from "./options";
 import { paymentRouter } from "./payment";
+import { orderRouter } from "./order";
 
 export const appRouter = t.router({
   product: productRouter,
@@ -11,6 +12,7 @@ export const appRouter = t.router({
   cart: cartRouter,
   options: optionsRouter,
   payment: paymentRouter,
+  order: orderRouter,
 });
 
 // export type definition of API

@@ -142,14 +142,15 @@ model Order {
 }
 
 model OrderDetail {
-    id        String  @id @default(cuid())
+    id        String   @id @default(cuid())
     quantity  Int
     price     Int
     productId String
-    product   Product @relation(fields: [productId], references: [id])
+    product   Product  @relation(fields: [productId], references: [id])
     orderId   String
-    order     Order   @relation(fields: [orderId], references: [id])
-    options   Json
+    order     Order    @relation(fields: [orderId], references: [id])
+    option    Json?
+    createdAt DateTime @default(now())
 
     @@index([productId, orderId])
 }

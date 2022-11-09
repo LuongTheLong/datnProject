@@ -1,6 +1,6 @@
 import { t, adminRouter, authedProcedure } from "../_app";
 import { z } from "zod";
-import { PAYMENTSTATUS, PAYMENTTYPE } from "@prisma/client";
+import { PAYMENTSTATUS, PAYMENTTYPE, Prisma } from "@prisma/client";
 
 const createInputValidator = z.object({
   grandTotal: z.number(),
@@ -16,6 +16,42 @@ export const orderRouter = t.router({
         userId: ctx.session.user.id,
         paymentStatus: input.paymentStatus,
         paymentType: input.paymentType,
+      },
+    });
+
+    const cartItems = await ctx.prisma.cart.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        product: {
+          select: {
+            price: true,
+          },
+        },
+      },
+    });
+
+    const orderItems = cartItems.map(item => {
+      const option = item.option as Prisma.JsonArray;
+      const { productId, quantity, product } = item;
+
+      return {
+        option,
+        productId,
+        quantity,
+        price: product.price,
+        orderId: order.id,
+      };
+    });
+
+    await ctx.prisma.orderDetail.createMany({
+      data: orderItems,
+    });
+
+    await ctx.prisma.cart.deleteMany({
+      where: {
+        userId: ctx.session.user.id,
       },
     });
 
@@ -53,29 +89,5 @@ export const orderRouter = t.router({
     });
 
     return deletedCategory;
-  }),
-  getBySlug: t.procedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
-    const category = await ctx.prisma.category.findFirst({
-      where: {
-        slug: input.slug,
-        isDeleted: false,
-      },
-    });
-
-    return category;
-  }),
-  getProductsByCategories: t.procedure.query(async ({ ctx }) => {
-    const products = await ctx.prisma.category.findMany({
-      include: {
-        products: {
-          take: 6,
-          where: {
-            isDeleted: false,
-          },
-        },
-      },
-    });
-
-    return products;
   }),
 });
