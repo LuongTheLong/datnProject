@@ -19,75 +19,42 @@ export const orderRouter = t.router({
       },
     });
 
-    const cartItems = await ctx.prisma.cart.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-      include: {
-        product: {
-          select: {
-            price: true,
-          },
-        },
-      },
-    });
+    // const orderItems = await ctx.prisma.order.findMany({
+    //   where: {
+    //     userId: ctx.session.user.id,
+    //   },
+    // });
 
-    const orderItems = cartItems.map(item => {
-      const option = item.option as Prisma.JsonArray;
-      const { productId, quantity, product } = item;
-
-      return {
-        option,
-        productId,
-        quantity,
-        price: product.price,
-        orderId: order.id,
-      };
-    });
-
-    await ctx.prisma.orderDetail.createMany({
-      data: orderItems,
-    });
-
-    await ctx.prisma.cart.deleteMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-    });
+    // await ctx.prisma.order.createMany({
+    //   data: orderItems,
+    // });
 
     return order;
   }),
-  update: adminRouter
+  update: authedProcedure
     .input(createInputValidator.merge(z.object({ orderId: z.string() })))
     .mutation(async ({ input, ctx }) => {
-      const updatedCategory = await ctx.prisma.order.update({
+      const updatedOrder = await ctx.prisma.order.update({
         data: { ...input },
         where: {
           id: input.orderId,
         },
       });
 
-      return updatedCategory;
+      return updatedOrder;
     }),
   getAll: t.procedure.query(async ({ ctx }) => {
-    const categories = await ctx.prisma.category.findMany({
-      where: {
-        isDeleted: false,
-      },
-    });
+    const orders = await ctx.prisma.order.findMany({});
 
-    return categories;
+    return orders;
   }),
-  delete: adminRouter.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    const deletedCategory = ctx.prisma.category.update({
+  delete: authedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+    const deletedOrder = ctx.prisma.order.delete({
       where: {
         id: input.id,
       },
-      data: {
-        isDeleted: true,
-      },
     });
 
-    return deletedCategory;
+    return deletedOrder;
   }),
 });
