@@ -1,6 +1,6 @@
 import { t, adminRouter, authedProcedure } from "../_app";
 import { z } from "zod";
-import { PAYMENTSTATUS, PAYMENTTYPE } from "@prisma/client";
+import { PAYMENTSTATUS, PAYMENTTYPE, Prisma } from "@prisma/client";
 
 const createInputValidator = z.object({
   grandTotal: z.number(),
@@ -19,63 +19,42 @@ export const orderRouter = t.router({
       },
     });
 
+    // const orderItems = await ctx.prisma.order.findMany({
+    //   where: {
+    //     userId: ctx.session.user.id,
+    //   },
+    // });
+
+    // await ctx.prisma.order.createMany({
+    //   data: orderItems,
+    // });
+
     return order;
   }),
-  update: adminRouter
+  update: authedProcedure
     .input(createInputValidator.merge(z.object({ orderId: z.string() })))
     .mutation(async ({ input, ctx }) => {
-      const updatedCategory = await ctx.prisma.order.update({
+      const updatedOrder = await ctx.prisma.order.update({
         data: { ...input },
         where: {
           id: input.orderId,
         },
       });
 
-      return updatedCategory;
+      return updatedOrder;
     }),
   getAll: t.procedure.query(async ({ ctx }) => {
-    const categories = await ctx.prisma.category.findMany({
-      where: {
-        isDeleted: false,
-      },
-    });
+    const orders = await ctx.prisma.order.findMany({});
 
-    return categories;
+    return orders;
   }),
-  delete: adminRouter.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    const deletedCategory = ctx.prisma.category.update({
+  delete: authedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+    const deletedOrder = ctx.prisma.order.delete({
       where: {
         id: input.id,
       },
-      data: {
-        isDeleted: true,
-      },
     });
 
-    return deletedCategory;
-  }),
-  getBySlug: t.procedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
-    const category = await ctx.prisma.category.findFirst({
-      where: {
-        slug: input.slug,
-        isDeleted: false,
-      },
-    });
-
-    return category;
-  }),
-  getProductsByCategories: t.procedure.query(async ({ ctx }) => {
-    const products = await ctx.prisma.category.findMany({
-      include: {
-        products: {
-          take: 6,
-          where: {
-            isDeleted: false,
-          },
-        },
-      },
-    });
-
-    return products;
+    return deletedOrder;
   }),
 });
