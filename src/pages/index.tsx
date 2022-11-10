@@ -68,15 +68,15 @@ const FEATURES = [
 const QUALITIES = [
   {
     id: 1,
-    title: "Thực phẩm sạch",
+    title: "Ngon",
   },
   {
     id: 2,
-    title: "Thực phẩm sạch",
+    title: "Sạch",
   },
   {
     id: 3,
-    title: "Thực phẩm sạch",
+    title: "Đẹp",
   },
 ];
 
@@ -126,10 +126,12 @@ const ProductCard = (props: ProductCardProps) => {
           <Heading textAlign={"center"} as="h5" size="md">
             {product.title}
           </Heading>
-
-          <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"crimson"}>
+          {product.isSaling != true ? (<Text textAlign={"center"} fontSize={16} fontWeight={600} color={"black"}>
             {product.price} VNĐ
-          </Text>
+          </Text>) : (<Text textAlign={"center"} fontSize={16} fontWeight={600} color={"red"}>
+            {product.price} VNĐ
+          </Text>)}
+
 
           <Button colorScheme={"red"}>Thêm vào giỏ</Button>
         </Flex>
@@ -282,9 +284,9 @@ const Home: NextPageWithLayout = () => {
             </Box>
             <Box flex={1}>
               <Heading as="h2" size="xl" mb={4}>
-                Real Delicious Food Straight To{" "}
+                Món ăn thực sự ngon sẽ được phục vụ tới{" "}
                 <Text color={"crimson"} as={"span"}>
-                  Your Table
+                  tay của bạn
                 </Text>
               </Heading>
               <Text fontSize={18} color={"gray.600"} mb={4}>
@@ -304,7 +306,7 @@ const Home: NextPageWithLayout = () => {
               <Divider my={4} />
 
               <Text fontStyle={"italic"} fontSize={18} mb={4}>
-                {'"Food is symbolic of love when words are inadequate."'}
+                {'"Yêu thương có thể lấp đầy hết tất cả chỉ trừ… bao tử.."'}
               </Text>
 
               <Flex>
