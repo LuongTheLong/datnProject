@@ -1,20 +1,20 @@
 import CheckoutLayout from "@layout/checkout-layout";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { Box, Flex, Heading, Text, Icon, RadioGroup, Radio, Button, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, Icon, Button, useDisclosure } from "@chakra-ui/react";
 import { NextPageWithLayout } from "@pages/_app";
-import { BiTimeFive, BiStoreAlt, BiRadioCircle } from "react-icons/bi";
-import { MdOutlineRadioButtonUnchecked } from "react-icons/md";
+import { BiStoreAlt } from "react-icons/bi";
 import { FiChevronRight, FiChevronDown } from "react-icons/fi";
-import { BsCheckCircleFill, BsTelephone, BsCart, BsTag } from "react-icons/bs";
+import { BsCart, BsTag } from "react-icons/bs";
 
-import Image from "next/image";
 import { trpc } from "@utils/trpc";
 import CartItem from "@components/cart-item";
 import type { CartItemType } from "@components/cart-item";
 import { Spinner } from "@chakra-ui/react";
-
-import vnpayLogo from "../../assets/vnpay.png";
+import OrderTime from "@components/order-time";
+import PhoneNumber from "@components/phone-number";
+import Payment from "@components/payment";
+import SubmitOrder from "@components/submit-order";
 
 const OrderSummary = ({ cart }: { cart: CartItemType[] }) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -100,48 +100,7 @@ const Checkout: NextPageWithLayout = () => {
                 <Heading as="h5" fontSize={18} mb={4}>
                   2. Thông tin đơn hàng
                 </Heading>
-                <Flex py={3} px={2} gap={4}>
-                  <Icon as={BiTimeFive} fontSize={24} mr={2} />
-                  <Box flex={1}>
-                    <Flex mb={4} alignItems={"center"} justifyContent={"space-between"} fontSize={16} fontWeight={500}>
-                      <Text>Thời gian nhận hàng</Text>
-                      <Text>10-20 phút</Text>
-                    </Flex>
-
-                    <Flex alignItems={"center"} gap={4}>
-                      <Flex px={3} py={2} border={"2px solid black"} rounded={"lg"} gap={2} cursor={"pointer"}>
-                        <Box>
-                          <Text mr={2} fontSize={16} fontWeight={600}>
-                            Tiêu chuẩn
-                          </Text>
-                          <Text fontSize={14} fontWeight={400}>
-                            10-20 phút
-                          </Text>
-                        </Box>
-                        <Icon as={BsCheckCircleFill} fontSize={16} mt={1} />
-                      </Flex>
-
-                      <Flex
-                        px={3}
-                        py={2}
-                        border={"1px solid rgb(231, 231, 231)"}
-                        rounded={"lg"}
-                        gap={2}
-                        cursor={"pointer"}
-                      >
-                        <Box>
-                          <Text mr={2} fontSize={16} fontWeight={600}>
-                            Đặt hẹn
-                          </Text>
-                          <Text fontSize={14} fontWeight={400}>
-                            Chọn thời gian
-                          </Text>
-                        </Box>
-                        <Icon as={MdOutlineRadioButtonUnchecked} fontSize={16} mt={1} />
-                      </Flex>
-                    </Flex>
-                  </Box>
-                </Flex>
+                <OrderTime />
 
                 <Flex py={3} px={2} alignItems={"center"} gap={4} borderBottom={"1px solid rgb(231, 231, 231)"}>
                   <Icon as={BiStoreAlt} fontSize={24} mr={2} />
@@ -155,47 +114,11 @@ const Checkout: NextPageWithLayout = () => {
                   </Box>
                 </Flex>
 
-                <Flex py={3} px={2} alignItems={"center"} gap={4}>
-                  <Icon as={BsTelephone} fontSize={24} mr={2} />
-
-                  <Text fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={500}>
-                    0988663359
-                  </Text>
-                </Flex>
+                <PhoneNumber />
               </Box>
+              <Payment />
 
-              <Box
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                border={"1px solid rgb(231, 231, 231)"}
-                rounded={"lg"}
-                p={4}
-              >
-                <Heading as="h5" fontSize={18} mb={4}>
-                  3. Hình thức thanh toán
-                </Heading>
-                <Flex py={3} px={2} gap={4}>
-                  <RadioGroup>
-                    <Flex direction={"column"} gap={4}>
-                      <Radio value="VNPAY" width={"100%"} position={"relative"}>
-                        <Box ml={4}>
-                          <Image src={vnpayLogo} layout={"fixed"} width={150} height={50} alt={"vnpaylogo"} />
-                        </Box>
-                      </Radio>
-
-                      <Radio value="CASH">
-                        <Text ml={4} fontWeight={600}>
-                          Tiền mặt
-                        </Text>
-                      </Radio>
-                    </Flex>
-                  </RadioGroup>
-                </Flex>
-              </Box>
-
-              <Button colorScheme="red" rounded={"md"}>
-                Thanh toán và đặt hàng
-              </Button>
+              <SubmitOrder />
             </Flex>
           </Box>
           <Box flex={"0 0 420px"} borderLeft={"1px solid rgb(231, 231, 231)"} height={"calc(100vh - 40px)"}>
