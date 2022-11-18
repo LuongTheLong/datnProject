@@ -21,13 +21,13 @@ export const paymentRouter = t.router({
       vnp_CreateDate: formatDate(new Date().getTime()),
       vnp_ExpireDate: formatDate(new Date().getTime() + 60 * 60000),
       vnp_CurrCode: "VND",
-      vnp_IpAddr: ip,
+      vnp_IpAddr: "50.53.243.86",
       vnp_Locale: "vn",
       vnp_OrderInfo: "aaaa",
       vnp_OrderType: "billpayment",
       vnp_ReturnUrl: encodeURIComponent(`${ctx.req?.headers.origin}/order/confirm`),
       vnp_TmnCode: env.VNP_CODE,
-      vnp_TxnRef: "zxczxc",
+      vnp_TxnRef: "zxczxc11",
       vnp_Version: "2.1.0",
     };
 
@@ -45,7 +45,7 @@ export const paymentRouter = t.router({
         paymentData: z.any(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { vnp_SecureHash, ...rest } = input.paymentData;
 
       const signedData = stringify(rest, { encode: false });
@@ -54,13 +54,33 @@ export const paymentRouter = t.router({
       const signed = hmac.update(signedData).digest("hex");
 
       if (vnp_SecureHash === signed && rest.vnp_ResponseCode === "00") {
+        const order = await ctx.prisma.order.update({
+          where: {
+            id: rest.vnp_TxnRef,
+          },
+          data: {
+            paymentStatus: "SUCCESS",
+          },
+        });
+
         return {
-          paymentStatus: "success",
+          paymentStatus: "SUCCESS",
+          orderId: order.id,
         };
       }
 
+      await ctx.prisma.order.update({
+        where: {
+          id: rest.vnp_TxnRef,
+        },
+        data: {
+          paymentStatus: "FAILED",
+        },
+      });
+
       return {
-        paymentStatus: "error",
+        paymentStatus: "ERROR",
+        orderId: null,
       };
     }),
 });
