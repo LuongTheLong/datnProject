@@ -6,7 +6,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { createContextInner } from "@server/trpc/context";
 import { appRouter } from "@server/trpc/router";
 import { trpc } from "@utils/trpc";
-import { useRouter } from "next/router";
+
 import LoadingSpinner from "@components/loading-spinner";
 
 export const getServerSideProps: GetServerSideProps = async context => {
@@ -19,7 +19,17 @@ export const getServerSideProps: GetServerSideProps = async context => {
     transformer: superjson,
   });
 
-  await ssg.payment.confirmPayment.prefetch({ paymentData: query });
+  const result = await ssg.payment.confirmPayment.fetch({ paymentData: query });
+
+  if (result.paymentStatus === "SUCCESS") {
+    return {
+      redirect: {
+        destination: `/order/success?orderId=${result.orderId}`,
+        permanent: true,
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {
@@ -31,18 +41,12 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
 const Process = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { query } = props;
-  const router = useRouter();
 
   const { isLoading } = trpc.payment.confirmPayment.useQuery(
     { paymentData: query },
     {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      onSuccess: data => {
-        if (data.orderId && data.paymentStatus === "SUCCESS") {
-          router.push(`/order/success?orderId=${data.orderId}`);
-        }
-      },
     }
   );
 
