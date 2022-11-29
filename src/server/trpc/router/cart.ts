@@ -12,7 +12,6 @@ const createInputValidator = z.object({
       id: z.string(),
       title: z.string(),
       price: z.number(),
-      optionCategoryId: z.string(),
     })
   ),
 });
@@ -25,13 +24,14 @@ const updateInputValidator = z.object({
       id: z.string(),
       title: z.string(),
       price: z.number(),
-      optionCategoryId: z.string(),
     })
   ),
 });
 
 export const cartRouter = t.router({
   add: authedProcedure.input(createInputValidator).mutation(async ({ ctx, input }) => {
+    await ctx.prisma.orderDetail.deleteMany();
+
     if (input.id) {
       const updatedItem = await ctx.prisma.cart.update({
         where: {
@@ -49,7 +49,7 @@ export const cartRouter = t.router({
 
     const newItem = await ctx.prisma.cart.create({
       data: {
-        userId: ctx.session.user.id!,
+        userId: ctx.session.user.id,
         option: input.option,
         productId: input.productId,
         quantity: input.quantity,
@@ -109,7 +109,7 @@ export const cartRouter = t.router({
       choices.forEach(choice => {
         optionTotal += options.find(opt => opt.id === choice.id)?.price || 0;
       });
-      return { ...item, total: item.quantity * item.product.price + optionTotal };
+      return { ...item, total: item.quantity * (item.product.price + optionTotal) };
     });
 
     const grandTotal = itemsWithPrice.reduce((prev, curr) => {

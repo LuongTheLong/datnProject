@@ -1,6 +1,4 @@
-import { Box, IconButton, useBreakpointValue, Stack, Heading, Text, Container } from "@chakra-ui/react";
-// Here we have used react-icons package for the icons
-
+import { Box } from "@chakra-ui/react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -12,8 +10,6 @@ import { Navigation } from "swiper";
 import FirstBanner from "../assets/banner-1.jpg";
 import SecondBanner from "../assets/banner-2.jpg";
 import ThirdBanner from "../assets/banner-3.jpg";
-
-// Settings for the slider
 
 export default function CaptionCarousel() {
   const cards = [

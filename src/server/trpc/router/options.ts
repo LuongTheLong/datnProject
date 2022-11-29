@@ -10,7 +10,14 @@ export const optionsRouter = t.router({
         },
       },
       include: {
-        choices: true,
+        choices: {
+          select: {
+            optionCategoryId: false,
+            id: true,
+            price: true,
+            title: true,
+          },
+        },
       },
     });
 
