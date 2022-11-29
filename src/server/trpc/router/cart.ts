@@ -30,8 +30,6 @@ const updateInputValidator = z.object({
 
 export const cartRouter = t.router({
   add: authedProcedure.input(createInputValidator).mutation(async ({ ctx, input }) => {
-    await ctx.prisma.orderDetail.deleteMany();
-
     if (input.id) {
       const updatedItem = await ctx.prisma.cart.update({
         where: {

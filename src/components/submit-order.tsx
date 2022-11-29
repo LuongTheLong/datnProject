@@ -23,7 +23,7 @@ const SubmitOrder = () => {
 
     if (cartQuery) {
       const orderItems = cartQuery.cart.map(item => ({
-        productId: item.id,
+        productId: item.productId,
         price: item.product.price,
         quantity: item.quantity,
         option: item.option as OptionWithoutCategoryId[],

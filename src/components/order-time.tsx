@@ -39,7 +39,6 @@ const OrderTime = () => {
   };
 
   const isScheduleAvailable = dayjs().get("hour") < 22;
-  console.log(dayjs().get("hour"));
 
   return (
     <>

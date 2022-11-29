@@ -1,6 +1,5 @@
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["referentialIntegrity"]
+    provider = "prisma-client-js"
 }
 
 datasource db {
@@ -53,6 +52,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -61,6 +61,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
@@ -105,7 +107,8 @@ model Cart {
     product   Product @relation(fields: [productId], references: [id])
     user      User    @relation(fields: [userId], references: [id])
 
-    @@index([productId, userId])
+    @@index([productId])
+    @@index([userId])
 }
 
 model Product {
@@ -155,7 +158,8 @@ model OrderDetail {
     option    Json?
     createdAt DateTime @default(now())
 
-    @@index([productId, orderId])
+    @@index([productId])
+    @@index([orderId])
 }
 
 model OptionCategory {
@@ -177,4 +181,6 @@ model Choice {
     price            Int
     optionCategoryId String
     optionCategory   OptionCategory @relation(fields: [optionCategoryId], references: [id])
+
+    @@index([optionCategoryId])
 }
