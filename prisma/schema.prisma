@@ -152,7 +152,7 @@ model OrderDetail {
     product   Product  @relation(fields: [productId], references: [id])
     orderId   String
     order     Order    @relation(fields: [orderId], references: [id])
-    option    Json
+    option    Json?
     createdAt DateTime @default(now())
 
     @@index([productId, orderId])

@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import superjson from "superjson";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
@@ -6,7 +6,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { createContextInner } from "@server/trpc/context";
 import { appRouter } from "@server/trpc/router";
 import { trpc } from "@utils/trpc";
-
 import LoadingSpinner from "@components/loading-spinner";
 
 export const getServerSideProps: GetServerSideProps = async context => {
