@@ -28,19 +28,19 @@ const SideMenu = () => {
     <>
       <IoMdMenu fontSize={28} onClick={onOpen} cursor={"pointer"} />
       {isOpen && (
-        <Drawer placement={"left"} onClose={onClose} isOpen={isOpen}>
+        <Drawer placement={"left"} onClose={onClose} isOpen={isOpen} autoFocus={false}>
           <DrawerOverlay />
-          <DrawerContent>
+          <DrawerContent transition={"none"}>
             <DrawerHeader borderBottomWidth="1px">
               <NextLink href={"/"} passHref>
-                <Link cursor={"pointer"}>
+                <Link onClick={onClose} cursor={"pointer"}>
                   <Image src={Logo} width={80} height={80} alt={"logo"} />
                 </Link>
               </NextLink>
             </DrawerHeader>
             <DrawerBody>
               <NextLink href={"/"} passHref>
-                <Link _hover={{ textColor: "crimson" }}>
+                <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
                   <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
                     <AiOutlineHome fontSize={24} />
                     <Text ml={2} fontSize={18} fontWeight={"semibold"}>
@@ -50,7 +50,7 @@ const SideMenu = () => {
                 </Link>
               </NextLink>
               <NextLink href={session.status === "authenticated" ? "/user" : "/login"} passHref>
-                <Link _hover={{ textColor: "crimson" }}>
+                <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
                   <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
                     <AiOutlineUser fontSize={24} />
                     <Text ml={2} fontSize={18} fontWeight={"semibold"}>
@@ -61,7 +61,7 @@ const SideMenu = () => {
               </NextLink>
 
               <NextLink href={"/"} passHref>
-                <Link _hover={{ textColor: "crimson" }}>
+                <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
                   <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
                     <AiOutlineFileDone fontSize={24} />
                     <Text ml={2} fontSize={18} fontWeight={"semibold"}>
