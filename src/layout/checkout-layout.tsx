@@ -1,5 +1,4 @@
-import { Flex, Container } from "@chakra-ui/react";
-import Header from "@components/header";
+import { Flex } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CheckoutHeader from "@components/checkout-header";

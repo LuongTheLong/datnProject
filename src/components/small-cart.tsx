@@ -55,23 +55,25 @@ const SmallCart = () => {
             <DrawerContent position={"relative"}>
               <DrawerHeader borderBottomWidth="1px" fontSize={24}>
                 Giỏ hàng
-                <Button
-                  bg={"crimson"}
-                  _hover={{ bg: "#ba0f31" }}
-                  rounded={"full"}
-                  width={"full"}
-                  mt={4}
-                  onClick={() => router.push("/customer/checkout")}
-                >
-                  <Flex alignItems={"center"} justifyContent="space-between" width={"full"}>
-                    <Text color={"white"} fontWeight={700}>
-                      Thanh toán
-                    </Text>
-                    <Text color={"white"} fontWeight={700}>
-                      {cartQuery.data.grandTotal} VNĐ
-                    </Text>
-                  </Flex>
-                </Button>
+                {cartQuery.data.cart.length !== 0 && (
+                  <Button
+                    bg={"crimson"}
+                    _hover={{ bg: "#ba0f31" }}
+                    rounded={"full"}
+                    width={"full"}
+                    mt={4}
+                    onClick={() => router.push("/customer/checkout")}
+                  >
+                    <Flex alignItems={"center"} justifyContent="space-between" width={"full"}>
+                      <Text color={"white"} fontWeight={700}>
+                        Thanh toán
+                      </Text>
+                      <Text color={"white"} fontWeight={700}>
+                        {cartQuery.data.grandTotal} VNĐ
+                      </Text>
+                    </Flex>
+                  </Button>
+                )}
               </DrawerHeader>
               <DrawerBody p={0}>
                 <Flex flexDirection={"column"}>
