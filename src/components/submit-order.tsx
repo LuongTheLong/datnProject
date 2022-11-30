@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button, Box, Spinner, Text } from "@chakra-ui/react";
 import { Choice } from "@prisma/client";
 import { trpc } from "@utils/trpc";
 import { useCheckoutStore } from "src/store/checkout";
@@ -10,7 +10,7 @@ const SubmitOrder = () => {
   const { paymentType, time, phoneNumber } = useCheckoutStore();
   const cartQuery = t.cart.getAll.getData();
 
-  const { isLoading, mutate } = trpc.order.create.useMutation({
+  const { isLoading, mutate, isSuccess } = trpc.order.create.useMutation({
     onSuccess: url => {
       window.location.href = url;
     },
@@ -42,7 +42,30 @@ const SubmitOrder = () => {
 
   return (
     <>
-      <Button onClick={handleSubmit} loadingText="Đang xử lý" isLoading={isLoading} colorScheme="red" rounded={"md"}>
+      {(isLoading || isSuccess) && (
+        <Box
+          position={"fixed"}
+          backgroundColor="rgba(0,0,0,0.2)"
+          inset={0}
+          display={"flex"}
+          justifyContent="center"
+          alignItems={"center"}
+          flexDirection="column"
+        >
+          <Spinner size="xl" color="crimson" mb={4} />
+          <Text color={"gray.700"} fontSize="md" fontWeight={"semibold"}>
+            Đang trong quá trình thanh toán... Vui lòng không tắt trình duyệt
+          </Text>
+        </Box>
+      )}
+      <Button
+        position={"unset"}
+        onClick={handleSubmit}
+        loadingText="Đang xử lý"
+        isLoading={isLoading}
+        colorScheme="red"
+        rounded={"md"}
+      >
         Thanh toán và đặt hàng
       </Button>
     </>

@@ -17,7 +17,25 @@ export const getServerSideProps: GetServerSideProps = async context => {
     transformer: superjson,
   });
 
-  await ssg.order.findById.prefetch({ orderId: query.orderId as string });
+  if (!query.orderId) {
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: true,
+      },
+    };
+  }
+
+  const order = await ssg.order.findById.fetch({ orderId: query.orderId as string });
+
+  if (!order) {
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: true,
+      },
+    };
+  }
 
   return {
     props: {
