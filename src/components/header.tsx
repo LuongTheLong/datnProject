@@ -15,11 +15,13 @@ import { signOut, useSession } from "next-auth/react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
-import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport, AiOutlineSetting } from "react-icons/ai";
 import SearchBar from "./search-bar";
 import Logo from "../assets/logo.png";
 import SmallCart from "./small-cart";
 import Nav from "./nav";
+
+const ADMIN = ["ADMIN", "MANAGER", "WORKER"];
 
 const SideMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -70,6 +72,19 @@ const SideMenu = () => {
                   </Flex>
                 </Link>
               </NextLink>
+
+              {ADMIN.includes(session.data?.user.role!) && (
+                <NextLink href={"/dashboard"} passHref>
+                  <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
+                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                      <AiOutlineSetting fontSize={24} />
+                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                        Quản lý
+                      </Text>
+                    </Flex>
+                  </Link>
+                </NextLink>
+              )}
               {session.status === "authenticated" && (
                 <Flex
                   onClick={() => signOut()}
@@ -78,6 +93,7 @@ const SideMenu = () => {
                   py={3}
                   borderBottom={"1px"}
                   borderColor={"gray.200"}
+                  cursor={"pointer"}
                 >
                   <AiOutlineExport fontSize={24} />
                   <Text ml={2} fontSize={18} fontWeight={"semibold"}>

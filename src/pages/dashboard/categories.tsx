@@ -18,11 +18,10 @@ const Categories: NextPageWithLayout = () => {
       {!isLoading && data && (
         <>
           <AddCategory />
-          <TableContainer>
+          <TableContainer overflowY={"auto"} maxHeight={"600px"}>
             <Table variant="simple">
-              <TableCaption>Danh mục sản phẩm</TableCaption>
-              <Thead>
-                <Tr>
+              <Thead position={"sticky"} top={0} zIndex={99} shadow={"sm"}>
+                <Tr bg={"white"}>
                   <Th width={"33%"}>Tên</Th>
                   <Th width={"33%"}>Mã danh mục</Th>
                   <Th width={"33%"}>Hành động</Th>
@@ -60,11 +59,7 @@ const Categories: NextPageWithLayout = () => {
 };
 
 Categories.getLayout = function getLayout(page: React.ReactElement): React.ReactNode {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <DashboardLayout pageInfo={{ slug: "categories", title: "Danh sách danh mục" }}>{page}</DashboardLayout>;
 };
-
-// Categories.getLayout = function getLayout(page: React.ReactElement): React.ReactNode {
-//   return <LargeWithNewsletter>{page}</LargeWithNewsletter>;
-// };
 
 export default Categories;

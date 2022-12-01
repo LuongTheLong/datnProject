@@ -94,27 +94,31 @@ export const productRouter = t.router({
       return { products, nextCursor };
     }),
 
-  getAll: adminRouter.query(async ({ ctx }) => {
+  getAll: adminRouter.input(z.object({ page: z.number() })).query(async ({ ctx, input }) => {
+    const skip = (input.page - 1) * 10;
+
     const products = await ctx.prisma.product.findMany({
       where: {
         isDeleted: false,
       },
-      select: {
-        createdAt: false,
-        isDeleted: false,
+      skip: skip,
+      include: {
         category: true,
-        title: true,
-        image: true,
-        price: true,
-        isSaling: true,
-        stock: true,
-        id: true,
-        description: true,
-        code: true,
-        categoryId: true,
+      },
+      take: 10,
+    });
+
+    const productsCount = await ctx.prisma.product.count({
+      where: {
+        isDeleted: false,
       },
     });
 
-    return products;
+    const pagesNum = Math.ceil(productsCount / 10);
+
+    return {
+      pagesNum,
+      products,
+    };
   }),
 });
