@@ -24,7 +24,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InferProcedures } from "@utils/trpc";
 
-type EditItemProps = { data: InferProcedures["product"]["getAll"]["output"][number] };
+type EditItemProps = { data: InferProcedures["product"]["getAll"]["output"]["products"][number] };
 
 export default function EditItem({ data }: EditItemProps) {
   const t = trpc.useContext();
