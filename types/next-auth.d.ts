@@ -9,11 +9,15 @@ declare module "next-auth" {
     user: {
       id: string;
       role: ROLE;
+      phoneNumber: string;
+      name: string;
     } & DefaultSession["user"];
   }
   interface User {
     id: string;
     role: ROLE;
     firstTime: boolean;
+    name: string;
+    phoneNumber: string;
   }
 }

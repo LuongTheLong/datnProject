@@ -78,6 +78,7 @@ model User {
     role          ROLE      @default(USER)
     orders        Order[]
     products      Cart[]
+    phoneNumber   String    @default("0")
     createdAt     DateTime  @default(now())
 }
 
