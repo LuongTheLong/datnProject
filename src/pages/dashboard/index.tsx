@@ -7,7 +7,7 @@ const Dashboard: NextPageWithLayout = () => {
 };
 
 Dashboard.getLayout = function getLayout(page: React.ReactElement) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <DashboardLayout pageInfo={{ slug: "", title: "Dashboard" }}>{page}</DashboardLayout>;
 };
 
 export default Dashboard;

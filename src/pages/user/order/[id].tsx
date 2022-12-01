@@ -4,7 +4,7 @@ import CommonLayout from "@layout/common-layout";
 import { useRouter } from "next/router";
 import { InferProcedures, trpc } from "@utils/trpc";
 import Link from "next/link";
-import { BiArrowBack, BiTime, BiPhone, BiCast } from "react-icons/bi";
+import { BiArrowBack, BiTime, BiPhone } from "react-icons/bi";
 import { BsCash } from "react-icons/bs";
 import Image from "next/image";
 import { formatDate } from "@utils/common";

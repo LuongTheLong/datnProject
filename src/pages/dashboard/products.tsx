@@ -3,16 +3,34 @@ import DashboardLayout from "src/layout/dashboard-layout";
 import React from "react";
 import Image from "next/image";
 import { trpc } from "@utils/trpc";
-import { Badge, Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, Flex } from "@chakra-ui/react";
+import {
+  Badge,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Flex,
+  Button,
+  HStack,
+} from "@chakra-ui/react";
 
 import LoadingSpinner from "@components/loading-spinner";
 import EditProduct from "@components/products/edit";
 import DeleteProduct from "@components/products/delete";
 import AddProduct from "@components/products/add";
 import placeholder from "../../assets/placeholder.jpg";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
-const products: NextPageWithLayout = () => {
-  const { isLoading, data } = trpc.product.getAll.useQuery(undefined, { refetchOnWindowFocus: false });
+const Products: NextPageWithLayout = () => {
+  const router = useRouter();
+  const page = router.query.page ? (Number.isNaN(Number(router.query.page)) ? 1 : Number(router.query.page)) : 1;
+
+  const { isLoading, data } = trpc.product.getAll.useQuery({ page: page }, { refetchOnWindowFocus: false });
 
   trpc.category.getAll.useQuery(undefined, { refetchOnWindowFocus: false });
 
@@ -22,11 +40,34 @@ const products: NextPageWithLayout = () => {
       {!isLoading && data && (
         <>
           <AddProduct />
-          <TableContainer>
+
+          <HStack mb={4}>
+            {new Array(data.pagesNum).fill("").map((_, idx) => (
+              <Link
+                key={idx}
+                href={{
+                  pathname: router.route,
+                  query: {
+                    page: idx + 1,
+                  },
+                }}
+              >
+                <Button
+                  borderRadius={9999}
+                  width={"30px"}
+                  height={"30px"}
+                  colorScheme={page === idx + 1 ? "twitter" : "gray"}
+                >
+                  {idx + 1}
+                </Button>
+              </Link>
+            ))}
+          </HStack>
+
+          <TableContainer overflowY={"auto"} maxHeight={"600px"}>
             <Table variant="simple">
-              <TableCaption>Danh sách sản phẩm</TableCaption>
-              <Thead>
-                <Tr>
+              <Thead position={"sticky"} top={0} zIndex={99} shadow={"sm"}>
+                <Tr bg={"white"}>
                   <Th>Tên</Th>
                   <Th>Hình ảnh</Th>
                   <Th>Mã sản phẩm</Th>
@@ -37,11 +78,17 @@ const products: NextPageWithLayout = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {data.map(product => (
+                {data.products.map(product => (
                   <Tr key={product.id}>
                     <Td>{product.title}</Td>
                     <Td>
-                      <Image src={product.image || placeholder} width={60} height={60} alt={product.title} />
+                      <Image
+                        src={product.image || placeholder}
+                        width={60}
+                        height={60}
+                        objectFit={"contain"}
+                        alt={product.title}
+                      />
                     </Td>
                     <Td>
                       <Badge colorScheme="purple">{product.code}</Badge>
@@ -66,8 +113,8 @@ const products: NextPageWithLayout = () => {
   );
 };
 
-products.getLayout = function getLayout(page: React.ReactElement): React.ReactNode {
-  return <DashboardLayout>{page}</DashboardLayout>;
+Products.getLayout = function getLayout(page: React.ReactElement): React.ReactNode {
+  return <DashboardLayout pageInfo={{ slug: "products", title: "Danh sách sản phẩm" }}>{page}</DashboardLayout>;
 };
 
-export default products;
+export default Products;

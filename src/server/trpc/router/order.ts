@@ -1,4 +1,4 @@
-import { t, authedProcedure } from "../_app";
+import { t, authedProcedure, adminRouter } from "../_app";
 import { z } from "zod";
 import { PAYMENTTYPE } from "@prisma/client";
 import { stringify } from "query-string";
@@ -179,4 +179,10 @@ export const orderRouter = t.router({
 
       return order;
     }),
+
+  getAllOrders: adminRouter.query(async ({ ctx }) => {
+    const orders = await ctx.prisma.order.findMany();
+
+    return orders;
+  }),
 });

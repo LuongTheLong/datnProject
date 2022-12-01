@@ -24,7 +24,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InferProcedures } from "@utils/trpc";
 
-type EditItemProps = { data: InferProcedures["product"]["getAll"]["output"][number] };
+type EditItemProps = { data: InferProcedures["product"]["getAll"]["output"]["products"][number] };
 
 export default function EditItem({ data }: EditItemProps) {
   const t = trpc.useContext();
@@ -68,7 +68,8 @@ export default function EditItem({ data }: EditItemProps) {
     mutate({ data: { ...data, image }, productId: id });
   };
 
-  const isButtonDisabled = isLoading || !!errors.description || !!errors.title || !!errors.price || !!errors.categoryId || !!errors.stock;
+  const isButtonDisabled =
+    isLoading || !!errors.description || !!errors.title || !!errors.price || !!errors.categoryId || !!errors.stock;
 
   return (
     <>
@@ -81,10 +82,11 @@ export default function EditItem({ data }: EditItemProps) {
           onClose();
           reset();
         }}
+        isCentered
       >
         <ModalOverlay />
         <form onSubmit={handleSubmit(updateProduct)}>
-          <ModalContent>
+          <ModalContent my={0}>
             <ModalHeader>Chỉnh sửa sản phẩm</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
@@ -97,7 +99,7 @@ export default function EditItem({ data }: EditItemProps) {
                 <Select
                   placeholder="Chọn danh mục"
                   {...register("categoryId")}
-                  value={categories?.find(category => category.id === categoryId)?.id}
+                  defaultValue={categories?.find(category => category.id === categoryId)?.id}
                 >
                   {categories &&
                     categories.map(category => (
@@ -127,7 +129,7 @@ export default function EditItem({ data }: EditItemProps) {
               <Flex alignItems={"center"} mt={4} my={2}>
                 <Text fontWeight={600}>Hình ảnh</Text>
 
-                <Text ml={"auto"} color="gray.400" onClick={() => setEditImage(prev => !prev)}>
+                <Text ml={"auto"} cursor={"pointer"} color="gray.400" onClick={() => setEditImage(prev => !prev)}>
                   Chỉnh sửa
                 </Text>
               </Flex>
