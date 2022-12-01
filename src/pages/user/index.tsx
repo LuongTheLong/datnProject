@@ -9,8 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@utils/trpc";
 
 const formValidator = z.object({
-  name: z.string(),
-  phoneNumber: z.string(),
+  name: z.string().min(2),
+  phoneNumber: z.string().min(1),
 });
 
 type FormValues = z.infer<typeof formValidator>;

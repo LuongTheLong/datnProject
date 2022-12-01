@@ -129,4 +129,54 @@ export const orderRouter = t.router({
 
       return order;
     }),
+  getInfiniteUserOrders: authedProcedure
+    .input(z.object({ limit: z.number().nullish(), cursor: z.string().nullish() }))
+    .query(async ({ ctx, input }) => {
+      const { cursor } = input;
+
+      let limit = input.limit || 4;
+
+      const orders = await ctx.prisma.order.findMany({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        take: limit,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: "desc",
+        },
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (orders.length > limit - 1) {
+        const nextOrder = orders.pop();
+        nextCursor = nextOrder!.id;
+      }
+
+      return { orders, nextCursor };
+    }),
+
+  getOrderWithDetail: authedProcedure
+    .input(
+      z.object({
+        orderId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const order = await ctx.prisma.order.findFirst({
+        where: {
+          id: input.orderId,
+        },
+        include: {
+          OrderDetail: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
+
+      return order;
+    }),
 });
