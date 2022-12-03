@@ -1,11 +1,10 @@
-import dog from "../assets/dog.svg";
-import { Flex } from "@chakra-ui/react";
-import Image from "next/image";
+import type { SpinnerProps } from "@chakra-ui/react";
+import { Spinner, Flex } from "@chakra-ui/react";
 
-const LoadingSpinner = ({ size = 70 }: { size?: number }) => {
+const LoadingSpinner = (props: SpinnerProps) => {
   return (
-    <Flex alignItems={"center"} justifyContent="center">
-      <Image src={dog} alt="aaaa" width={size} height={size} />
+    <Flex justifyContent={"center"} mt={20}>
+      <Spinner size="xl" color="crimson" {...props} />
     </Flex>
   );
 };

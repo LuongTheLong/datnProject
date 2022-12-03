@@ -1,4 +1,3 @@
-import { Button, useDisclosure } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
@@ -11,13 +10,15 @@ import {
   FormLabel,
   Input,
   useToast,
+  Button,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { InferProcedures, trpc } from "@utils/trpc";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { z } from "zod";
+import { trpc } from "@utils/trpc";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type AddCategoryFields = InferProcedures["category"]["create"]["input"];
+import { createCategoryValidator } from "@shared/validators/category-validator";
+import type { CreateCategoryValues } from "@shared/validators/category-validator";
 
 export default function AddCategory() {
   const t = trpc.useContext();
@@ -38,11 +39,11 @@ export default function AddCategory() {
     register,
     formState: { errors },
     reset,
-  } = useForm<AddCategoryFields>({ resolver: zodResolver(z.object({ title: z.string() })) });
+  } = useForm<CreateCategoryValues>({ resolver: zodResolver(createCategoryValidator) });
 
-  const addCategory: SubmitHandler<AddCategoryFields> = values => {
+  const onSubmit = handleSubmit(values => {
     mutate(values);
-  };
+  });
 
   const isButtonDisabled = isLoading || !!errors.title;
 
@@ -54,7 +55,7 @@ export default function AddCategory() {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <form onSubmit={handleSubmit(addCategory)}>
+        <form onSubmit={onSubmit}>
           <ModalContent>
             <ModalHeader>Thêm danh mục</ModalHeader>
             <ModalCloseButton />

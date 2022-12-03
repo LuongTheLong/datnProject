@@ -41,6 +41,7 @@ const Categories: NextPageWithLayout = () => {
                         <EditCategory
                           defaultValues={{
                             title: category.title,
+                            categoryId: category.id,
                           }}
                           id={category.id}
                         />

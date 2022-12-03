@@ -1,35 +1,13 @@
 import { t, authedProcedure, adminRouter } from "../_app";
 import { z } from "zod";
-import { PAYMENTTYPE } from "@prisma/client";
 import { stringify } from "query-string";
 import { createHmac } from "crypto";
-import { formatDate } from "@server/utils/common";
+import { createOrderValidator, getOrdersValidator } from "@shared/validators/order-validator";
+import { formatDate } from "@utils/time";
 import { env } from "src/env/server.mjs";
 
-const createInputValidator = z.object({
-  grandTotal: z.number(),
-  paymentType: z.nativeEnum(PAYMENTTYPE),
-  phoneNumber: z.string(),
-  deliverTime: z.string(),
-  products: z.array(
-    z.object({
-      total: z.number(),
-      productId: z.string(),
-      price: z.number(),
-      quantity: z.number(),
-      option: z.array(
-        z.object({
-          id: z.string(),
-          title: z.string(),
-          price: z.number(),
-        })
-      ),
-    })
-  ),
-});
-
 export const orderRouter = t.router({
-  create: authedProcedure.input(createInputValidator).mutation(async ({ input, ctx }) => {
+  create: authedProcedure.input(createOrderValidator).mutation(async ({ input, ctx }) => {
     const { grandTotal, paymentType, phoneNumber, deliverTime } = input;
 
     const order = await ctx.prisma.order.create({
@@ -38,7 +16,8 @@ export const orderRouter = t.router({
         userId: ctx.session.user.id,
         paymentStatus: "PENDING",
         paymentType,
-        deliverTime,
+        deliverTimeFrom: deliverTime.from,
+        deliverTimeTo: deliverTime.to,
         phoneNumber,
       },
     });
@@ -88,7 +67,7 @@ export const orderRouter = t.router({
     return paymentURL;
   }),
   update: authedProcedure
-    .input(createInputValidator.merge(z.object({ orderId: z.string() })))
+    .input(createOrderValidator.merge(z.object({ orderId: z.string() })))
     .mutation(async ({ input, ctx }) => {
       const updatedOrder = await ctx.prisma.order.update({
         data: { ...input },
@@ -129,33 +108,31 @@ export const orderRouter = t.router({
 
       return order;
     }),
-  getInfiniteUserOrders: authedProcedure
-    .input(z.object({ limit: z.number().nullish(), cursor: z.string().nullish() }))
-    .query(async ({ ctx, input }) => {
-      const { cursor } = input;
+  getInfiniteUserOrders: authedProcedure.input(getOrdersValidator).query(async ({ ctx, input }) => {
+    const { cursor } = input;
 
-      let limit = input.limit || 4;
+    let limit = input.limit || 4;
 
-      const orders = await ctx.prisma.order.findMany({
-        where: {
-          userId: ctx.session.user.id,
-        },
-        take: limit,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          id: "desc",
-        },
-      });
+    const orders = await ctx.prisma.order.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      take: limit,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: {
+        id: "desc",
+      },
+    });
 
-      let nextCursor: typeof cursor | undefined = undefined;
+    let nextCursor: typeof cursor | undefined = undefined;
 
-      if (orders.length > limit - 1) {
-        const nextOrder = orders.pop();
-        nextCursor = nextOrder!.id;
-      }
+    if (orders.length > limit - 1) {
+      const nextOrder = orders.pop();
+      nextCursor = nextOrder!.id;
+    }
 
-      return { orders, nextCursor };
-    }),
+    return { orders, nextCursor };
+  }),
 
   getOrderWithDetail: authedProcedure
     .input(
@@ -169,7 +146,7 @@ export const orderRouter = t.router({
           id: input.orderId,
         },
         include: {
-          OrderDetail: {
+          orderDetail: {
             include: {
               product: true,
             },

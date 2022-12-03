@@ -88,7 +88,7 @@ const Order = () => {
               </Flex>
 
               <Box border={"1px solid rgb(231, 231, 231)"} rounded={"md"} p={4}>
-                {data.OrderDetail.map(detail => (
+                {data.orderDetail.map(detail => (
                   <Grid
                     justifyContent={"center"}
                     alignItems={"center"}

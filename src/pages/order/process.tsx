@@ -51,7 +51,7 @@ const Process = (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
 
   return (
     <Flex h={"100vh"} justifyContent="center" alignItems={"center"}>
-      {isLoading && <LoadingSpinner size={12} />}
+      {isLoading && <LoadingSpinner />}
     </Flex>
   );
 };

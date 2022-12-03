@@ -1,4 +1,5 @@
-import { Alert, Box, Button, Flex, useDisclosure } from "@chakra-ui/react";
+import type { InferProcedures } from "@utils/trpc";
+import type { CreateProductValues } from "@shared/validators/product-validator";
 import {
   Modal,
   ModalOverlay,
@@ -14,22 +15,27 @@ import {
   Select,
   Text,
   Checkbox,
+  Alert,
+  Box,
+  Button,
+  Flex,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import NextImage from "next/image";
-import { imgToBase64 } from "@utils/common";
-import { createProductValidator, FormProductValidator } from "@shared/validators/product-validator";
-import { trpc } from "@utils/trpc";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { InferProcedures } from "@utils/trpc";
+
+import { imgToBase64 } from "@utils/common";
+import { trpc } from "@utils/trpc";
+import { createProductValidator } from "@shared/validators/product-validator";
 
 type EditItemProps = { data: InferProcedures["product"]["getAll"]["output"]["products"][number] };
 
 export default function EditItem({ data }: EditItemProps) {
   const t = trpc.useContext();
 
-  const { category, id, categoryId, ...rest } = data;
+  const { category, id, createdAt, ...rest } = data;
   const categories = t.category.getAll.getData();
 
   const { isLoading, mutate } = trpc.product.update.useMutation({
@@ -53,11 +59,14 @@ export default function EditItem({ data }: EditItemProps) {
     reset,
     watch,
     setValue,
-  } = useForm<FormProductValidator>({ resolver: zodResolver(createProductValidator), defaultValues: rest });
+  } = useForm<CreateProductValues>({
+    resolver: zodResolver(createProductValidator),
+    defaultValues: rest,
+  });
 
   const files = watch().files;
 
-  const updateProduct: SubmitHandler<FormProductValidator> = async values => {
+  const onSubmit = handleSubmit(async values => {
     const data = values;
     let image = data.image;
 
@@ -66,7 +75,7 @@ export default function EditItem({ data }: EditItemProps) {
     }
 
     mutate({ data: { ...data, image }, productId: id });
-  };
+  });
 
   const isButtonDisabled =
     isLoading || !!errors.description || !!errors.title || !!errors.price || !!errors.categoryId || !!errors.stock;
@@ -85,7 +94,7 @@ export default function EditItem({ data }: EditItemProps) {
         isCentered
       >
         <ModalOverlay />
-        <form onSubmit={handleSubmit(updateProduct)}>
+        <form onSubmit={onSubmit}>
           <ModalContent my={0}>
             <ModalHeader>Chỉnh sửa sản phẩm</ModalHeader>
             <ModalCloseButton />
@@ -96,11 +105,7 @@ export default function EditItem({ data }: EditItemProps) {
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.categoryId}>
                 <FormLabel>Danh mục sản phẩm</FormLabel>
-                <Select
-                  placeholder="Chọn danh mục"
-                  {...register("categoryId")}
-                  defaultValue={categories?.find(category => category.id === categoryId)?.id}
-                >
+                <Select placeholder="Chọn danh mục" {...register("categoryId")} defaultValue={rest.categoryId}>
                   {categories &&
                     categories.map(category => (
                       <option key={category.id} value={category.id}>
@@ -115,7 +120,7 @@ export default function EditItem({ data }: EditItemProps) {
               </FormControl>
               <FormControl mt={4}>
                 <FormLabel>Đang giảm giá?</FormLabel>
-                <Checkbox {...register("isSaling")} placeholder="Đang giảm giá?" />
+                <Checkbox {...register("onSale")} placeholder="Đang giảm giá?" />
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.stock} isRequired>
                 <FormLabel>Số lượng hàng tồn</FormLabel>

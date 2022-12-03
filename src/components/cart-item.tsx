@@ -5,7 +5,7 @@ import { InferProcedures, trpc } from "@utils/trpc";
 import { FaTrash } from "react-icons/fa";
 import Image from "next/image";
 
-export type CartItemType = InferProcedures["cart"]["getAll"]["output"]["cart"][number];
+type CartItemType = InferProcedures["cart"]["getAll"]["output"]["cart"][number];
 
 const CartItem = ({ item }: { item: CartItemType }) => {
   const t = trpc.useContext();

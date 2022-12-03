@@ -2,13 +2,15 @@ import { z } from "zod";
 
 const createProductValidator = z.object({
   categoryId: z.string().min(1),
-  title: z.string(),
+  title: z.string().min(1),
   price: z.number().min(0),
-  isSaling: z.boolean().default(false),
+  onSale: z.boolean().default(false),
   stock: z.number().min(0),
   description: z.string().nullable(),
-  image: z.string().optional(),
+  image: z.string().min(1),
 });
+
+const getProductsValidator = z.object({ slug: z.string(), limit: z.number().nullish(), cursor: z.string().nullish() });
 
 const IMAGE_TYPES = ["image/jpg", "image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 1048576;
@@ -23,6 +25,6 @@ const fileValidator =
 
 const createProductFormValidator = createProductValidator.merge(z.object({ files: fileValidator }));
 
-export type FormProductValidator = z.infer<typeof createProductFormValidator>;
+export type CreateProductValues = z.infer<typeof createProductFormValidator>;
 
-export { createProductValidator };
+export { createProductValidator, getProductsValidator };

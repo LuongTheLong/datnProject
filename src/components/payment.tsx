@@ -1,11 +1,17 @@
 import { Heading, Flex, RadioGroup, Radio, Box, Text } from "@chakra-ui/react";
-import Image from "next/image";
-import vnpayLogo from "../assets/vnpay.png";
-import { useCheckoutStore } from "src/store/checkout";
+import { useState } from "react";
 import { PAYMENTTYPE } from "@prisma/client";
+import { Control, useController } from "react-hook-form";
 
-const Payment = () => {
-  const { paymentType, changePaymentType } = useCheckoutStore();
+import { CheckoutFormValues } from "@shared/validators/checkout-validator";
+
+type PaymentProps = {
+  control: Control<CheckoutFormValues>;
+};
+
+const Payment = ({ control }: PaymentProps) => {
+  const { field } = useController({ name: "paymentType", control, defaultValue: "VNPAY" });
+  const [paymentType, setPaymentType] = useState<PAYMENTTYPE>(field.value);
 
   return (
     <Box
@@ -19,12 +25,18 @@ const Payment = () => {
         3. Hình thức thanh toán
       </Heading>
       <Flex py={3} px={2} gap={4}>
-        <RadioGroup value={paymentType} onChange={value => changePaymentType(value as PAYMENTTYPE)}>
+        <RadioGroup
+          value={paymentType}
+          onChange={(value: PAYMENTTYPE) => {
+            setPaymentType(value);
+            field.onChange(value);
+          }}
+        >
           <Flex direction={"column"} gap={4}>
             <Radio value={"VNPAY"} width={"100%"} position={"relative"}>
-              <Box ml={4}>
-                <Image src={vnpayLogo} layout={"fixed"} width={150} height={50} alt={"vnpaylogo"} />
-              </Box>
+              <Text ml={4} fontWeight={600}>
+                {`Ví điện tử (VNPAY)`}
+              </Text>
             </Radio>
 
             <Radio value="CASH">

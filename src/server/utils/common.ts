@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 const slugGenerator = (codeName: string) => {
   codeName = codeName.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
   codeName = codeName.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -33,8 +31,4 @@ const slugGenerator = (codeName: string) => {
   return codeName;
 };
 
-const formatDate = (time: number) => {
-  return dayjs(time).tz("Asia/Ho_Chi_Minh").format("YYYYMMDDHHmmss");
-};
-
-export { slugGenerator, formatDate };
+export { slugGenerator };
