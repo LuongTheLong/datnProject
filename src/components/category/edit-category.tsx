@@ -1,4 +1,4 @@
-import { Button, useDisclosure } from "@chakra-ui/react";
+import type { EditCategoryValues } from "@shared/validators/category-validator";
 import {
   Modal,
   ModalOverlay,
@@ -11,17 +11,17 @@ import {
   FormLabel,
   Input,
   useToast,
+  Button,
+  useDisclosure,
 } from "@chakra-ui/react";
-
-import { trpc } from "@utils/trpc";
-import { z } from "zod";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { InferProcedures } from "@utils/trpc";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type EditCategoryFields = InferProcedures["category"]["create"]["input"];
+import { trpc } from "@utils/trpc";
+import { editCategoryValidator } from "@shared/validators/category-validator";
+
 type EditCategoryProps = {
-  defaultValues: EditCategoryFields;
+  defaultValues: EditCategoryValues;
   id: string;
 };
 
@@ -44,11 +44,11 @@ export default function EditCategory({ defaultValues, id }: EditCategoryProps) {
     register,
     formState: { errors },
     reset,
-  } = useForm<EditCategoryFields>({ resolver: zodResolver(z.object({ title: z.string() })), defaultValues });
+  } = useForm<EditCategoryValues>({ resolver: zodResolver(editCategoryValidator), defaultValues });
 
-  const addMaterial: SubmitHandler<EditCategoryFields> = values => {
+  const onSubmit = handleSubmit(values => {
     mutate({ ...values, categoryId: id });
-  };
+  });
 
   const isButtonDisabled = isLoading || !!errors.title;
 
@@ -60,7 +60,7 @@ export default function EditCategory({ defaultValues, id }: EditCategoryProps) {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <form onSubmit={handleSubmit(addMaterial)}>
+        <form onSubmit={onSubmit}>
           <ModalContent>
             <ModalHeader>Chỉnh sửa danh mục</ModalHeader>
             <ModalCloseButton />

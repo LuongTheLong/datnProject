@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
 import { trpc } from "@utils/trpc";
-import CartItem from "./cart-item";
 import { useRouter } from "next/router";
+import CartItem from "./cart-item";
 
 const SmallCart = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

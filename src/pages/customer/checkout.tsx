@@ -1,20 +1,30 @@
-import CheckoutLayout from "@layout/checkout-layout";
+import type { NextPageWithLayout } from "@pages/_app";
+import type { CheckoutFormValues } from "@shared/validators/checkout-validator";
+import type { InferProcedures } from "@utils/trpc";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { Box, Flex, Heading, Text, Icon, Button, useDisclosure } from "@chakra-ui/react";
-import { NextPageWithLayout } from "@pages/_app";
+import { Box, Flex, Heading, Text, Icon, useDisclosure, Button } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
 import { BiStoreAlt } from "react-icons/bi";
 import { FiChevronRight, FiChevronDown } from "react-icons/fi";
 import { BsCart, BsTag } from "react-icons/bs";
-
 import { trpc } from "@utils/trpc";
+
+import CheckoutLayout from "@layout/checkout-layout";
 import CartItem from "@components/cart-item";
-import type { CartItemType } from "@components/cart-item";
-import { Spinner } from "@chakra-ui/react";
 import OrderTime from "@components/order-time";
 import PhoneNumber from "@components/phone-number";
 import Payment from "@components/payment";
-import SubmitOrder from "@components/submit-order";
+
+import LoadingSpinner from "@components/loading-spinner";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { checkoutValidator } from "@shared/validators/checkout-validator";
+
+import { isStoreOpened, deliveryNowTime } from "@utils/time";
+
+type CartItemType = InferProcedures["cart"]["getAll"]["output"]["cart"][number];
+type Options = InferProcedures["options"]["getByCategory"]["output"];
+type Choice = Options[number]["choices"][number];
 
 const OrderSummary = ({ cart }: { cart: CartItemType[] }) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -55,71 +65,134 @@ const OrderSummary = ({ cart }: { cart: CartItemType[] }) => {
 };
 
 const Checkout: NextPageWithLayout = () => {
+  const isAvailable = isStoreOpened();
   const session = useSession();
-  const [total, setTotal] = useState(0);
-
-  const cartQuery = trpc.cart.getAll.useQuery(undefined, {
-    onSuccess: data => {
-      setTotal(data.grandTotal);
+  const { control, handleSubmit } = useForm<CheckoutFormValues>({
+    resolver: zodResolver(checkoutValidator),
+    defaultValues: {
+      paymentType: "VNPAY",
+      deliverTime: {
+        from: "",
+        to: "",
+      },
+      orderType: isAvailable ? "NOW" : undefined,
+      phoneNumber: "",
     },
+  });
+
+  const cartQuery = trpc.cart.getAll.useQuery(undefined);
+
+  const { isLoading, mutate, isSuccess } = trpc.order.create.useMutation({
+    onSuccess: url => {
+      window.location.href = url;
+    },
+  });
+
+  const onSubmit = handleSubmit(values => {
+    const { data } = cartQuery;
+    const { deliverTime, orderType, paymentType, phoneNumber } = values;
+
+    // if (data) {
+    //   const orderItems = data.cart.map(item => ({
+    //     productId: item.productId,
+    //     price: item.product.price,
+    //     quantity: item.quantity,
+    //     option: item.option as Choice[],
+    //     total: item.total,
+    //   }));
+
+    //   mutate({
+    //     deliverTime: orderType === "NOW" ? deliveryNowTime() : deliverTime,
+    //     grandTotal: data.grandTotal,
+    //     paymentType,
+    //     phoneNumber,
+    //     products: orderItems,
+    //     orderType,
+    //   });
+    // }
+
+    console.log("I was heree!!!");
   });
 
   return (
     <>
-      {cartQuery.isLoading && (
-        <Flex justifyContent={"center"} mt={20}>
-          <Spinner size="xl" color="crimson" />
-        </Flex>
-      )}
-      {cartQuery.isSuccess && cartQuery.data.cart.length === 0 && "Mua đi rồi tính tiền"}
+      {isLoading && <LoadingSpinner mt={20} />}
+      {cartQuery.isSuccess && cartQuery.data.cart.length === 0 && ""}
       {cartQuery.isSuccess && cartQuery.data.cart.length > 0 && (
         <Flex>
           <Box flex={1}>
-            <Flex maxW={"640px"} mx={"auto"} direction={"column"} py={10} gap={6}>
-              <Flex
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                border={"1px solid rgb(231, 231, 231)"}
-                rounded={"lg"}
-                p={4}
-              >
-                <Heading as="h5" fontSize={18}>
-                  1. Địa chỉ email
-                </Heading>
-                <Text fontSize={16} fontWeight={500} color={"rgb(73, 73, 73)"}>
-                  {session.data?.user.email}
-                </Text>
-              </Flex>
-              <Box
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                border={"1px solid rgb(231, 231, 231)"}
-                rounded={"lg"}
-                p={4}
-              >
-                <Heading as="h5" fontSize={18} mb={4}>
-                  2. Thông tin đơn hàng
-                </Heading>
-                <OrderTime />
+            <form onSubmit={onSubmit}>
+              <Flex maxW={"640px"} mx={"auto"} direction={"column"} py={10} gap={6}>
+                <Flex
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                  border={"1px solid rgb(231, 231, 231)"}
+                  rounded={"lg"}
+                  p={4}
+                >
+                  <Heading as="h5" fontSize={18}>
+                    1. Địa chỉ email
+                  </Heading>
+                  <Text fontSize={16} fontWeight={500} color={"rgb(73, 73, 73)"}>
+                    {session.data?.user.email}
+                  </Text>
+                </Flex>
+                <Box
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                  border={"1px solid rgb(231, 231, 231)"}
+                  rounded={"lg"}
+                  p={4}
+                >
+                  <Heading as="h5" fontSize={18} mb={4}>
+                    2. Thông tin đơn hàng
+                  </Heading>
+                  <OrderTime isStoreOpened={isAvailable} control={control} />
 
-                <Flex py={3} px={2} alignItems={"center"} gap={4} borderBottom={"1px solid rgb(231, 231, 231)"}>
-                  <Icon as={BiStoreAlt} fontSize={24} mr={2} />
-                  <Box>
-                    <Text fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={500}>
-                      Long Food
-                    </Text>
-                    <Text fontSize={14} color={"rgb(73, 73, 73)"} fontWeight={500}>
-                      123 Ngô Quyền, Sơn Trà, Đà Nẵng
+                  <Flex py={3} px={2} alignItems={"center"} gap={4} borderBottom={"1px solid rgb(231, 231, 231)"}>
+                    <Icon as={BiStoreAlt} fontSize={24} mr={2} />
+                    <Box>
+                      <Text fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={500}>
+                        Long Food
+                      </Text>
+                      <Text fontSize={14} color={"rgb(73, 73, 73)"} fontWeight={500}>
+                        123 Ngô Quyền, Sơn Trà, Đà Nẵng
+                      </Text>
+                    </Box>
+                  </Flex>
+
+                  <PhoneNumber control={control} />
+                </Box>
+                <Payment control={control} />
+
+                {(isLoading || isSuccess) && (
+                  <Box
+                    position={"fixed"}
+                    backgroundColor="rgba(0,0,0,0.2)"
+                    inset={0}
+                    display={"flex"}
+                    justifyContent="center"
+                    alignItems={"center"}
+                    flexDirection="column"
+                  >
+                    <LoadingSpinner mb={4} mt={0} />
+                    <Text color={"gray.700"} fontSize="md" fontWeight={"semibold"}>
+                      Đang trong quá trình thanh toán... Vui lòng không tắt trình duyệt
                     </Text>
                   </Box>
-                </Flex>
-
-                <PhoneNumber />
-              </Box>
-              <Payment />
-
-              <SubmitOrder />
-            </Flex>
+                )}
+                <Button
+                  position={"unset"}
+                  type={"submit"}
+                  loadingText="Đang xử lý"
+                  isLoading={isLoading}
+                  colorScheme="red"
+                  rounded={"md"}
+                >
+                  Thanh toán và đặt hàng
+                </Button>
+              </Flex>
+            </form>
           </Box>
           <Box flex={"0 0 420px"} borderLeft={"1px solid rgb(231, 231, 231)"} height={"calc(100vh - 40px)"}>
             <OrderSummary cart={cartQuery.data.cart} />
@@ -156,7 +229,7 @@ const Checkout: NextPageWithLayout = () => {
                   Tổng
                 </Text>
                 <Text fontSize={18} fontWeight={500}>
-                  {total} VNĐ
+                  {cartQuery.data.grandTotal} VNĐ
                 </Text>
               </Flex>
             </Box>

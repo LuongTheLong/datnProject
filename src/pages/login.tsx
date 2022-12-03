@@ -26,17 +26,6 @@ export default function Login(props: InferGetServerSidePropsType<typeof getServe
   return (
     <Flex minH={"100vh"} align={"center"} justify={"center"} bg={useColorModeValue("gray.50", "gray.800")}>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"3xl"}>Tham gia Coffee Data House</Heading>
-          <Text fontSize={"lg"} color={"gray.600"}>
-            để{" "}
-            <Link href={"/"}>
-              <a className="text-blue-400">bàn chuyện phòng the</a>
-            </Link>{" "}
-            ✌️
-          </Text>
-        </Stack>
-
         <Box>
           <Flex gap={4} flexDirection={{ base: "column", md: "row" }}>
             {Object.values(props.providers as Providers).map(provider => (

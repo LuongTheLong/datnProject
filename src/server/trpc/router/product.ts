@@ -1,6 +1,6 @@
 import { adminRouter, t } from "../_app";
 import { z } from "zod";
-import { createProductValidator } from "@shared/validators/product-validator";
+import { createProductValidator, getProductsValidator } from "@shared/validators/product-validator";
 import { v2 as cloudinary } from "cloudinary";
 import { slugGenerator } from "@server/utils/common";
 
@@ -66,33 +66,31 @@ export const productRouter = t.router({
 
     return product;
   }),
-  getInfiniteProducts: t.procedure
-    .input(z.object({ slug: z.string(), limit: z.number().nullish(), cursor: z.string().nullish() }))
-    .query(async ({ ctx, input }) => {
-      const { cursor, limit } = input;
-      const products = await ctx.prisma.product.findMany({
-        where: {
-          category: {
-            slug: input.slug,
-          },
+  getInfiniteProducts: t.procedure.input(getProductsValidator).query(async ({ ctx, input }) => {
+    const { cursor, limit } = input;
+    const products = await ctx.prisma.product.findMany({
+      where: {
+        category: {
+          slug: input.slug,
         },
+      },
 
-        take: limit || 4,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          id: "asc",
-        },
-      });
+      take: limit || 4,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: {
+        id: "asc",
+      },
+    });
 
-      let nextCursor: typeof cursor | undefined = undefined;
+    let nextCursor: typeof cursor | undefined = undefined;
 
-      if (products.length > 3) {
-        const nextProduct = products.pop();
-        nextCursor = nextProduct!.id;
-      }
+    if (products.length > 3) {
+      const nextProduct = products.pop();
+      nextCursor = nextProduct!.id;
+    }
 
-      return { products, nextCursor };
-    }),
+    return { products, nextCursor };
+  }),
 
   getAll: adminRouter.input(z.object({ page: z.number() })).query(async ({ ctx, input }) => {
     const skip = (input.page - 1) * 10;

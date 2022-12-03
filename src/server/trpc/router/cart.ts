@@ -1,35 +1,11 @@
 import { authedProcedure, t } from "../_app";
 import { z } from "zod";
+import { createCartItemValidator, updateCartValidator } from "@shared/validators/cart-validator";
 import { Choice } from "@prisma/client";
 import { flatten, uniqBy } from "lodash-es";
 
-const createInputValidator = z.object({
-  id: z.string().nullable(),
-  productId: z.string(),
-  quantity: z.number(),
-  option: z.array(
-    z.object({
-      id: z.string(),
-      title: z.string(),
-      price: z.number(),
-    })
-  ),
-});
-
-const updateInputValidator = z.object({
-  id: z.string(),
-  quantity: z.number(),
-  option: z.array(
-    z.object({
-      id: z.string(),
-      title: z.string(),
-      price: z.number(),
-    })
-  ),
-});
-
 export const cartRouter = t.router({
-  add: authedProcedure.input(createInputValidator).mutation(async ({ ctx, input }) => {
+  add: authedProcedure.input(createCartItemValidator).mutation(async ({ ctx, input }) => {
     if (input.id) {
       const updatedItem = await ctx.prisma.cart.update({
         where: {
@@ -57,7 +33,7 @@ export const cartRouter = t.router({
     return newItem;
   }),
 
-  update: authedProcedure.input(updateInputValidator).mutation(async ({ ctx, input }) => {
+  update: authedProcedure.input(updateCartValidator).mutation(async ({ ctx, input }) => {
     const updatedItem = await ctx.prisma.cart.update({
       where: {
         id: input.id,

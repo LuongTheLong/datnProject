@@ -17,14 +17,14 @@ import {
   Alert,
   Button,
   useDisclosure,
-  Checkbox
+  Checkbox,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import { createProductValidator, FormProductValidator } from "@shared/validators/product-validator";
-import { trpc } from "@utils/trpc";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { createProductValidator, CreateProductValues } from "@shared/validators/product-validator";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { imgToBase64 } from "@utils/common";
+import { trpc } from "@utils/trpc";
 
 const AddItem = () => {
   const t = trpc.useContext();
@@ -49,7 +49,7 @@ const AddItem = () => {
     reset,
     setValue,
     watch,
-  } = useForm<FormProductValidator>({
+  } = useForm<CreateProductValues>({
     resolver: zodResolver(createProductValidator),
     defaultValues: {
       price: 0,
@@ -59,7 +59,7 @@ const AddItem = () => {
 
   const imgFile = watch().files;
 
-  const addItem: SubmitHandler<FormProductValidator> = async values => {
+  const onSubmit = handleSubmit(async values => {
     const { files, ...rest } = values;
     let image = "";
     if (imgFile && imgFile[0]) {
@@ -67,7 +67,7 @@ const AddItem = () => {
     }
 
     mutate({ ...rest, image: image });
-  };
+  });
 
   return (
     <>
@@ -77,7 +77,7 @@ const AddItem = () => {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <form onSubmit={handleSubmit(addItem)}>
+        <form onSubmit={onSubmit}>
           <ModalContent>
             <ModalHeader>Thêm sản phẩm</ModalHeader>
             <ModalCloseButton />
@@ -103,7 +103,7 @@ const AddItem = () => {
               </FormControl>
               <FormControl mt={4}>
                 <FormLabel>Đang giảm giá?</FormLabel>
-                <Checkbox {...register("isSaling")} placeholder="Đang giảm giá?" />
+                <Checkbox {...register("onSale")} placeholder="Đang giảm giá?" />
               </FormControl>
               <FormControl mt={4} isInvalid={!!errors.stock} isRequired>
                 <FormLabel>Số lượng hàng tồn</FormLabel>

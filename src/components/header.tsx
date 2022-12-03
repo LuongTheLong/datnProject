@@ -12,16 +12,18 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
+import { ROLE } from "@prisma/client";
 import NextLink from "next/link";
 import Image from "next/image";
 import { IoMdMenu } from "react-icons/io";
 import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport, AiOutlineSetting } from "react-icons/ai";
+
 import SearchBar from "./search-bar";
-import Logo from "../assets/logo.png";
 import SmallCart from "./small-cart";
 import Nav from "./nav";
+import Logo from "../assets/logo.png";
 
-const ADMIN = ["ADMIN", "MANAGER", "WORKER"];
+const ADMIN = Object.values(ROLE);
 
 const SideMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -62,7 +64,7 @@ const SideMenu = () => {
                 </Link>
               </NextLink>
 
-              <NextLink href={"/"} passHref>
+              <NextLink href={"/user/order"} passHref>
                 <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
                   <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
                     <AiOutlineFileDone fontSize={24} />
@@ -111,8 +113,6 @@ const SideMenu = () => {
 
 const Header = () => {
   const session = useSession();
-
-  const role = session.data?.user?.role || "USER";
 
   return (
     <Flex

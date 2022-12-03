@@ -21,67 +21,34 @@ import {
   Icon,
   Badge,
   Input,
+  useToast,
 } from "@chakra-ui/react";
+import type { Product } from "@prisma/client";
+import type { ProductOptions, OptionCategory } from "@shared/validators/options-validator";
+import type { Control } from "react-hook-form";
 
 import { BiError, BiCheck } from "react-icons/bi";
-
-import { useForm, useController, useWatch, SubmitHandler } from "react-hook-form";
-import { useToast } from "@chakra-ui/react";
-import * as z from "zod";
-
-import { isEqual, differenceWith } from "lodash-es";
-
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
+import { useForm, useController, useWatch } from "react-hook-form";
+import { isEqual, differenceWith } from "lodash-es";
 import Image from "next/image";
-import { trpc, InferProcedures } from "src/utils/trpc";
-import { Product } from "@prisma/client";
 
-import type { Control } from "react-hook-form";
+import { trpc, InferProcedures } from "@utils/trpc";
+import { calculateOptionsTotal } from "@utils/common";
 
 type Options = InferProcedures["options"]["getByCategory"]["output"];
 type Choice = Options[number]["choices"][number];
 
-type OptionCategory = "size" | "sauce" | "ice" | "topping" | "cutlery" | "chili";
-
-const buyingOptionsSchema = z.object({
-  quantity: z.number(),
-  size: z.array(z.object({ id: z.string(), title: z.string(), price: z.number() })).optional(),
-  sauce: z.array(z.object({ id: z.string(), title: z.string(), price: z.number() })).optional(),
-  ice: z.array(z.object({ id: z.string(), title: z.string(), price: z.number() })).optional(),
-  topping: z.array(z.object({ id: z.string(), title: z.string(), price: z.number() })).optional(),
-  cutlery: z.array(z.object({ id: z.string(), title: z.string(), price: z.number() })).optional(),
-  chili: z.array(z.object({ id: z.string(), title: z.string(), price: z.number() })).optional(),
-});
-
-type BuyingOptions = z.infer<typeof buyingOptionsSchema>;
-
-const calculateTotal = ({ values, price }: { values: BuyingOptions; price: number }): number => {
-  const { quantity, ...rest } = values;
-  let total = price * quantity;
-  for (const property in rest) {
-    const options = rest[property as OptionCategory];
-    if (options && Array.isArray(options)) {
-      const optionTotal =
-        options.reduce((prev, curr) => {
-          return prev + curr.price;
-        }, 0) * quantity;
-
-      total = total + optionTotal;
-    }
-  }
-
-  return total;
-};
-
-type OptionsInputProps = { control: Control<BuyingOptions>; option: Options[number]; isLoading: boolean };
+type OptionsInputProps = { control: Control<ProductOptions>; option: Options[number]; isLoading: boolean };
 
 const OptionsCheckbox = ({ control, option, isLoading }: OptionsInputProps) => {
   const [selects, setSelects] = useState<Choice[]>([]);
   const ALLOWED_SELECTION = option.limit;
+  const code = option.code as OptionCategory;
 
   const { field } = useController({
     control,
-    name: option.code as OptionCategory,
+    name: code,
     rules: {
       shouldUnregister: true,
     },
@@ -124,6 +91,7 @@ const OptionsCheckbox = ({ control, option, isLoading }: OptionsInputProps) => {
               } else {
                 selectsCopy = selectsCopy.filter(item => item.id !== option.choices[idx]!.id);
               }
+
               field.onChange(selectsCopy);
               setSelects(selectsCopy);
             }}
@@ -143,9 +111,10 @@ const OptionsCheckbox = ({ control, option, isLoading }: OptionsInputProps) => {
 
 const OptionsRadio = ({ control, option, isLoading }: OptionsInputProps) => {
   const [selects, setSelects] = useState<Choice[]>([]);
+  const code = option.code as OptionCategory;
 
   const { field, formState } = useController({
-    name: option.code as OptionCategory,
+    name: code,
     control,
     rules: {
       validate: values => {
@@ -156,12 +125,12 @@ const OptionsRadio = ({ control, option, isLoading }: OptionsInputProps) => {
     },
   });
 
-  const hasError = formState.errors[option.code as OptionCategory] || selects.length === 0;
+  const hasError = formState.errors[code] || selects.length === 0;
 
   return (
     <Box>
       <Flex justifyContent={"space-between"} alignItems={"center"}>
-        <FormLabel htmlFor={option.code} fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={700}>
+        <FormLabel htmlFor={code} fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={700}>
           {option.title}
         </FormLabel>
 
@@ -208,7 +177,7 @@ const OptionsRadio = ({ control, option, isLoading }: OptionsInputProps) => {
 };
 
 type QuantityInputProps = {
-  control: Control<BuyingOptions>;
+  control: Control<ProductOptions>;
   isLoading: boolean;
 };
 
@@ -227,6 +196,7 @@ const QuantityInput = ({ control, isLoading }: QuantityInputProps) => {
         onClick={() => {
           const newQuantity = quantity - 1;
           setQuantity(newQuantity);
+
           field.onChange(newQuantity);
         }}
         color={quantity === 1 ? "gray" : "black"}
@@ -238,8 +208,7 @@ const QuantityInput = ({ control, isLoading }: QuantityInputProps) => {
         bg={"rgb(247, 247, 247)"}
         rounded="md"
         width={"64px"}
-        value={quantity}
-        onChange={() => {}}
+        defaultValue={quantity}
         pointerEvents={"none"}
         textAlign="center"
         fontWeight={600}
@@ -264,15 +233,16 @@ const QuantityInput = ({ control, isLoading }: QuantityInputProps) => {
 };
 
 type AddToCartButtonProps = {
-  control: Control<BuyingOptions>;
+  control: Control<ProductOptions>;
   productPrice: number;
   hasError: boolean;
   isLoading: boolean;
 };
 
 const AddToCartButton = ({ control, productPrice, hasError, isLoading }: AddToCartButtonProps) => {
-  const values = useWatch({ control }) as BuyingOptions;
-  const total = calculateTotal({ price: productPrice, values });
+  const values = useWatch({ control }) as ProductOptions;
+
+  const total = calculateOptionsTotal({ price: productPrice, values });
 
   return (
     <Button
@@ -299,7 +269,7 @@ const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<BuyingOptions>({
+  } = useForm<ProductOptions>({
     defaultValues: {
       quantity: 1,
     },
@@ -336,7 +306,7 @@ const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
   const onSubmit = handleSubmit(values => {
     const { quantity, ...rest } = values;
 
-    let options: { price: number; title: string; id: string }[] = [];
+    let options: Choice[] = [];
 
     Object.keys(rest).forEach(key => {
       const option = rest[key as OptionCategory];

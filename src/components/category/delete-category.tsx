@@ -10,7 +10,6 @@ import {
   ModalBody,
   ModalFooter,
 } from "@chakra-ui/react";
-
 import { trpc } from "src/utils/trpc";
 
 type DeleteCategoryProps = {

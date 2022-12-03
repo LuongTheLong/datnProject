@@ -14,22 +14,42 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { Control, useController } from "react-hook-form";
+import { CheckoutFormValues } from "@shared/validators/checkout-validator";
 import { BsTelephone } from "react-icons/bs";
-import { useCheckoutStore } from "src/store/checkout";
 
-const PhoneNumber = () => {
+type PhoneNumberProps = {
+  control: Control<CheckoutFormValues>;
+};
+
+const PhoneNumber = ({ control }: PhoneNumberProps) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { changePhone, phoneNumber } = useCheckoutStore();
-  const [phone, setPhone] = useState(phoneNumber);
+  const { field, fieldState } = useController({ control, name: "phoneNumber" });
+  const [phone, setPhone] = useState(field.value);
 
   return (
     <>
-      <Flex py={3} px={2} alignItems={"center"} gap={4} onClick={onOpen} cursor={"pointer"}>
+      <Flex
+        py={3}
+        px={2}
+        alignItems={"center"}
+        gap={4}
+        onClick={onOpen}
+        cursor={"pointer"}
+        _hover={{
+          bg: "gray.50",
+        }}
+      >
         <Icon as={BsTelephone} fontSize={24} mr={2} />
 
         <Text fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={500}>
-          {phoneNumber ? phoneNumber : "Số điện thoại"}
+          {field.value ? field.value : "Nhập số điện thoại"}
         </Text>
+        {fieldState.error && (
+          <Text display={"block"} fontSize={14} color={"crimson"} fontWeight={400}>
+            {fieldState.error.message}
+          </Text>
+        )}
       </Flex>
 
       {isOpen && (
@@ -43,7 +63,9 @@ const PhoneNumber = () => {
                 placeholder="Số điện thoại"
                 size="md"
                 value={phone}
-                onChange={event => setPhone(event.target.value)}
+                onChange={event => {
+                  setPhone(event.target.value);
+                }}
               />
             </ModalBody>
             <ModalFooter>
@@ -52,7 +74,7 @@ const PhoneNumber = () => {
                 ml={2}
                 colorScheme="blue"
                 onClick={() => {
-                  changePhone(phone);
+                  field.onChange(phone);
                   onClose();
                 }}
               >
