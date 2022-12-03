@@ -126,12 +126,15 @@ const ProductCard = (props: ProductCardProps) => {
           <Heading textAlign={"center"} as="h5" size="md">
             {product.title}
           </Heading>
-          {product.isSaling != true ? (<Text textAlign={"center"} fontSize={16} fontWeight={600} color={"black"}>
-            {product.price} VNĐ
-          </Text>) : (<Text textAlign={"center"} fontSize={16} fontWeight={600} color={"red"}>
-            {product.price} VNĐ
-          </Text>)}
-
+          {!product.onSale ? (
+            <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"black"}>
+              {product.price} VNĐ
+            </Text>
+          ) : (
+            <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"red"}>
+              {product.price} VNĐ
+            </Text>
+          )}
 
           <Button colorScheme={"red"}>Thêm vào giỏ</Button>
         </Flex>
