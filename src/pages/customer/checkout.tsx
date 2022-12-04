@@ -114,7 +114,7 @@ const Checkout: NextPageWithLayout = () => {
 
   return (
     <>
-      {isLoading && <LoadingSpinner mt={20} />}
+      {cartQuery.isLoading && <LoadingSpinner mt={20} />}
       {cartQuery.isSuccess && cartQuery.data.cart.length === 0 && ""}
       {cartQuery.isSuccess && cartQuery.data.cart.length > 0 && (
         <Flex>
