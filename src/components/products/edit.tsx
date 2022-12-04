@@ -1,4 +1,4 @@
-import type { InferProcedures } from "@utils/trpc";
+import type { InferOutput } from "@utils/trpc";
 import type { CreateProductValues } from "@shared/validators/product-validator";
 import {
   Modal,
@@ -30,7 +30,7 @@ import { imgToBase64 } from "@utils/common";
 import { trpc } from "@utils/trpc";
 import { createProductValidator } from "@shared/validators/product-validator";
 
-type EditItemProps = { data: InferProcedures["product"]["getAll"]["output"]["products"][number] };
+type EditItemProps = { data: InferOutput["product"]["getAll"]["products"][number] };
 
 export default function EditItem({ data }: EditItemProps) {
   const t = trpc.useContext();

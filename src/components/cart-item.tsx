@@ -1,17 +1,17 @@
 import { GridItem, Flex, Spinner, Box, Text, Grid } from "@chakra-ui/react";
 import { Choice } from "@prisma/client";
-import { InferProcedures, trpc } from "@utils/trpc";
+import { InferOutput, trpc } from "@utils/trpc";
 
 import { FaTrash } from "react-icons/fa";
 import Image from "next/image";
 
-type CartItemType = InferProcedures["cart"]["getAll"]["output"]["cart"][number];
+type CartItemType = InferOutput["cart"]["getAll"]["cart"][number];
 
 const CartItem = ({ item }: { item: CartItemType }) => {
   const t = trpc.useContext();
   const deleteCart = trpc.cart.delete.useMutation({
     onSuccess: deletedItem => {
-      t.cart.getAll.setData(oldItems => {
+      t.cart.getAll.setData(undefined, oldItems => {
         if (oldItems) {
           const newCart = { ...oldItems };
           newCart.cart = newCart.cart.filter(item => item.id !== deletedItem.id);

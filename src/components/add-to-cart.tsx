@@ -33,10 +33,10 @@ import { useForm, useController, useWatch } from "react-hook-form";
 import { isEqual, differenceWith } from "lodash-es";
 import Image from "next/image";
 
-import { trpc, InferProcedures } from "@utils/trpc";
+import { trpc, InferOutput } from "@utils/trpc";
 import { calculateOptionsTotal } from "@utils/common";
 
-type Options = InferProcedures["options"]["getByCategory"]["output"];
+type Options = InferOutput["options"]["getByCategory"];
 type Choice = Options[number]["choices"][number];
 
 type OptionsInputProps = { control: Control<ProductOptions>; option: Options[number]; isLoading: boolean };

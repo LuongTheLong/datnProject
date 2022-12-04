@@ -1,6 +1,6 @@
 import type { NextPageWithLayout } from "@pages/_app";
 import type { CheckoutFormValues } from "@shared/validators/checkout-validator";
-import type { InferProcedures } from "@utils/trpc";
+import type { InferOutput } from "@utils/trpc";
 import { useSession } from "next-auth/react";
 import { Box, Flex, Heading, Text, Icon, useDisclosure, Button } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
@@ -22,8 +22,8 @@ import { checkoutValidator } from "@shared/validators/checkout-validator";
 
 import { isStoreOpened, deliveryNowTime } from "@utils/time";
 
-type CartItemType = InferProcedures["cart"]["getAll"]["output"]["cart"][number];
-type Options = InferProcedures["options"]["getByCategory"]["output"];
+type CartItemType = InferOutput["cart"]["getAll"]["cart"][number];
+type Options = InferOutput["options"]["getByCategory"];
 type Choice = Options[number]["choices"][number];
 
 const OrderSummary = ({ cart }: { cart: CartItemType[] }) => {
@@ -92,26 +92,24 @@ const Checkout: NextPageWithLayout = () => {
     const { data } = cartQuery;
     const { deliverTime, orderType, paymentType, phoneNumber } = values;
 
-    // if (data) {
-    //   const orderItems = data.cart.map(item => ({
-    //     productId: item.productId,
-    //     price: item.product.price,
-    //     quantity: item.quantity,
-    //     option: item.option as Choice[],
-    //     total: item.total,
-    //   }));
+    if (data) {
+      const orderItems = data.cart.map(item => ({
+        productId: item.productId,
+        price: item.product.price,
+        quantity: item.quantity,
+        option: item.option as Choice[],
+        total: item.total,
+      }));
 
-    //   mutate({
-    //     deliverTime: orderType === "NOW" ? deliveryNowTime() : deliverTime,
-    //     grandTotal: data.grandTotal,
-    //     paymentType,
-    //     phoneNumber,
-    //     products: orderItems,
-    //     orderType,
-    //   });
-    // }
-
-    console.log("I was heree!!!");
+      mutate({
+        deliverTime: orderType === "NOW" ? deliveryNowTime() : deliverTime,
+        grandTotal: data.grandTotal,
+        paymentType,
+        phoneNumber,
+        products: orderItems,
+        orderType,
+      });
+    }
   });
 
   return (
