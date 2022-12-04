@@ -23,7 +23,6 @@
     "@trpc/react-query": "^10.4.3",
     "@trpc/server": "^10.4.3",
     "cloudinary": "^1.31.0",
-    "dateformat": "^5.0.3",
     "dayjs": "^1.11.6",
     "framer-motion": "^7.0.1",
     "lodash-es": "^4.17.21",
@@ -39,7 +38,6 @@
     "zod": "^3.18.0"
   },
   "devDependencies": {
-    "@types/dateformat": "^5.0.0",
     "@types/lodash-es": "^4.17.6",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
