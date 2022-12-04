@@ -16,7 +16,12 @@ const Nav = () => {
       </MenuButton>
       <MenuList>
         {CATEGORIES.map(category => (
-          <MenuItem key={category.title}>
+          <MenuItem
+            key={category.title}
+            _hover={{
+              bg: "gray.50",
+            }}
+          >
             <NextLink href={{ pathname: "/[category]", query: { category: category.slug } }}>{category.title}</NextLink>
           </MenuItem>
         ))}

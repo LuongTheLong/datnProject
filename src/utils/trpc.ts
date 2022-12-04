@@ -4,7 +4,7 @@ import { createTRPCNext } from "@trpc/next";
 import type { AppRouter } from "../server/trpc/router";
 import superjson from "superjson";
 
-import type { GetInferenceHelpers } from "@trpc/server";
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -30,4 +30,6 @@ export const trpc = createTRPCNext<AppRouter>({
   ssr: false,
 });
 
-export type InferProcedures = GetInferenceHelpers<AppRouter>;
+export type InferInput = inferRouterInputs<AppRouter>;
+
+export type InferOutput = inferRouterOutputs<AppRouter>;

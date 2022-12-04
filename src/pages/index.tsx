@@ -23,7 +23,7 @@ import NextLink from "next/link";
 import CaptionCarousel from "../components/slide";
 import AddToCartModal from "@components/add-to-cart";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { InferProcedures } from "src/utils/trpc";
+import { InferOutput } from "src/utils/trpc";
 import { CATEGORIES } from "src/constant/categories";
 
 // Import Swiper styles
@@ -80,7 +80,7 @@ const QUALITIES = [
   },
 ];
 
-type CategoryProductsOutput = InferProcedures["category"]["getProductsByCategories"]["output"][number];
+type CategoryProductsOutput = InferOutput["category"]["getProductsByCategories"][number];
 
 type ProductCardProps = {
   product: Product;
