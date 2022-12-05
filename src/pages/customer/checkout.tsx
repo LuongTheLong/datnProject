@@ -151,10 +151,10 @@ const Checkout: NextPageWithLayout = () => {
                     <Icon as={BiStoreAlt} fontSize={24} mr={2} />
                     <Box>
                       <Text fontSize={16} color={"rgb(25, 25, 25)"} fontWeight={500}>
-                        Long Food
+                        Fast Food
                       </Text>
                       <Text fontSize={14} color={"rgb(73, 73, 73)"} fontWeight={500}>
-                        123 Ngô Quyền, Sơn Trà, Đà Nẵng
+                        54 Nguyễn Lương Bằng, Hoà Khánh Bắc, Liên Chiểu, Đà Nẵng
                       </Text>
                     </Box>
                   </Flex>
@@ -202,12 +202,12 @@ const Checkout: NextPageWithLayout = () => {
               }}
               cursor={"pointer"}
             >
-              <Flex alignItems={"center"}>
+              {/* <Flex alignItems={"center"}>
                 <Icon as={BsTag} fontSize={20} mr={4} />
                 <Text fontSize={18} fontWeight={500}>
                   Mã khuyến mãi
                 </Text>
-              </Flex>
+              </Flex> */}
             </Box>
 
             <Box borderBottom={"1px solid rgb(231, 231, 231)"} p={5}>
