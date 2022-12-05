@@ -1,6 +1,5 @@
 import { t, authedProcedure, adminRouter } from "../_app";
 import { z } from "zod";
-import { stringify } from "query-string";
 import { createHmac } from "crypto";
 import { createOrderValidator, getOrdersValidator } from "@shared/validators/order-validator";
 import { formatDate } from "@utils/time";
@@ -43,12 +42,12 @@ export const orderRouter = t.router({
     }
 
     const requestParams = {
-      vnp_Amount: grandTotal * 100,
+      vnp_Amount: (grandTotal * 100).toString(),
       vnp_Command: "pay",
       vnp_CreateDate: formatDate(new Date().getTime()),
       vnp_ExpireDate: formatDate(new Date().getTime() + 60 * 60000),
       vnp_CurrCode: "VND",
-      vnp_IpAddr: ip,
+      vnp_IpAddr: ip!,
       vnp_Locale: "vn",
       vnp_OrderInfo: "abc",
       vnp_OrderType: "billpayment",
@@ -58,7 +57,7 @@ export const orderRouter = t.router({
       vnp_Version: "2.1.0",
     };
 
-    const signedData = stringify(requestParams, { encode: false });
+    const signedData = new URLSearchParams(requestParams).toString();
     const hmac = createHmac("sha512", env.VNP_HASH);
     const signed = hmac.update(signedData).digest("hex");
 

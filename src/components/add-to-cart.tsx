@@ -20,8 +20,8 @@ import {
   RadioGroup,
   Icon,
   Badge,
-  Input,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import type { Product } from "@prisma/client";
 import type { ProductOptions, OptionCategory } from "@shared/validators/options-validator";
@@ -31,10 +31,12 @@ import { BiError, BiCheck } from "react-icons/bi";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import { useForm, useController, useWatch } from "react-hook-form";
 import { isEqual, differenceWith } from "lodash-es";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 import { trpc, InferOutput } from "@utils/trpc";
 import { calculateOptionsTotal } from "@utils/common";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 type Options = InferOutput["options"]["getByCategory"];
 type Choice = Options[number]["choices"][number];
@@ -203,16 +205,19 @@ const QuantityInput = ({ control, isLoading }: QuantityInputProps) => {
         pointerEvents={quantity === 1 || isLoading ? "none" : "auto"}
       />
 
-      <Input
+      <Box
         height={"40px"}
         bg={"rgb(247, 247, 247)"}
         rounded="md"
         width={"64px"}
-        defaultValue={quantity}
         pointerEvents={"none"}
-        textAlign="center"
         fontWeight={600}
-      />
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
+        {quantity}
+      </Box>
       <Box display="flex" justifyContent={"center"} alignItems="center"></Box>
       <Icon
         as={AiOutlinePlusCircle}
@@ -241,20 +246,51 @@ type AddToCartButtonProps = {
 
 const AddToCartButton = ({ control, productPrice, hasError, isLoading }: AddToCartButtonProps) => {
   const values = useWatch({ control }) as ProductOptions;
+  const session = useSession();
+  const router = useRouter();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const total = calculateOptionsTotal({ price: productPrice, values });
 
   return (
-    <Button
-      fontWeight={700}
-      colorScheme="red"
-      rounded={"full"}
-      type={"submit"}
-      isLoading={isLoading}
-      isDisabled={isLoading || hasError}
-    >
-      Thêm vào giỏ - {total} VNĐ
-    </Button>
+    <>
+      <Button
+        fontWeight={700}
+        colorScheme="red"
+        rounded={"full"}
+        type={session.status === "authenticated" ? "submit" : "button"}
+        isLoading={isLoading}
+        isDisabled={isLoading || hasError}
+        onClick={() => {
+          if (session.status !== "authenticated") {
+            onOpen();
+          }
+        }}
+      >
+        Thêm vào giỏ - {total} VNĐ
+      </Button>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        onCloseComplete={() => {
+          signIn();
+        }}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader></ModalHeader>
+          <ModalBody textAlign={"center"}>Vui lòng đăng nhập để mua hàng</ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Đóng
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

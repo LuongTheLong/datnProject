@@ -1,5 +1,4 @@
 import { t, authedProcedure } from "../_app";
-import { stringify } from "query-string";
 import { createHmac } from "crypto";
 import { z } from "zod";
 import { env } from "src/env/server.mjs";
@@ -14,10 +13,10 @@ export const paymentRouter = t.router({
     .query(async ({ input, ctx }) => {
       const { vnp_SecureHash, ...rest } = input.paymentData;
 
-      const signedData = stringify(rest, { encode: false });
+      const signedData = new URLSearchParams(rest);
 
       const hmac = createHmac("sha512", env.VNP_HASH);
-      const signed = hmac.update(signedData).digest("hex");
+      const signed = hmac.update(signedData.toString()).digest("hex");
 
       if (vnp_SecureHash === signed && rest.vnp_ResponseCode === "00") {
         const order = await ctx.prisma.order.update({

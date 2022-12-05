@@ -1,4 +1,4 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps } from "next";
 import { BuiltInProviderType } from "next-auth/providers";
 
 import { useRouter } from "next/router";
@@ -7,7 +7,7 @@ import { Text, Box, Stack, useColorModeValue, Flex } from "@chakra-ui/react";
 
 type Providers = Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const providers = await getProviders();
 
   return {
@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-export default function Login(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Login({ providers }: { providers: Providers }) {
   const query = useRouter().query;
 
   const redirect = typeof query.redirect === "string" ? query.redirect : `/`;
@@ -25,8 +25,8 @@ export default function Login(props: InferGetServerSidePropsType<typeof getServe
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Box>
           <Flex gap={4} flexDirection={{ base: "column", md: "row" }}>
-            {Object.hasOwn(props, "providers") &&
-              Object.values(props.providers as Providers).map(provider => (
+            {providers &&
+              Object.values(providers).map(provider => (
                 <Box
                   key={provider.id}
                   py={"3"}

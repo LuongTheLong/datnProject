@@ -1,7 +1,7 @@
 import type { NextPageWithLayout } from "@pages/_app";
 import DashboardLayout from "src/layout/dashboard-layout";
 import React from "react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { trpc } from "@utils/trpc";
 import {
   Badge,

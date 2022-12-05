@@ -35,7 +35,7 @@ import "swiper/css/scrollbar";
 // Import Swiper styles
 import "swiper/css";
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import FoodServe from "../assets/food-serve.svg";
 import Fresh from "../assets/fresh.svg";
 import Discount from "../assets/discount.svg";

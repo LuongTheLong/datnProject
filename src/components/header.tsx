@@ -10,11 +10,13 @@ import {
   DrawerOverlay,
   DrawerContent,
   Button,
+  Icon,
 } from "@chakra-ui/react";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+
 import { ROLE } from "@prisma/client";
 import NextLink from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { IoMdMenu } from "react-icons/io";
 import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport, AiOutlineSetting } from "react-icons/ai";
 
@@ -24,6 +26,11 @@ import Nav from "./nav";
 import Logo from "../assets/logo.png";
 
 const ADMIN = Object.values(ROLE);
+
+const MENUS = [
+  { id: 2, slug: "/user", title: "Tài khoản", requiredAuth: true, icon: AiOutlineUser },
+  { id: 3, slug: "/user/order", title: "Đơn hàng", requiredAuth: true, icon: AiOutlineFileDone },
+];
 
 const SideMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -43,37 +50,29 @@ const SideMenu = () => {
               </NextLink>
             </DrawerHeader>
             <DrawerBody>
-              <NextLink href={"/"} passHref>
-                <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
-                  <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                    <AiOutlineHome fontSize={24} />
-                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                      Trang chủ
-                    </Text>
-                  </Flex>
-                </Link>
-              </NextLink>
-              <NextLink href={session.status === "authenticated" ? "/user" : "/login"} passHref>
-                <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
-                  <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                    <AiOutlineUser fontSize={24} />
-                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                      Tài khoản
-                    </Text>
-                  </Flex>
-                </Link>
-              </NextLink>
+              <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
+                <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                  <AiOutlineHome fontSize={24} />
+                  <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                    Trang chủ
+                  </Text>
+                </Flex>
+              </Link>
 
-              <NextLink href={"/user/order"} passHref>
-                <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
-                  <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                    <AiOutlineFileDone fontSize={24} />
-                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                      Đơn hàng
-                    </Text>
-                  </Flex>
-                </Link>
-              </NextLink>
+              {session.status === "authenticated" &&
+                MENUS.map(item => (
+                  <NextLink href={item.slug} key={item.id} passHref>
+                    <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
+                      <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+                        <Icon as={item.icon} w={6} h={6} />
+
+                        <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                          {item.title}
+                        </Text>
+                      </Flex>
+                    </Link>
+                  </NextLink>
+                ))}
 
               {ADMIN.includes(session.data?.user.role!) && (
                 <NextLink href={"/dashboard"} passHref>
@@ -130,10 +129,8 @@ const Header = () => {
         <SideMenu />
       </Box>
       <Box>
-        <NextLink href={"/"} passHref>
-          <Link cursor={"pointer"}>
-            <Image src={Logo} width={90} height={90} alt="logo" />
-          </Link>
+        <NextLink href={"/"} style={{ cursor: "pointer" }} passHref>
+          <Image src={Logo} width={90} height={90} alt="logo" />
         </NextLink>
       </Box>
       <Nav />
@@ -141,11 +138,9 @@ const Header = () => {
       <Flex ml="auto" alignItems={"center"} gap={10}>
         {session.status === "authenticated" && <SmallCart />}
         {session.status === "unauthenticated" && (
-          <NextLink href={"/login"}>
-            <Button px={8} colorScheme="red">
-              Đăng nhập
-            </Button>
-          </NextLink>
+          <Button px={8} onClick={() => signIn()} colorScheme="red">
+            Đăng nhập
+          </Button>
         )}
       </Flex>
     </Flex>
