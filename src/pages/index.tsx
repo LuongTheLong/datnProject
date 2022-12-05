@@ -93,7 +93,7 @@ const ProductCard = (props: ProductCardProps) => {
 
   return (
     <>
-      <Box boxShadow={"0px 6px 15px rgb(1 15 28 / 6%)"} rounded={"lg"} overflow={"hidden"} onClick={onOpen}>
+      <Box boxShadow={"0px 6px 15px rgb(1 15 28 / 6%)"} rounded={"lg"} overflow={"hidden"}>
         <Box overflow={"hidden"}>
           <Image
             src={product.image}
@@ -136,7 +136,9 @@ const ProductCard = (props: ProductCardProps) => {
             </Text>
           )}
 
-          <Button colorScheme={"red"}>Thêm vào giỏ</Button>
+          <Button colorScheme={"red"} onClick={onOpen}>
+            Thêm vào giỏ
+          </Button>
         </Flex>
       </Box>
       {isOpen && <AddToCartModal isOpen={isOpen} item={product} onClose={onClose} />}
