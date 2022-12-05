@@ -25,8 +25,6 @@ import SmallCart from "./small-cart";
 import Nav from "./nav";
 import Logo from "../assets/logo.png";
 
-const ADMIN = Object.values(ROLE);
-
 const MENUS = [
   { id: 2, slug: "/user", title: "Tài khoản", requiredAuth: true, icon: AiOutlineUser },
   { id: 3, slug: "/user/order", title: "Đơn hàng", requiredAuth: true, icon: AiOutlineFileDone },
@@ -35,6 +33,12 @@ const MENUS = [
 const SideMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const session = useSession();
+
+  const isAdmin =
+    session.data?.user.role! === "ADMIN" ||
+    session.data?.user.role! === "MANAGER" ||
+    session.data?.user.role! === "WORKER";
+
   return (
     <>
       <IoMdMenu fontSize={28} onClick={onOpen} cursor={"pointer"} />
@@ -74,7 +78,7 @@ const SideMenu = () => {
                   </NextLink>
                 ))}
 
-              {ADMIN.includes(session.data?.user.role!) && (
+              {isAdmin && (
                 <NextLink href={"/dashboard"} passHref>
                   <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
                     <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>

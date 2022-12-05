@@ -247,7 +247,6 @@ type AddToCartButtonProps = {
 const AddToCartButton = ({ control, productPrice, hasError, isLoading }: AddToCartButtonProps) => {
   const values = useWatch({ control }) as ProductOptions;
   const session = useSession();
-  const router = useRouter();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const total = calculateOptionsTotal({ price: productPrice, values });
