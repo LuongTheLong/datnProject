@@ -47,20 +47,20 @@ import LoadingSpinner from "@components/loading-spinner";
 const FEATURES = [
   {
     id: 1,
-    title: " Discount Voucher",
-    text: "Competently orchestrate integrated schema for quickly create.",
+    title: " Giá",
+    text: "Giá thành rẻ, hợp với túi tiền học sinh, sinh viên.",
     image: Discount,
   },
   {
     id: 2,
-    title: " Discount Voucher",
-    text: "Competently orchestrate integrated schema for quickly create.",
+    title: " Dịch vụ",
+    text: "Dịch vụ nhanh chóng, chuyên nghiệp, lịch sự.",
     image: FoodServe,
   },
   {
     id: 3,
-    title: " Discount Voucher",
-    text: "Competently orchestrate integrated schema for quickly create.",
+    title: " Sản phẩm",
+    text: "Sản phẩm tươi, ngon, sạch như món ăn của mẹ bạn nấu.",
     image: Fresh,
   },
 ];
@@ -118,11 +118,11 @@ const ProductCard = (props: ProductCardProps) => {
             <NextLink href={{ pathname: "/[category]", query: { category: slug } }}>{title}</NextLink>
           </Text>
 
-          <Flex alignItems={"center"} justifyContent="center">
+          {/* <Flex alignItems={"center"} justifyContent="center">
             {new Array(5).fill("").map((_, idx) => (
               <Icon key={idx} as={AiFillStar} w={5} h={5} color={"orange.300"} />
             ))}
-          </Flex>
+          </Flex> */}
           <Heading textAlign={"center"} as="h5" size="md">
             {product.title}
           </Heading>
@@ -295,8 +295,7 @@ const Home: NextPageWithLayout = () => {
                 </Text>
               </Heading>
               <Text fontSize={18} color={"gray.600"} mb={4}>
-                Assertively envisioneer high-payoff architectures after interactive service. Collaboratively whiteboard
-                pandemic intellectual capital without cross-platform channels.
+                Nếu bạn thực sự muốn kết bạn, hãy đi đến bàn của ai đó và ngồi ăn với anh ta. Người mà cho bạn đồ ăn thì cũng có thể cho bạn trái tim của họ.
               </Text>
 
               <Flex flexDirection={"column"} gap={2}>
@@ -314,7 +313,7 @@ const Home: NextPageWithLayout = () => {
                 {'"Yêu thương có thể lấp đầy hết tất cả chỉ trừ… bao tử.."'}
               </Text>
 
-              <Flex>
+              {/* <Flex>
                 <Box width={50} height={50} position={"relative"} rounded={"full"} overflow={"hidden"} mr={4}>
                   <Image src={Ramsay} layout={"fill"} alt={"ramsay"} />
                 </Box>
@@ -322,7 +321,7 @@ const Home: NextPageWithLayout = () => {
                   <Text fontWeight={"bold"}>Lương Thế Long</Text>
                   <Text>CEO Long Food</Text>
                 </Flex>
-              </Flex>
+              </Flex> */}
             </Box>
           </Flex>
         </Container>
@@ -330,7 +329,7 @@ const Home: NextPageWithLayout = () => {
 
       <Container maxW={"6xl"}>
         <Heading as="h2" size="xl" textAlign={"center"} mb={6}>
-          Menu
+          Thực đơn
         </Heading>
 
         <Flex flexDirection={"column"} gap={8}>
@@ -341,7 +340,7 @@ const Home: NextPageWithLayout = () => {
           )}
           {!itemsQuery.isLoading && itemsQuery.data && (
             <>
-              <Flex alignItems={"center"} gap={6} justifyContent="center">
+              {/* <Flex alignItems={"center"} gap={6} justifyContent="center">
                 {CATEGORIES.map(category => (
                   <Flex
                     key={category.slug}
@@ -357,7 +356,7 @@ const Home: NextPageWithLayout = () => {
                     </Text>
                   </Flex>
                 ))}
-              </Flex>
+              </Flex> */}
               <Filter />
               {itemsQuery.data.map(category => (
                 <ProductCarousel key={category.id} {...category} />
