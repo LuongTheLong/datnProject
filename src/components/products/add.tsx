@@ -19,7 +19,7 @@ import {
   useDisclosure,
   Checkbox,
 } from "@chakra-ui/react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { createProductValidator, CreateProductValues } from "@shared/validators/product-validator";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

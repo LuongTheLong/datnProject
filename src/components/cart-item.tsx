@@ -3,7 +3,7 @@ import { Choice } from "@prisma/client";
 import { InferOutput, trpc } from "@utils/trpc";
 
 import { FaTrash } from "react-icons/fa";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 type CartItemType = InferOutput["cart"]["getAll"]["cart"][number];
 

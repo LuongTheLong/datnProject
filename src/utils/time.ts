@@ -7,7 +7,7 @@ dayjs.extend(timezone);
 
 const VN_TIME_NOW = (time?: string) => dayjs(time).tz("Asia/Ho_Chi_Minh");
 
-const formatDate = (time: number) => {
+const formatDate = (time: number): string => {
   return dayjs(time).tz("Asia/Ho_Chi_Minh").format("YYYYMMDDHHmmss");
 };
 

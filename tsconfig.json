@@ -25,7 +25,8 @@
       "@server/*": ["src/server/*"],
       "@utils/*": ["src/utils/*"],
       "@constants/*": ["src/constant/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   },
   "include": ["next-env.d.ts", "types/next-auth.d.ts", "**/*.ts", "**/*.tsx", "**/*.js"],
   "exclude": ["node_modules"]

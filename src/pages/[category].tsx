@@ -1,5 +1,5 @@
 import { Container, Heading, Grid, GridItem, Box, Text, Button, Spinner, Flex, useDisclosure } from "@chakra-ui/react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { trpc } from "src/utils/trpc";
 import { Product } from "@prisma/client";
 import { useRouter } from "next/router";

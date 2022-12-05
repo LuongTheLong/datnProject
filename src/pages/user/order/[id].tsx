@@ -6,7 +6,7 @@ import { InferOutput, trpc } from "@utils/trpc";
 import Link from "next/link";
 import { BiArrowBack, BiTime, BiPhone } from "react-icons/bi";
 import { BsCash } from "react-icons/bs";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { formatDate } from "@utils/common";
 
 type Options = InferOutput["options"]["getByCategory"];

@@ -7,7 +7,7 @@ import { createContextInner } from "@server/trpc/context";
 import { appRouter } from "@server/trpc/router";
 import { trpc } from "@utils/trpc";
 import popperImg from "../../assets/popper.png";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 export const getServerSideProps: GetServerSideProps = async context => {

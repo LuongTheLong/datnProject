@@ -45,9 +45,6 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
   },
-  pages: {
-    signIn: "/login",
-  },
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -57,7 +54,9 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
-  secret: env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/login",
+  },
 };
 
 export default NextAuth(authOptions);

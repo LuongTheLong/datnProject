@@ -1,8 +1,7 @@
-import { Flex, Text, Container, Box } from "@chakra-ui/react";
+import { Flex, Text, Box } from "@chakra-ui/react";
 import DashboardHeader from "@components/dashboard/header";
 import SideBar from "@components/dashboard/sidebar";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { signIn, useSession } from "next-auth/react";
 
 export default function DashboardLayout({
   children,
@@ -15,16 +14,10 @@ export default function DashboardLayout({
     slug: string;
   };
 }) {
-  const router = useRouter();
   const session = useSession({
     required: true,
     onUnauthenticated: () => {
-      router.push({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
+      signIn();
     },
   });
 

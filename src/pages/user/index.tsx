@@ -1,31 +1,17 @@
-import { useSession } from "next-auth/react";
-
-import { useRouter } from "next/router";
+import type { FormValues } from "@shared/validators/user-edit-validator";
+import { signIn, useSession } from "next-auth/react";
 import CommonLayout from "@layout/common-layout";
 import { Box, Container, Flex, Heading, Input, FormLabel, FormControl, Button, useToast } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@utils/trpc";
-
-const formValidator = z.object({
-  name: z.string().min(2),
-  phoneNumber: z.string().min(1),
-});
-
-type FormValues = z.infer<typeof formValidator>;
+import { formValidator } from "@shared/validators/user-edit-validator";
 
 const User = () => {
   const session = useSession({
     onUnauthenticated() {
-      router.push({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
+      signIn();
     },
-
     required: true,
   });
 
@@ -39,7 +25,6 @@ const User = () => {
   });
   const toast = useToast();
 
-  const router = useRouter();
   const { isLoading, mutate } = trpc.user.update.useMutation({
     onSuccess: data => {
       setValue("name", data.name || "");
