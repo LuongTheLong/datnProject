@@ -1,16 +1,13 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { BuiltInProviderType } from "next-auth/providers";
-import Link from "next/link";
 
 import { useRouter } from "next/router";
 import { signIn, getProviders, ClientSafeProvider, LiteralUnion } from "next-auth/react";
-import { Heading, Text, Box, Stack, useColorModeValue, Flex } from "@chakra-ui/react";
+import { Text, Box, Stack, useColorModeValue, Flex } from "@chakra-ui/react";
 
 type Providers = Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  res.setHeader("Cache-Control", "public, s-maxage=31536000, stale-while-revalidate=59");
-
   const providers = await getProviders();
 
   return {
