@@ -1,5 +1,10 @@
 import { t, authedProcedure } from "../_app";
+import { createUserValidator } from "@shared/validators/create-user-validator";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
+import { hash } from "bcrypt";
+
+const SALT_ROUND = 8;
 
 export const userRouter = t.router({
   update: authedProcedure
@@ -25,4 +30,31 @@ export const userRouter = t.router({
 
       return user;
     }),
+
+  createUser: t.procedure.input(createUserValidator).mutation(async ({ ctx, input }) => {
+    const existedUser = await ctx.prisma.user.findFirst({
+      where: {
+        username: input.username,
+      },
+    });
+
+    if (existedUser) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Tài khoản đã tồn tại",
+      });
+    }
+
+    const hashPassword = await hash(input.password, SALT_ROUND);
+
+    const user = await ctx.prisma.user.create({
+      data: {
+        email: "",
+        username: input.username,
+        password: hashPassword,
+      },
+    });
+
+    return user;
+  }),
 });
