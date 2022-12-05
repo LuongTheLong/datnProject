@@ -25,7 +25,7 @@ export default function Login(props: InferGetServerSidePropsType<typeof getServe
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Box>
           <Flex gap={4} flexDirection={{ base: "column", md: "row" }}>
-            {Object.values(props.providers as Providers).map(provider => (
+            {/* {Object.values(props.providers as Providers).map(provider => (
               <Box
                 key={provider.id}
                 py={"3"}
@@ -42,7 +42,7 @@ export default function Login(props: InferGetServerSidePropsType<typeof getServe
                   Đăng nhập bằng tài khoản Google
                 </Text>
               </Box>
-            ))}
+            ))} */}
           </Flex>
         </Box>
       </Stack>
