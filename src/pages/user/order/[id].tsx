@@ -7,7 +7,7 @@ import Link from "next/link";
 import { BiArrowBack, BiTime, BiPhone } from "react-icons/bi";
 import { BsCash } from "react-icons/bs";
 import Image from "next/legacy/image";
-import { formatDate } from "@utils/common";
+import { formatDate, formatPrice } from "@utils/common";
 
 type Options = InferOutput["options"]["getByCategory"];
 type Choice = Options[number]["choices"][number];
@@ -157,7 +157,7 @@ const Order = () => {
                     </GridItem>
                     <GridItem colSpan={2} justifySelf={"flex-end"}>
                       <Text fontWeight={500} fontSize={16} color={"black"}>
-                        {detail.total} VNĐ
+                        {formatPrice(detail.total)} VNĐ
                       </Text>
                     </GridItem>
                   </Grid>
@@ -165,7 +165,7 @@ const Order = () => {
 
                 <Box textAlign={"right"} mt={4} px={2}>
                   <Text fontWeight={"semibold"} fontSize={18}>
-                    Tổng: {data.grandTotal} VNĐ
+                    Tổng: {formatPrice(data.grandTotal)} VNĐ
                   </Text>
                 </Box>
               </Box>

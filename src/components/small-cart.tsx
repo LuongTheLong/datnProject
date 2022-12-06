@@ -15,6 +15,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { trpc } from "@utils/trpc";
 import { useRouter } from "next/router";
 import CartItem from "./cart-item";
+import { formatPrice } from "@utils/common";
 
 const SmallCart = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -69,7 +70,7 @@ const SmallCart = () => {
                         Thanh toán
                       </Text>
                       <Text color={"white"} fontWeight={700}>
-                        {cartQuery.data.grandTotal} VNĐ
+                        {formatPrice(cartQuery.data.grandTotal)} VNĐ
                       </Text>
                     </Flex>
                   </Button>

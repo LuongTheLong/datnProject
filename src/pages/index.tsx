@@ -24,7 +24,7 @@ import CaptionCarousel from "../components/slide";
 import AddToCartModal from "@components/add-to-cart";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { InferOutput } from "src/utils/trpc";
-import { CATEGORIES } from "src/constant/categories";
+import { formatPrice } from "@utils/common";
 
 // Import Swiper styles
 import "swiper/css";
@@ -128,11 +128,11 @@ const ProductCard = (props: ProductCardProps) => {
           </Heading>
           {!product.onSale ? (
             <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"black"}>
-              {product.price} VNĐ
+              {formatPrice(product.price)} VNĐ
             </Text>
           ) : (
             <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"red"}>
-              {product.price} VNĐ
+              {formatPrice(product.price)} VNĐ
             </Text>
           )}
 
@@ -355,6 +355,7 @@ const Home: NextPageWithLayout = () => {
                 ))}
               </Flex> */}
               {/* <Filter /> */}
+
               {itemsQuery.data.map(category => (
                 <ProductCarousel key={category.id} {...category} />
               ))}
