@@ -15,14 +15,11 @@ import {
   Select,
   Text,
   Checkbox,
-  Alert,
-  Box,
   Button,
-  Flex,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import NextImage from "next/legacy/image";
+
+import UploadImage from "@components/upload-image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -35,7 +32,7 @@ type EditItemProps = { data: InferOutput["product"]["getAll"]["products"][number
 export default function EditItem({ data }: EditItemProps) {
   const t = trpc.useContext();
 
-  const { category, id, createdAt, ...rest } = data;
+  const { category, id, createdAt, image, ...rest } = data;
   const categories = t.category.getAll.getData();
 
   const { isLoading, mutate } = trpc.product.update.useMutation({
@@ -50,31 +47,29 @@ export default function EditItem({ data }: EditItemProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  const [editImage, setEditImage] = useState(false);
-
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
-    watch,
-    setValue,
+    control,
   } = useForm<CreateProductValues>({
     resolver: zodResolver(createProductValidator),
-    defaultValues: rest,
+    defaultValues: {
+      ...rest,
+      file: image,
+    },
   });
-
-  const files = watch().files;
 
   const onSubmit = handleSubmit(async values => {
     const data = values;
-    let image = data.image;
+    let image = "";
 
-    if (editImage && files && files[0]) {
-      image = await imgToBase64(files[0]);
+    if (values.file instanceof File) {
+      image = await imgToBase64(values.file);
     }
 
-    mutate({ data: { ...data, image }, productId: id });
+    mutate({ data: { ...data, file: image }, productId: id });
   });
 
   const isButtonDisabled =
@@ -92,6 +87,8 @@ export default function EditItem({ data }: EditItemProps) {
           reset();
         }}
         isCentered
+        closeOnOverlayClick={!isLoading}
+        closeOnEsc={!isLoading}
       >
         <ModalOverlay />
         <form onSubmit={onSubmit}>
@@ -99,11 +96,11 @@ export default function EditItem({ data }: EditItemProps) {
             <ModalHeader>Chỉnh sửa sản phẩm</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <FormControl isInvalid={!!errors.title}>
+              <FormControl isInvalid={!!errors.title} isDisabled={isLoading}>
                 <FormLabel>Tên sản phẩm</FormLabel>
                 <Input {...register("title")} placeholder="Tên sản phẩm" />
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.categoryId}>
+              <FormControl mt={4} isInvalid={!!errors.categoryId} isDisabled={isLoading}>
                 <FormLabel>Danh mục sản phẩm</FormLabel>
                 <Select placeholder="Chọn danh mục" {...register("categoryId")} defaultValue={rest.categoryId}>
                   {categories &&
@@ -114,111 +111,27 @@ export default function EditItem({ data }: EditItemProps) {
                     ))}
                 </Select>
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.price}>
+              <FormControl mt={4} isInvalid={!!errors.price} isDisabled={isLoading}>
                 <FormLabel>Giá</FormLabel>
                 <Input {...register("price", { valueAsNumber: true })} placeholder="Đơn vị" />
               </FormControl>
-              <FormControl mt={4}>
+              <FormControl mt={4} isDisabled={isLoading}>
                 <FormLabel>Đang giảm giá?</FormLabel>
                 <Checkbox {...register("onSale")} placeholder="Đang giảm giá?" />
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.stock} isRequired>
+              <FormControl mt={4} isInvalid={!!errors.stock} isRequired isDisabled={isLoading}>
                 <FormLabel>Số lượng hàng tồn</FormLabel>
                 <Input {...register("stock", { valueAsNumber: true })} placeholder="Số lượng hàng tồn" />
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.description}>
+              <FormControl mt={4} isInvalid={!!errors.description} isDisabled={isLoading}>
                 <FormLabel>Mô tả</FormLabel>
                 <Input {...register("description")} placeholder="Mô tả" />
               </FormControl>
 
-              <Flex alignItems={"center"} mt={4} my={2}>
-                <Text fontWeight={600}>Hình ảnh</Text>
-
-                <Text ml={"auto"} cursor={"pointer"} color="gray.400" onClick={() => setEditImage(prev => !prev)}>
-                  Chỉnh sửa
-                </Text>
-              </Flex>
-
-              {editImage ? (
-                files && files[0] ? (
-                  <Flex flexDir={"column"} alignItems={"center"}>
-                    <Flex
-                      p={2}
-                      bg={"gray.100"}
-                      rounded={"md"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                      gap={6}
-                      my={2}
-                      width={"full"}
-                    >
-                      <Text fontSize={14} noOfLines={1}>
-                        {files[0].name}
-                      </Text>{" "}
-                      <Button
-                        size={"sm"}
-                        colorScheme="red"
-                        onClick={() => {
-                          setValue("files", undefined), reset({ files: undefined });
-                        }}
-                      >
-                        Xóa
-                      </Button>
-                    </Flex>
-                    <NextImage
-                      objectFit="contain"
-                      src={URL.createObjectURL(files[0])}
-                      alt={"product-image"}
-                      width={250}
-                      height={200}
-                    />
-                  </Flex>
-                ) : (
-                  <FormControl mt={4} isInvalid={!!errors.files}>
-                    <FormLabel
-                      onDrop={event => {
-                        event.preventDefault();
-                        setValue("files", event.dataTransfer.files);
-                      }}
-                      onDragOver={event => event.preventDefault()}
-                      m={0}
-                    >
-                      <Flex
-                        justifyContent={"center"}
-                        alignItems="center"
-                        p={6}
-                        border={1}
-                        borderColor={"gray.400"}
-                        borderStyle={"dashed"}
-                        rounded={"md"}
-                        cursor={"pointer"}
-                        mt={2}
-                      >
-                        <Box>
-                          <Text fontSize={15} mb={1} fontWeight={"medium"} textAlign={"center"} color={"gray.500"}>
-                            Ấn vào hoặc kéo thả hình
-                          </Text>
-
-                          <Text fontSize={12} fontWeight={"medium"} textAlign={"center"}>
-                            PNG, JPEG, JPG, WEBP (1MB)
-                          </Text>
-                        </Box>
-                      </Flex>
-                      <Input {...register("files")} type="file" srOnly accept=".jpg, .jpeg, .png, .webp" />
-                    </FormLabel>
-
-                    {errors.files && (
-                      <Alert fontSize={"sm"} fontWeight={400} my={2} px={4} py={2} rounded={"md"} status="error">
-                        {errors.files.message}
-                      </Alert>
-                    )}
-                  </FormControl>
-                )
-              ) : (
-                <Flex justifyContent={"center"}>
-                  <NextImage objectFit="contain" src={data.image!} alt={"product-image"} width={250} height={200} />
-                </Flex>
-              )}
+              <Text fontWeight={600} mt={4}>
+                Hình ảnh
+              </Text>
+              <UploadImage control={control} isLoading={isLoading} image={image} />
             </ModalBody>
             <ModalFooter>
               <Button
@@ -229,7 +142,7 @@ export default function EditItem({ data }: EditItemProps) {
                 colorScheme="blue"
                 mr={3}
               >
-                Lưu
+                Lưu thay đổi
               </Button>
               <Button onClick={onClose}>Hủy</Button>
             </ModalFooter>
