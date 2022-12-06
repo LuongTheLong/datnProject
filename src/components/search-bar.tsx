@@ -26,9 +26,6 @@ const SearchBar = () => {
           maxW={400}
         />
       </InputGroup>
-      <Box bg={"rgb(247, 247, 247)"} rounded={"full"} position={"absolute"} w={"full"}>
-        Hello
-      </Box>
     </Box>
   );
 };
