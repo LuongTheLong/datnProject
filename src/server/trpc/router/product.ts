@@ -18,17 +18,18 @@ export const productRouter = t.router({
     .input(z.object({ productId: z.string(), data: createProductValidator }))
     .mutation(async ({ input, ctx }) => {
       const { data, productId } = input;
+      const { file, ...rest } = data;
 
-      if (typeof input.data.file === "string") {
+      if (typeof file === "string") {
         let image = input.data.file as string;
 
-        if (image && !input.data.file.includes("cloudinary")) {
+        if (image && !image.includes("cloudinary")) {
           image = (await cloudinary.uploader.upload(image)).url;
         }
 
         const updatedProduct = await ctx.prisma.product.update({
           data: {
-            ...data,
+            ...rest,
             image,
           },
           where: {

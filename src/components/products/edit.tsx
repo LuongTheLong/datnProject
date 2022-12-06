@@ -84,7 +84,6 @@ export default function EditItem({ data }: EditItemProps) {
         isOpen={isOpen}
         onClose={() => {
           onClose();
-          reset();
         }}
         isCentered
         closeOnOverlayClick={!isLoading}
@@ -95,7 +94,7 @@ export default function EditItem({ data }: EditItemProps) {
           <ModalContent my={0}>
             <ModalHeader>Chỉnh sửa sản phẩm</ModalHeader>
             <ModalCloseButton />
-            <ModalBody pb={6}>
+            <ModalBody pb={6} maxHeight={700} overflowY={"auto"}>
               <FormControl isInvalid={!!errors.title} isDisabled={isLoading}>
                 <FormLabel>Tên sản phẩm</FormLabel>
                 <Input {...register("title")} placeholder="Tên sản phẩm" />

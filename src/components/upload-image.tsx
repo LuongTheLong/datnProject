@@ -57,8 +57,8 @@ const UploadImage = ({ control, isLoading, image }: UploadImageProps) => {
               size={"sm"}
               colorScheme="red"
               onClick={() => {
-                setFile(undefined);
-                field.onChange(undefined);
+                setFile(image);
+                field.onChange(image);
               }}
             >
               Xóa

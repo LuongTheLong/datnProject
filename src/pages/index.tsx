@@ -329,8 +329,8 @@ const Home: NextPageWithLayout = () => {
       </Box>
 
       <Container maxW={"6xl"}>
-        <Heading as="h2" size="xl" textAlign={"center"} mb={6}>
-          Menu
+        <Heading as="h2" size="2xl" textAlign={"center"} mb={6}>
+          Thực đơn
         </Heading>
 
         <Flex flexDirection={"column"} gap={8}>

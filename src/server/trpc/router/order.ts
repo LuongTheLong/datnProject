@@ -9,9 +9,11 @@ export const orderRouter = t.router({
   create: authedProcedure.input(createOrderValidator).mutation(async ({ input, ctx }) => {
     const { grandTotal, paymentType, phoneNumber, deliverTime } = input;
 
+    const orderCode = `#${Math.random().toString(16).substring(2, 7).toUpperCase()}`;
     const order = await ctx.prisma.order.create({
       data: {
         grandTotal,
+        code: orderCode,
         userId: ctx.session.user.id,
         paymentStatus: "PENDING",
         paymentType,
