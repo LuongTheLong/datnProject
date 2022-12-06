@@ -67,6 +67,10 @@ export const productRouter = t.router({
         category: {
           slug: input.slug,
         },
+        isDeleted: false,
+        stock: {
+          gt: 0,
+        },
       },
     });
 
@@ -78,6 +82,10 @@ export const productRouter = t.router({
       where: {
         category: {
           slug: input.slug,
+        },
+        isDeleted: false,
+        stock: {
+          gt: 0,
         },
       },
 
@@ -127,5 +135,20 @@ export const productRouter = t.router({
       pagesNum,
       products,
     };
+  }),
+  searchProduct: t.procedure.input(z.object({ key: z.string() })).query(async ({ ctx, input }) => {
+    const products = await ctx.prisma.product.findMany({
+      where: {
+        isDeleted: false,
+        stock: {
+          gt: 0,
+        },
+        title: {
+          contains: input.key,
+        },
+      },
+    });
+
+    return products;
   }),
 });
