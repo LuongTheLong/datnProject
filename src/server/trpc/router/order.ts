@@ -4,6 +4,7 @@ import { createHmac } from "crypto";
 import { createOrderValidator, getOrdersValidator } from "@shared/validators/order-validator";
 import { formatDate } from "@utils/time";
 import { env } from "src/env/server.mjs";
+import { stringify } from "query-string";
 
 export const orderRouter = t.router({
   create: authedProcedure.input(createOrderValidator).mutation(async ({ input, ctx }) => {
@@ -43,13 +44,37 @@ export const orderRouter = t.router({
       ip = ctx.req?.socket.remoteAddress;
     }
 
+    // const requestParams = {
+    //   vnp_Amount: (grandTotal * 100).toString(),
+    //   vnp_Command: "pay",
+    //   vnp_CreateDate: formatDate(new Date().getTime()),
+    //   vnp_ExpireDate: formatDate(new Date().getTime() + 60 * 60000),
+    //   vnp_CurrCode: "VND",
+    //   vnp_IpAddr: ip!,
+    //   vnp_Locale: "vn",
+    //   vnp_OrderInfo: "abc",
+    //   vnp_OrderType: "billpayment",
+    //   vnp_ReturnUrl: encodeURIComponent(`${ctx.req?.headers.origin}/order/process`),
+    //   vnp_TmnCode: env.VNP_CODE,
+    //   vnp_TxnRef: order.id,
+    //   vnp_Version: "2.1.0",
+    // };
+
+    // const signedData = new URLSearchParams(requestParams).toString();
+    // const hmac = createHmac("sha512", env.VNP_HASH);
+    // const signed = hmac.update(signedData).digest("hex");
+
+    // const paymentURL = `${env.VNP_URL}?${signedData}&vnp_SecureHash=${signed}`;
+
+    // return paymentURL;
+
     const requestParams = {
-      vnp_Amount: (grandTotal * 100).toString(),
+      vnp_Amount: grandTotal * 100,
       vnp_Command: "pay",
       vnp_CreateDate: formatDate(new Date().getTime()),
       vnp_ExpireDate: formatDate(new Date().getTime() + 60 * 60000),
       vnp_CurrCode: "VND",
-      vnp_IpAddr: ip!,
+      vnp_IpAddr: ip,
       vnp_Locale: "vn",
       vnp_OrderInfo: "abc",
       vnp_OrderType: "billpayment",
@@ -59,7 +84,7 @@ export const orderRouter = t.router({
       vnp_Version: "2.1.0",
     };
 
-    const signedData = new URLSearchParams(requestParams).toString();
+    const signedData = stringify(requestParams, { encode: false });
     const hmac = createHmac("sha512", env.VNP_HASH);
     const signed = hmac.update(signedData).digest("hex");
 
