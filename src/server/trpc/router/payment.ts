@@ -2,6 +2,7 @@ import { t, authedProcedure } from "../_app";
 import { createHmac } from "crypto";
 import { z } from "zod";
 import { env } from "src/env/server.mjs";
+import { stringify } from "query-string";
 
 export const paymentRouter = t.router({
   confirmPayment: authedProcedure
@@ -13,7 +14,7 @@ export const paymentRouter = t.router({
     .query(async ({ input, ctx }) => {
       const { vnp_SecureHash, ...rest } = input.paymentData;
 
-      const signedData = new URLSearchParams(rest);
+      const signedData = stringify(rest, { encode: false });
 
       const hmac = createHmac("sha512", env.VNP_HASH);
       const signed = hmac.update(signedData.toString()).digest("hex");
