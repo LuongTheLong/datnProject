@@ -21,7 +21,7 @@ export const productRouter = t.router({
       const { file, ...rest } = data;
 
       if (typeof file === "string") {
-        let image = input.data.file as string;
+        let image = file;
 
         if (image && !image.includes("cloudinary")) {
           image = (await cloudinary.uploader.upload(image)).url;

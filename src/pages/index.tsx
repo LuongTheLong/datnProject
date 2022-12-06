@@ -334,14 +334,10 @@ const Home: NextPageWithLayout = () => {
         </Heading>
 
         <Flex flexDirection={"column"} gap={8}>
-          {itemsQuery.isLoading && (
-            <Flex justifyContent={"center"}>
-              <LoadingSpinner />
-            </Flex>
-          )}
+          {itemsQuery.isLoading && <LoadingSpinner mb={10} />}
           {!itemsQuery.isLoading && itemsQuery.data && (
             <>
-              <Flex alignItems={"center"} gap={6} justifyContent="center">
+              {/* <Flex alignItems={"center"} gap={6} justifyContent="center">
                 {CATEGORIES.map(category => (
                   <Flex
                     key={category.slug}
@@ -357,8 +353,8 @@ const Home: NextPageWithLayout = () => {
                     </Text>
                   </Flex>
                 ))}
-              </Flex>
-              <Filter />
+              </Flex> */}
+              {/* <Filter /> */}
               {itemsQuery.data.map(category => (
                 <ProductCarousel key={category.id} {...category} />
               ))}
