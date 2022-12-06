@@ -24,7 +24,7 @@ import CaptionCarousel from "../components/slide";
 import AddToCartModal from "@components/add-to-cart";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { InferOutput } from "src/utils/trpc";
-import { CATEGORIES } from "src/constant/categories";
+import { formatPrice } from "@utils/common";
 
 // Import Swiper styles
 import "swiper/css";
@@ -128,11 +128,11 @@ const ProductCard = (props: ProductCardProps) => {
           </Heading>
           {!product.onSale ? (
             <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"black"}>
-              {product.price} VNĐ
+              {formatPrice(product.price)} VNĐ
             </Text>
           ) : (
             <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"red"}>
-              {product.price} VNĐ
+              {formatPrice(product.price)} VNĐ
             </Text>
           )}
 
@@ -295,7 +295,8 @@ const Home: NextPageWithLayout = () => {
                 </Text>
               </Heading>
               <Text fontSize={18} color={"gray.600"} mb={4}>
-                Nếu bạn thực sự muốn kết bạn, hãy đi đến bàn của ai đó và ngồi ăn với anh ta. Người mà cho bạn đồ ăn thì cũng có thể cho bạn trái tim của họ.
+                Nếu bạn thực sự muốn kết bạn, hãy đi đến bàn của ai đó và ngồi ăn với anh ta. Người mà cho bạn đồ ăn thì
+                cũng có thể cho bạn trái tim của họ.
               </Text>
 
               <Flex flexDirection={"column"} gap={2}>
@@ -328,16 +329,12 @@ const Home: NextPageWithLayout = () => {
       </Box>
 
       <Container maxW={"6xl"}>
-        <Heading as="h2" size="xl" textAlign={"center"} mb={6}>
+        <Heading as="h2" size="2xl" textAlign={"center"} mb={6}>
           Thực đơn
         </Heading>
 
         <Flex flexDirection={"column"} gap={8}>
-          {itemsQuery.isLoading && (
-            <Flex justifyContent={"center"}>
-              <LoadingSpinner />
-            </Flex>
-          )}
+          {itemsQuery.isLoading && <LoadingSpinner mb={10} />}
           {!itemsQuery.isLoading && itemsQuery.data && (
             <>
               {/* <Flex alignItems={"center"} gap={6} justifyContent="center">
@@ -357,7 +354,8 @@ const Home: NextPageWithLayout = () => {
                   </Flex>
                 ))}
               </Flex> */}
-              <Filter />
+              {/* <Filter /> */}
+
               {itemsQuery.data.map(category => (
                 <ProductCarousel key={category.id} {...category} />
               ))}

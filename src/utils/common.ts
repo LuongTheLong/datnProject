@@ -45,4 +45,20 @@ const calculateOptionsTotal = ({ values, price }: CalculateOptionsTotalParams): 
   return total;
 };
 
-export { imgToBase64, formatDate, calculateOptionsTotal };
+const formatPrice = (price: number) => {
+  const priceArr = price.toString().split("");
+  const formattedPriceArr = [];
+  let count = 0;
+  for (let i = priceArr.length - 1; i >= 0; i--) {
+    formattedPriceArr.unshift(priceArr[i]);
+    count++;
+
+    if (count % 3 === 0 && count < priceArr.length) {
+      formattedPriceArr.unshift(",");
+    }
+  }
+
+  return formattedPriceArr.join("");
+};
+
+export { imgToBase64, formatDate, calculateOptionsTotal, formatPrice };

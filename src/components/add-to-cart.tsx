@@ -34,7 +34,7 @@ import { isEqual, differenceWith } from "lodash-es";
 import Image from "next/legacy/image";
 
 import { trpc, InferOutput } from "@utils/trpc";
-import { calculateOptionsTotal } from "@utils/common";
+import { calculateOptionsTotal, formatPrice } from "@utils/common";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
@@ -266,7 +266,7 @@ const AddToCartButton = ({ control, productPrice, hasError, isLoading }: AddToCa
           }
         }}
       >
-        Thêm vào giỏ - {total} VNĐ
+        Thêm vào giỏ - {formatPrice(total)} VNĐ
       </Button>
 
       <Modal

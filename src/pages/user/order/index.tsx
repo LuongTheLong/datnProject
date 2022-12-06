@@ -1,7 +1,7 @@
 import { Badge, Box, Button, Container, Flex, Heading, Text, Spinner } from "@chakra-ui/react";
 import { trpc } from "@utils/trpc";
 import CommonLayout from "@layout/common-layout";
-import { formatDate } from "@utils/common";
+import { formatDate, formatPrice } from "@utils/common";
 import { Order } from "@prisma/client";
 import Link from "next/link";
 
@@ -18,7 +18,7 @@ const Order = ({ order }: OrderProps) => {
       <Flex p={4} alignItems={"center"} justifyContent={"space-between"}>
         <Box>
           <Text color="gray.600" textTransform={"capitalize"} fontWeight={"semibold"}>
-            {formatDate(order.createdAt)} &#8226; {order.grandTotal} VNĐ
+            {formatDate(order.createdAt)} &#8226; {formatPrice(order.grandTotal)} VNĐ
           </Text>
           {order.paymentStatus === "SUCCESS" && (
             <Badge colorScheme="green" fontSize={11}>

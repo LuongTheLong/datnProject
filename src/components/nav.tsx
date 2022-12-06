@@ -4,7 +4,7 @@ import { CATEGORIES } from "src/constant/categories";
 
 const Nav = () => {
   return (
-    <Menu isLazy>
+    <Menu>
       <MenuButton
         _hover={{
           color: "crimson",
@@ -12,7 +12,7 @@ const Nav = () => {
         fontWeight={"600"}
         cursor="pointer"
       >
-        Menu
+        Thực đơn
       </MenuButton>
       <MenuList>
         {CATEGORIES.map(category => (

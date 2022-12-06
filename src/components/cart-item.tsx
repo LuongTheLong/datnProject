@@ -4,6 +4,7 @@ import { InferOutput, trpc } from "@utils/trpc";
 
 import { FaTrash } from "react-icons/fa";
 import Image from "next/legacy/image";
+import { formatPrice } from "@utils/common";
 
 type CartItemType = InferOutput["cart"]["getAll"]["cart"][number];
 
@@ -89,7 +90,7 @@ const CartItem = ({ item }: { item: CartItemType }) => {
         </Box>
 
         <Text mt={4} fontWeight={500} fontSize={16} color={"black"}>
-          {item.total} VNĐ
+          {formatPrice(item.total)} VNĐ
         </Text>
       </GridItem>
       <GridItem colSpan={1}>

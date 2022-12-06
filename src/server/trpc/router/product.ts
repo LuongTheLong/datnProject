@@ -6,33 +6,39 @@ import { slugGenerator } from "@server/utils/common";
 
 export const productRouter = t.router({
   create: adminRouter.input(createProductValidator).mutation(async ({ input, ctx }) => {
-    const image = (await cloudinary.uploader.upload(input.image as string)).url;
-    const product = await ctx.prisma.product.create({ data: { ...input, code: slugGenerator(input.title), image } });
+    const { file, ...rest } = input;
+    if (typeof input.file === "string") {
+      const image = (await cloudinary.uploader.upload(input.file)).url;
+      const product = await ctx.prisma.product.create({ data: { ...rest, code: slugGenerator(input.title), image } });
 
-    return product;
+      return product;
+    }
   }),
   update: adminRouter
     .input(z.object({ productId: z.string(), data: createProductValidator }))
     .mutation(async ({ input, ctx }) => {
       const { data, productId } = input;
+      const { file, ...rest } = data;
 
-      let image = data.image as string;
+      if (typeof file === "string") {
+        let image = file;
 
-      if (image && !data.image?.includes("cloudinary")) {
-        image = (await cloudinary.uploader.upload(image)).url;
+        if (image && !image.includes("cloudinary")) {
+          image = (await cloudinary.uploader.upload(image)).url;
+        }
+
+        const updatedProduct = await ctx.prisma.product.update({
+          data: {
+            ...rest,
+            image,
+          },
+          where: {
+            id: productId,
+          },
+        });
+
+        return updatedProduct;
       }
-
-      const updatedProduct = await ctx.prisma.product.update({
-        data: {
-          ...data,
-          image,
-        },
-        where: {
-          id: productId,
-        },
-      });
-
-      return updatedProduct;
     }),
   delete: adminRouter.input(z.object({ productId: z.string() })).mutation(async ({ input, ctx }) => {
     const deletedProduct = await ctx.prisma.product.update({
@@ -61,6 +67,10 @@ export const productRouter = t.router({
         category: {
           slug: input.slug,
         },
+        isDeleted: false,
+        stock: {
+          gt: 0,
+        },
       },
     });
 
@@ -72,6 +82,10 @@ export const productRouter = t.router({
       where: {
         category: {
           slug: input.slug,
+        },
+        isDeleted: false,
+        stock: {
+          gt: 0,
         },
       },
 
@@ -104,6 +118,9 @@ export const productRouter = t.router({
         category: true,
       },
       take: 10,
+      orderBy: {
+        id: "desc",
+      },
     });
 
     const productsCount = await ctx.prisma.product.count({
@@ -118,5 +135,20 @@ export const productRouter = t.router({
       pagesNum,
       products,
     };
+  }),
+  searchProduct: t.procedure.input(z.object({ key: z.string() })).query(async ({ ctx, input }) => {
+    const products = await ctx.prisma.product.findMany({
+      where: {
+        isDeleted: false,
+        stock: {
+          gt: 0,
+        },
+        title: {
+          contains: input.key,
+        },
+      },
+    });
+
+    return products;
   }),
 });

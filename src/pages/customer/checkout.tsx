@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { checkoutValidator } from "@shared/validators/checkout-validator";
 
 import { isStoreOpened, deliveryNowTime } from "@utils/time";
+import { formatPrice } from "@utils/common";
 
 type CartItemType = InferOutput["cart"]["getAll"]["cart"][number];
 type Options = InferOutput["options"]["getByCategory"];
@@ -216,7 +217,7 @@ const Checkout: NextPageWithLayout = () => {
                   Giá tiền
                 </Text>
                 <Text fontSize={18} fontWeight={500}>
-                  {cartQuery.data?.grandTotal} VNĐ
+                  {formatPrice(cartQuery.data?.grandTotal)} VNĐ
                 </Text>
               </Flex>
             </Box>
@@ -227,7 +228,7 @@ const Checkout: NextPageWithLayout = () => {
                   Tổng
                 </Text>
                 <Text fontSize={18} fontWeight={500}>
-                  {cartQuery.data.grandTotal} VNĐ
+                  {formatPrice(cartQuery.data.grandTotal)} VNĐ
                 </Text>
               </Flex>
             </Box>

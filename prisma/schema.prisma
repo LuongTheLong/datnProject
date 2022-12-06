@@ -140,6 +140,7 @@ model Product {
 
 model Order {
     id              String        @id @default(cuid())
+    code            String        @unique
     grandTotal      Int
     phoneNumber     String
     deliverTimeFrom String        @default("")
