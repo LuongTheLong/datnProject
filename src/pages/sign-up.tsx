@@ -15,9 +15,10 @@ import {
   Icon,
   useToast,
   FormErrorMessage,
+  Link,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import NextLink from "next/link";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -123,9 +124,7 @@ export default function SignupCard() {
                 <Box textAlign={"center"}>
                   Đã đăng ký?{" "}
                   <Text as={"span"} textDecoration={"underline"} color={"blue.400"}>
-                    <NextLink href={"/login"} passHref>
-                      Đăng nhập tại đây
-                    </NextLink>
+                    <Link href={"/login"}>Đăng nhập tại đây</Link>
                   </Text>
                 </Box>
               </Stack>

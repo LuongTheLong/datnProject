@@ -55,7 +55,7 @@ export function requestWrapper(
         ) {
           if (user) {
             const sessionToken = generateSessionToken();
-            const sessionMaxAge = 60 * 60 * 24 * 30; //30Daysconst sessionMaxAge = 60 * 60 * 24 * 30; //30Days
+            const sessionMaxAge = 60 * 60 * 24 * 30;
             const sessionExpiry = fromDate(sessionMaxAge);
 
             await adapter.createSession({
@@ -91,6 +91,7 @@ export function requestWrapper(
         return encode({ token, secret, maxAge });
       },
       decode: async ({ token, secret }) => {
+        console.log("i was here 2");
         if (
           req.query.nextauth?.includes("callback") &&
           req.query.nextauth.includes("credentials") &&
