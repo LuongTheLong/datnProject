@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import Image from "next/legacy/image";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useBreakpointValue } from "@chakra-ui/react";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -12,6 +13,11 @@ import SecondBanner from "../assets/banner-2.jpg";
 import ThirdBanner from "../assets/banner-3.jpg";
 
 export default function CaptionCarousel() {
+  const imageSize = useBreakpointValue({
+    base: 1200,
+    lg: 580,
+  });
+
   const cards = [
     {
       title: "Design Projects 1",
@@ -31,7 +37,7 @@ export default function CaptionCarousel() {
   ];
 
   return (
-    <Box mb={12}>
+    <Box>
       <Swiper navigation={true} modules={[Navigation]} autoplay={{ delay: 5000 }}>
         {cards.map(product => (
           <SwiperSlide key={product.title}>
@@ -40,7 +46,7 @@ export default function CaptionCarousel() {
               alt={product.title}
               objectFit={"cover"}
               layout="responsive"
-              height={580}
+              height={imageSize}
               width={1400}
               priority={true}
             />

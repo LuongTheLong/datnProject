@@ -140,7 +140,7 @@ const Header = () => {
       <Box>
         <SideMenu />
       </Box>
-      <Box>
+      <Box display={{ base: "none" }}>
         <NextLink href={"/"} style={{ cursor: "pointer" }} passHref>
           <Image src={Logo} width={90} height={90} alt="logo" />
         </NextLink>

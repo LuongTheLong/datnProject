@@ -3,6 +3,11 @@
   opacity: 0.6;
 }
 
+.swiper-slide {
+  height: auto !important;
+  align-self: stretch !important;
+}
+
 html,
 body {
   height: 100%;
