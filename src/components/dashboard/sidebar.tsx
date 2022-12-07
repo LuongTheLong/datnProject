@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const MENUS = [
   { id: 1, slug: "", title: "Dashboard" },
-  { id: 1, slug: "order", title: "Danh sách đơn hàng" },
-  { id: 2, slug: "products", title: "Danh sách sản phẩm" },
-  { id: 3, slug: "categories", title: "Danh sách danh mục" },
+  { id: 2, slug: "order", title: "Danh sách đơn hàng" },
+  { id: 3, slug: "products", title: "Danh sách sản phẩm" },
+  { id: 4, slug: "categories", title: "Danh sách danh mục" },
 ];
 
 const SideBar = ({

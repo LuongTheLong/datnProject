@@ -79,7 +79,7 @@ const Products: NextPageWithLayout = () => {
               </Thead>
               <Tbody>
                 {data.products.map(product => (
-                  <Tr key={product.id}>
+                  <Tr key={product.title}>
                     <Td>{product.title}</Td>
                     <Td>
                       <Image

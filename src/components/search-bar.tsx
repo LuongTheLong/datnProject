@@ -7,7 +7,7 @@ const SearchBar = () => {
   const {} = useDisclosure();
 
   return (
-    <Box minW={350} maxW={400} position="relative">
+    <Box minW={250} maxW={400} position="relative" display={{ base: "none", lg: "block" }}>
       <InputGroup>
         <InputLeftElement>
           <BsSearch fontSize={17} />

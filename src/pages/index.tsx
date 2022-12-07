@@ -90,7 +90,14 @@ const ProductCard = (props: ProductCardProps) => {
 
   return (
     <>
-      <Box boxShadow={"0px 6px 15px rgb(1 15 28 / 6%)"} rounded={"lg"} overflow={"hidden"}>
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        boxShadow={"0px 6px 15px rgb(1 15 28 / 6%)"}
+        rounded={"lg"}
+        overflow={"hidden"}
+        height={"100%"}
+      >
         <Box overflow={"hidden"}>
           <Image
             src={product.image}
@@ -101,7 +108,7 @@ const ProductCard = (props: ProductCardProps) => {
             layout="responsive"
           />
         </Box>
-        <Flex direction={"column"} gap={2} px={2} py={4} textAlign={"center"}>
+        <Flex flex={1} direction={"column"} gap={2} p={2} textAlign={"center"}>
           <Text
             textAlign={"center"}
             _hover={{
@@ -111,6 +118,7 @@ const ProductCard = (props: ProductCardProps) => {
             width={"fit-content"}
             mx={"auto"}
             as={"span"}
+            fontSize={{ base: "sm", lg: "md" }}
           >
             <NextLink href={{ pathname: "/[category]", query: { category: slug } }}>{title}</NextLink>
           </Text>
@@ -120,22 +128,25 @@ const ProductCard = (props: ProductCardProps) => {
               <Icon key={idx} as={AiFillStar} w={5} h={5} color={"orange.300"} />
             ))}
           </Flex> */}
-          <Heading textAlign={"center"} as="h5" size="md">
+          <Heading textAlign={"center"} as="h5" size={{ base: "sm", lg: "md" }}>
             {product.title}
           </Heading>
-          {!product.onSale ? (
-            <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"black"}>
-              {formatPrice(product.price)} VNĐ
-            </Text>
-          ) : (
-            <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"red"}>
-              {formatPrice(product.price)} VNĐ
-            </Text>
-          )}
 
-          <Button colorScheme={"red"} onClick={onOpen}>
-            Thêm vào giỏ
-          </Button>
+          <Box as="div" mt={"auto"}>
+            {!product.onSale ? (
+              <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"black"}>
+                {formatPrice(product.price)} VNĐ
+              </Text>
+            ) : (
+              <Text textAlign={"center"} fontSize={16} fontWeight={600} color={"red"}>
+                {formatPrice(product.price)} VNĐ
+              </Text>
+            )}
+
+            <Button mt={2} colorScheme={"red"} onClick={onOpen} w={"full"}>
+              Thêm vào giỏ
+            </Button>
+          </Box>
         </Flex>
       </Box>
       {isOpen && <AddToCartModal isOpen={isOpen} item={product} onClose={onClose} />}
@@ -194,20 +205,13 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
             style={{ padding: "20px 0" }}
             modules={[Navigation]}
             spaceBetween={20}
-            slidesPerView={4}
+            slidesPerView={2}
             navigation={{
               prevEl: navigationPrevRef.current!, // Assert non-null
               nextEl: navigationNextRef.current!, // Assert non-null
             }}
             breakpoints={{
-              640: {
-                slidesPerView: 1,
-              },
               768: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              1024: {
                 slidesPerView: 3,
                 spaceBetween: 20,
               },
@@ -224,7 +228,7 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
           >
             {products.length > 0 &&
               products.map(product => (
-                <SwiperSlide key={product.id}>
+                <SwiperSlide key={product.id} style={{ height: "100%" }}>
                   <ProductCard slug={slug} title={title} product={product} />
                 </SwiperSlide>
               ))}
@@ -244,14 +248,14 @@ const Home: NextPageWithLayout = () => {
     <>
       <CaptionCarousel />
       <Container maxW={"6xl"}>
-        <Flex alignItems={"flex-start"} gap={6} mt={20} mb={100}>
+        <Flex alignItems={"flex-start"} gap={6} mt={20} mb={100} direction={{ base: "column", lg: "row" }}>
           {FEATURES.map(feature => (
             <Flex
               key={feature.id}
               flex={1}
               alignItems="center"
               _notLast={{
-                borderRight: "1px dashed #CBD5E0",
+                borderRight: { base: "none", lg: "1px dashed #CBD5E0" },
               }}
             >
               <Box
@@ -268,7 +272,7 @@ const Home: NextPageWithLayout = () => {
                 <Image alt={feature.title} src={feature.image} layout={"fixed"} width={50} height={50} />
               </Box>
               <Flex flexDirection={"column"} gap={2}>
-                <Heading as="h4" size="md">
+                <Heading as="h4" size={"md"}>
                   {feature.title}
                 </Heading>
                 <Text color={"gray.500"}>{feature.text}</Text>
@@ -280,9 +284,9 @@ const Home: NextPageWithLayout = () => {
 
       <Box py={20} bgColor={"#faf7f2"} mb={20}>
         <Container maxW={"6xl"}>
-          <Flex alignItems={"center"} gap={2} position={"relative"}>
+          <Flex alignItems={"center"} gap={2} position={"relative"} direction={{ base: "column", lg: "row" }}>
             <Box flex={1} position="relative" width={"100%"} height={"100%"}>
-              <Image src={FoodPlate} alt={"food-plate"} layout={"fixed"} objectFit="cover" priority={true} />
+              <Image src={FoodPlate} alt={"food-plate"} layout={"responsive"} objectFit="cover" priority={true} />
             </Box>
             <Box flex={1}>
               <Heading as="h2" size="xl" mb={4}>
