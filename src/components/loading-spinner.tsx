@@ -3,7 +3,7 @@ import { Spinner, Flex } from "@chakra-ui/react";
 
 const LoadingSpinner = (props: SpinnerProps) => {
   return (
-    <Flex justifyContent={"center"} mt={20}>
+    <Flex justifyContent={"center"}>
       <Spinner size="xl" color="crimson" {...props} />
     </Flex>
   );

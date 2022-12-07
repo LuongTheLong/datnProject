@@ -199,7 +199,6 @@ const ProductCarousel = (props: CategoryProductsOutput) => {
               </div>
             </Flex>
           </Flex>
-          {/* {"Hello"} */}
           <Swiper
             // install Swiper modules
             style={{ padding: "20px 0" }}
