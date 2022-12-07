@@ -13,8 +13,8 @@ import {
   Text,
   useColorModeValue,
   Icon,
-  Link,
   useToast,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import NextLink from "next/link";
@@ -79,11 +79,14 @@ export default function SignupCard() {
               <FormControl mb={2} id="name" isRequired isInvalid={!!errors.name} isDisabled={isLoading}>
                 <FormLabel>Họ và tên</FormLabel>
                 <Input {...register("name")} />
+
+                {errors.name && <FormErrorMessage>{errors.name.message}</FormErrorMessage>}
               </FormControl>
 
               <FormControl mb={2} id="username" isRequired isInvalid={!!errors.username} isDisabled={isLoading}>
                 <FormLabel>Tên đăng nhập</FormLabel>
                 <Input {...register("username")} />
+                {errors.username && <FormErrorMessage>{errors.username.message}</FormErrorMessage>}
               </FormControl>
               <FormControl id="password" isRequired isInvalid={!!errors.password} isDisabled={isLoading}>
                 <FormLabel>Mật khẩu</FormLabel>
@@ -99,6 +102,7 @@ export default function SignupCard() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
+                {errors.password && <FormErrorMessage>{errors.password.message}</FormErrorMessage>}
               </FormControl>
               <Stack spacing={10} pt={2} mt={4}>
                 <Button

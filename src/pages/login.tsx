@@ -18,6 +18,7 @@ import {
   Divider,
   Icon,
   Heading,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { loginFormValidator } from "@shared/validators/login-form-validator";
 import type { LoginFields } from "@shared/validators/login-form-validator";
@@ -41,7 +42,13 @@ export default function Login({ providers }: { providers: Providers }) {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<LoginFields>({ resolver: zodResolver(loginFormValidator) });
+  } = useForm<LoginFields>({
+    resolver: zodResolver(loginFormValidator),
+    defaultValues: {
+      emailOrUsername: "",
+      password: "",
+    },
+  });
   const [isLoading, setIsLoading] = useState(false);
   const query = useRouter().query;
 
@@ -76,10 +83,12 @@ export default function Login({ providers }: { providers: Providers }) {
               <FormControl id="emailOrUsername" isInvalid={!!errors.emailOrUsername} isDisabled={isLoading}>
                 <FormLabel>Tên đăng nhập hoặc email</FormLabel>
                 <Input {...register("emailOrUsername")} />
+                {errors.emailOrUsername && <FormErrorMessage>{errors.emailOrUsername.message}</FormErrorMessage>}
               </FormControl>
               <FormControl id="password" isInvalid={!!errors.password} isDisabled={isLoading}>
                 <FormLabel>Mật khẩu</FormLabel>
                 <Input {...register("password")} type="password" />
+                {errors.password && <FormErrorMessage>{errors.password.message}</FormErrorMessage>}
               </FormControl>
               <Stack spacing={10}>
                 <Button
