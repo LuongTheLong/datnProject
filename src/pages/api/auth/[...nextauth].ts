@@ -13,6 +13,8 @@ import { randomUUID } from "crypto";
 import Cookies from "cookies";
 import { decode, encode } from "next-auth/jwt";
 import { compare } from "bcrypt";
+import * as z from "zod";
+import { User } from "@prisma/client";
 
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const data = requestWrapper(req, res);
@@ -117,18 +119,21 @@ export function requestWrapper(
         },
         async authorize(credentials, req) {
           // verifying if credential email exists on db
-          const user = await prisma.user.findFirst({
-            where: {
-              OR: [
-                {
-                  email: credentials?.username,
-                },
-                {
-                  username: credentials?.username,
-                },
-              ],
-            },
-          });
+          let user: User | null = null;
+
+          if (z.string().email().safeParse(credentials?.username).success) {
+            user = await prisma.user.findFirst({
+              where: {
+                email: credentials?.username,
+              },
+            });
+          } else {
+            user = await prisma.user.findFirst({
+              where: {
+                username: credentials?.username,
+              },
+            });
+          }
 
           if (user) {
             const match = await compare(credentials?.password!, user.password!);
