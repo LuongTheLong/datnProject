@@ -47,10 +47,10 @@ const SideMenu = () => {
           <DrawerOverlay />
           <DrawerContent transition={"none"}>
             <DrawerHeader borderBottomWidth="1px">
-              <NextLink href={"/"} passHref>
-                <Link onClick={onClose} cursor={"pointer"}>
+              <NextLink onClick={onClose} href={"/"} passHref>
+                <Box cursor={"pointer"}>
                   <Image src={Logo} width={80} height={80} alt={"logo"} />
-                </Link>
+                </Box>
               </NextLink>
             </DrawerHeader>
             <DrawerBody>
@@ -65,29 +65,37 @@ const SideMenu = () => {
 
               {session.status === "authenticated" &&
                 MENUS.map(item => (
-                  <NextLink href={item.slug} key={item.id} passHref>
-                    <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
-                      <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                        <Icon as={item.icon} w={6} h={6} />
+                  <NextLink href={item.slug} onClick={onClose} key={item.id} passHref>
+                    <Flex
+                      _hover={{ textColor: "crimson" }}
+                      alignItems={"center"}
+                      py={3}
+                      borderBottom={"1px"}
+                      borderColor={"gray.200"}
+                    >
+                      <Icon as={item.icon} w={6} h={6} />
 
-                        <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                          {item.title}
-                        </Text>
-                      </Flex>
-                    </Link>
+                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                        {item.title}
+                      </Text>
+                    </Flex>
                   </NextLink>
                 ))}
 
               {isAdmin && (
-                <NextLink href={"/dashboard"} passHref>
-                  <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
-                    <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
-                      <AiOutlineSetting fontSize={24} />
-                      <Text ml={2} fontSize={18} fontWeight={"semibold"}>
-                        Quản lý
-                      </Text>
-                    </Flex>
-                  </Link>
+                <NextLink href={"/dashboard"} onClick={onClose} passHref>
+                  <Flex
+                    _hover={{ textColor: "crimson" }}
+                    alignItems={"center"}
+                    py={3}
+                    borderBottom={"1px"}
+                    borderColor={"gray.200"}
+                  >
+                    <AiOutlineSetting fontSize={24} />
+                    <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                      Quản lý
+                    </Text>
+                  </Flex>
                 </NextLink>
               )}
               {session.status === "authenticated" && (

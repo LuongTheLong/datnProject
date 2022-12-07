@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from "react-icons/md";
 import { BsFillPatchCheckFill } from "react-icons/bs";
-import { AiFillStar } from "react-icons/ai";
 import { Navigation } from "swiper";
 import { Product } from "@prisma/client";
 import { trpc } from "src/utils/trpc";
@@ -39,9 +38,7 @@ import Image from "next/legacy/image";
 import FoodServe from "../assets/food-serve.svg";
 import Fresh from "../assets/fresh.svg";
 import Discount from "../assets/discount.svg";
-import Filter from "@components/filter";
 import FoodPlate from "../assets/food-plate.png";
-import Ramsay from "../assets/ramsay.jpg";
 import LoadingSpinner from "@components/loading-spinner";
 
 const FEATURES = [

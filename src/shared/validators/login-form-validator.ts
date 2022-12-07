@@ -1,8 +1,8 @@
 import * as z from "zod";
 
 const loginFormValidator = z.object({
-  userName: z.string().min(1, "Username is required."),
-  passWord: z.string().min(1, "Password is required."),
+  emailOrUsername: z.string().min(1, "Username is required."),
+  password: z.string().min(1, "Password is required."),
 });
 
 export { loginFormValidator };

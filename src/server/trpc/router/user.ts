@@ -49,7 +49,7 @@ export const userRouter = t.router({
 
     const user = await ctx.prisma.user.create({
       data: {
-        email: "",
+        name: input.name,
         username: input.username,
         password: hashPassword,
       },
