@@ -137,6 +137,10 @@ export const productRouter = t.router({
     };
   }),
   searchProduct: t.procedure.input(z.object({ key: z.string() })).query(async ({ ctx, input }) => {
+    if (input.key === "") {
+      return null;
+    }
+
     const products = await ctx.prisma.product.findMany({
       where: {
         isDeleted: false,

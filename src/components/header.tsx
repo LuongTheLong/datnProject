@@ -11,10 +11,9 @@ import {
   DrawerContent,
   Button,
   Icon,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { signIn, signOut, useSession } from "next-auth/react";
-
-import { ROLE } from "@prisma/client";
 import NextLink from "next/link";
 import Image from "next/legacy/image";
 import { IoMdMenu } from "react-icons/io";
@@ -24,6 +23,7 @@ import SearchBar from "./search-bar";
 import SmallCart from "./small-cart";
 import Nav from "./nav";
 import Logo from "../assets/logo.png";
+import MobileSearchBar from "./mobile-search-bar";
 
 const MENUS = [
   { id: 2, slug: "/user", title: "Tài khoản", requiredAuth: true, icon: AiOutlineUser },
@@ -54,14 +54,20 @@ const SideMenu = () => {
               </NextLink>
             </DrawerHeader>
             <DrawerBody>
-              <Link onClick={onClose} _hover={{ textColor: "crimson" }}>
-                <Flex alignItems={"center"} py={3} borderBottom={"1px"} borderColor={"gray.200"}>
+              <NextLink href={"/"} onClick={onClose} passHref>
+                <Flex
+                  alignItems={"center"}
+                  py={3}
+                  borderBottom={"1px"}
+                  borderColor={"gray.200"}
+                  _hover={{ textColor: "crimson" }}
+                >
                   <AiOutlineHome fontSize={24} />
                   <Text ml={2} fontSize={18} fontWeight={"semibold"}>
                     Trang chủ
                   </Text>
                 </Flex>
-              </Link>
+              </NextLink>
 
               {session.status === "authenticated" &&
                 MENUS.map(item => (
@@ -127,7 +133,7 @@ const Header = () => {
 
   return (
     <Flex
-      gap={16}
+      gap={{ base: 6, md: 16 }}
       px={4}
       py={2}
       alignItems={"center"}
@@ -146,7 +152,14 @@ const Header = () => {
         </NextLink>
       </Box>
       <Nav />
-      <SearchBar />
+      <Box display={{ base: "none", md: "block" }}>
+        <SearchBar />
+      </Box>
+
+      <Box display={{ base: "block", md: "none" }}>
+        <MobileSearchBar />
+      </Box>
+
       <Flex ml="auto" alignItems={"center"} gap={10}>
         {session.status === "authenticated" && <SmallCart />}
         {session.status === "unauthenticated" && (

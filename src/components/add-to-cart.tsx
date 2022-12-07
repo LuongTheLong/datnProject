@@ -36,7 +36,6 @@ import Image from "next/legacy/image";
 import { trpc, InferOutput } from "@utils/trpc";
 import { calculateOptionsTotal, formatPrice } from "@utils/common";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 
 type Options = InferOutput["options"]["getByCategory"];
 type Choice = Options[number]["choices"][number];

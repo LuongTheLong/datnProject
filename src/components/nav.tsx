@@ -4,7 +4,7 @@ import { CATEGORIES } from "src/constant/categories";
 
 const Nav = () => {
   return (
-    <Box display={{ base: "none" }}>
+    <Box>
       <Menu autoSelect={false}>
         <MenuButton
           _hover={{
@@ -12,6 +12,7 @@ const Nav = () => {
           }}
           fontWeight={"600"}
           cursor="pointer"
+          fontSize={{ base: 14, md: 15 }}
         >
           Thực đơn
         </MenuButton>

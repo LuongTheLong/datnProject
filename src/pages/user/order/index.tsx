@@ -74,13 +74,7 @@ const OrderList = () => {
         )}
         {!isLoading && data && (
           <Flex direction={"column"} gap={4} alignItems={"center"}>
-            {data.pages.map(page => (
-              <>
-                {page.orders.map(order => (
-                  <Order order={order} key={order.id} />
-                ))}
-              </>
-            ))}
+            {data.pages.map(page => page.orders.map(order => <Order order={order} key={order.id} />))}
             {hasNextPage && (
               <Button
                 maxW={"min-content"}

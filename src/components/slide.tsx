@@ -15,7 +15,7 @@ import ThirdBanner from "../assets/banner-3.jpg";
 export default function CaptionCarousel() {
   const imageSize = useBreakpointValue({
     base: 1200,
-    lg: 580,
+    md: 600,
   });
 
   const cards = [

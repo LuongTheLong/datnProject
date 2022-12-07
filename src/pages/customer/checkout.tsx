@@ -118,8 +118,8 @@ const Checkout: NextPageWithLayout = () => {
       {cartQuery.isLoading && <LoadingSpinner mt={20} />}
       {cartQuery.isSuccess && cartQuery.data.cart.length === 0 && ""}
       {cartQuery.isSuccess && cartQuery.data.cart.length > 0 && (
-        <Flex>
-          <Box flex={1}>
+        <Flex direction={{ base: "column", lg: "row" }}>
+          <Box flex={1} order={{ base: 2, lg: 0 }}>
             <form onSubmit={onSubmit}>
               <Flex maxW={"640px"} mx={"auto"} direction={"column"} py={10} gap={6}>
                 <Flex
@@ -193,23 +193,8 @@ const Checkout: NextPageWithLayout = () => {
               </Flex>
             </form>
           </Box>
-          <Box flex={"0 0 420px"} borderLeft={"1px solid rgb(231, 231, 231)"} height={"calc(100vh - 40px)"}>
+          <Box flex={{ lg: "0 0 420px", base: "unset" }} borderLeft={"1px solid rgb(231, 231, 231)"}>
             <OrderSummary cart={cartQuery.data.cart} />
-            <Box
-              borderBottom={"1px solid rgb(231, 231, 231)"}
-              p={5}
-              _hover={{
-                bg: "rgb(247, 247, 247)",
-              }}
-              cursor={"pointer"}
-            >
-              {/* <Flex alignItems={"center"}>
-                <Icon as={BsTag} fontSize={20} mr={4} />
-                <Text fontSize={18} fontWeight={500}>
-                  Mã khuyến mãi
-                </Text>
-              </Flex> */}
-            </Box>
 
             <Box borderBottom={"1px solid rgb(231, 231, 231)"} p={5}>
               <Flex alignItems={"center"} justifyContent={"space-between"} mb={2}>
