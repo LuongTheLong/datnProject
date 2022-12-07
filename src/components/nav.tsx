@@ -4,7 +4,7 @@ import { CATEGORIES } from "src/constant/categories";
 
 const Nav = () => {
   return (
-    <Menu>
+    <Menu autoSelect={false}>
       <MenuButton
         _hover={{
           color: "crimson",
@@ -16,14 +16,16 @@ const Nav = () => {
       </MenuButton>
       <MenuList>
         {CATEGORIES.map(category => (
-          <MenuItem
-            key={category.title}
-            _hover={{
-              bg: "gray.50",
-            }}
-          >
-            <NextLink href={{ pathname: "/[category]", query: { category: category.slug } }}>{category.title}</NextLink>
-          </MenuItem>
+          <NextLink key={category.slug} href={{ pathname: "/[category]", query: { category: category.slug } }} passHref>
+            <MenuItem
+              key={category.title}
+              _hover={{
+                bg: "gray.50",
+              }}
+            >
+              {category.title}
+            </MenuItem>
+          </NextLink>
         ))}
       </MenuList>
     </Menu>

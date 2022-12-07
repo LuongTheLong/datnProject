@@ -19,16 +19,19 @@ const User = () => {
     register,
     formState: { errors },
     handleSubmit,
-    setValue,
+    reset,
   } = useForm<FormValues>({
     resolver: zodResolver(formValidator),
+    defaultValues: {
+      name: session.data?.user.name,
+      phoneNumber: session.data?.user.phoneNumber,
+    },
   });
   const toast = useToast();
 
   const { isLoading, mutate } = trpc.user.update.useMutation({
     onSuccess: data => {
-      setValue("name", data.name || "");
-      setValue("phoneNumber", data.phoneNumber);
+      reset({ name: data.name, phoneNumber: data.phoneNumber });
 
       toast({
         title: "Cập nhật thành công",
@@ -58,23 +61,13 @@ const User = () => {
                   <Box flex={1}>
                     <FormControl isInvalid={!!errors.name} isDisabled={isLoading}>
                       <FormLabel>Họ và tên</FormLabel>
-                      <Input
-                        {...register("name")}
-                        defaultValue={session.data.user.name}
-                        type="text"
-                        placeholder="Họ và tên"
-                      />
+                      <Input {...register("name")} type="text" placeholder="Họ và tên" />
                     </FormControl>
                   </Box>
                   <Box flex={1}>
                     <FormControl isInvalid={!!errors.phoneNumber} isDisabled={isLoading}>
                       <FormLabel>Số điện thoại</FormLabel>
-                      <Input
-                        {...register("phoneNumber")}
-                        defaultValue={session.data.user.phoneNumber || ""}
-                        type="tel"
-                        placeholder="Số điện thoại"
-                      />
+                      <Input {...register("phoneNumber")} type="tel" placeholder="Số điện thoại" />
                     </FormControl>
                   </Box>
                   <Box width={"100%"}>

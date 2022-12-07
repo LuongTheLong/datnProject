@@ -30,6 +30,24 @@ export const orderRouter = t.router({
       data: products,
     });
 
+    const productsIds = products.map(product => product.productId);
+
+    await ctx.prisma.product.updateMany({
+      where: {
+        id: {
+          in: productsIds,
+        },
+        stock: {
+          gt: 0,
+        },
+      },
+      data: {
+        stock: {
+          decrement: 1,
+        },
+      },
+    });
+
     await ctx.prisma.cart.deleteMany({
       where: {
         userId: ctx.session.user.id,
@@ -43,30 +61,6 @@ export const orderRouter = t.router({
     } else {
       ip = ctx.req?.socket.remoteAddress;
     }
-
-    // const requestParams = {
-    //   vnp_Amount: (grandTotal * 100).toString(),
-    //   vnp_Command: "pay",
-    //   vnp_CreateDate: formatDate(new Date().getTime()),
-    //   vnp_ExpireDate: formatDate(new Date().getTime() + 60 * 60000),
-    //   vnp_CurrCode: "VND",
-    //   vnp_IpAddr: ip!,
-    //   vnp_Locale: "vn",
-    //   vnp_OrderInfo: "abc",
-    //   vnp_OrderType: "billpayment",
-    //   vnp_ReturnUrl: encodeURIComponent(`${ctx.req?.headers.origin}/order/process`),
-    //   vnp_TmnCode: env.VNP_CODE,
-    //   vnp_TxnRef: order.id,
-    //   vnp_Version: "2.1.0",
-    // };
-
-    // const signedData = new URLSearchParams(requestParams).toString();
-    // const hmac = createHmac("sha512", env.VNP_HASH);
-    // const signed = hmac.update(signedData).digest("hex");
-
-    // const paymentURL = `${env.VNP_URL}?${signedData}&vnp_SecureHash=${signed}`;
-
-    // return paymentURL;
 
     const requestParams = {
       vnp_Amount: grandTotal * 100,

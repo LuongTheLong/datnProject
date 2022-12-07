@@ -118,7 +118,7 @@ export default function SignupCard() {
               <Stack pt={6}>
                 <Box textAlign={"center"}>
                   Đã đăng ký?{" "}
-                  <Text textDecoration={"underline"} color={"blue.400"}>
+                  <Text as={"span"} textDecoration={"underline"} color={"blue.400"}>
                     <NextLink href={"/login"} passHref>
                       Đăng nhập tại đây
                     </NextLink>
