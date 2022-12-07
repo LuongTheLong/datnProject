@@ -132,7 +132,7 @@ const OrderTime = ({ control, isStoreOpened }: OrderTimeProps) => {
             <ModalHeader>Hẹn giờ nhận đơn</ModalHeader>
             <ModalCloseButton />
             <ModalBody overflowY={"auto"} maxHeight={"440px"}>
-              <Grid templateColumns="repeat(3, 1fr)" gap={2}>
+              <Grid templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }} gap={2}>
                 {deliverTime.map((time, idx) =>
                   !isTimeAvailable({ hour: time.from.hour, minute: time.from.minute }) ? null : (
                     <GridItem
@@ -148,6 +148,7 @@ const OrderTime = ({ control, isStoreOpened }: OrderTimeProps) => {
                       textAlign={"center"}
                       bg="rgb(231, 231, 231)"
                       p={2}
+                      fontSize={{ base: 14, lg: 16 }}
                       fontWeight={"semibold"}
                       rounded={"md"}
                       cursor="pointer"

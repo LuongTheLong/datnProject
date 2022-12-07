@@ -15,7 +15,7 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
   return (
     <>
       {isAuthorized && (
-        <Flex flexDirection={"column"} minH={"100vh"}>
+        <Flex flexDirection={"column"} minH={"100vh"} px={2}>
           <CheckoutHeader />
           {children}
         </Flex>
