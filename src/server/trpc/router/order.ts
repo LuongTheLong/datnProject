@@ -54,6 +54,10 @@ export const orderRouter = t.router({
       },
     });
 
+    if (paymentType === "CASH") {
+      return `/order/success?orderId=${order.id}`;
+    }
+
     let ip;
 
     if (ctx.req?.headers["x-forwarded-for"]) {

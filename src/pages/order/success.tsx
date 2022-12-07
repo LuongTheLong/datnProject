@@ -66,6 +66,10 @@ const Confirm = (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
         <Text fontSize={32} color={"green.500"} mt={10} fontWeight={"bold"}>
           {!isLoading && data?.paymentStatus === "SUCCESS" && "Thanh toán thành công."}
         </Text>
+
+        <Text fontSize={32} color={"green.500"} mt={10} fontWeight={"bold"}>
+          {!isLoading && data?.paymentType === "CASH" && "Đặt hàng thành công."}
+        </Text>
         <Text fontWeight={"semibold"} fontSize={24}>
           Bạn sẽ nhận được email về chi tiết đơn hàng của mình.
         </Text>
