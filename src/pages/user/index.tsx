@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@utils/trpc";
 import { formValidator } from "@shared/validators/user-edit-validator";
+import LoadingSpinner from "@components/loading-spinner";
 
 type UserFormProps = {
   name: string | undefined;
@@ -99,6 +100,7 @@ const User = () => {
         <Heading as="h3" size="lg" mb={8}>
           Thông tin cá nhân
         </Heading>
+        {session.status === "loading" && <LoadingSpinner my={4} />}
         {session.status === "authenticated" && (
           <UserForm
             email={session.data.user.email}

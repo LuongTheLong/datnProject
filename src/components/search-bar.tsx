@@ -82,15 +82,7 @@ const SearchBar = () => {
 
   return (
     <>
-      <Box
-        minW={300}
-        ref={ref}
-        onClick={onOpen}
-        maxW={400}
-        position="relative"
-        zIndex={3}
-        display={{ base: "none", lg: "block" }}
-      >
+      <Box ref={ref} onClick={onOpen} maxW={600} position="relative" zIndex={3}>
         <InputSearch setSearchKey={setSearchKey} />
 
         {searchKey !== "" && isOpen && (
