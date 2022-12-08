@@ -5,6 +5,8 @@ import { createOrderValidator, getOrdersValidator } from "@shared/validators/ord
 import { formatDate } from "@utils/time";
 import { env } from "src/env/server.mjs";
 import { stringify } from "query-string";
+import { EditOrderValidator } from "@shared/validators/edit-order-validator";
+import { Prisma, Product } from "@prisma/client";
 
 export const orderRouter = t.router({
   create: authedProcedure.input(createOrderValidator).mutation(async ({ input, ctx }) => {
@@ -90,17 +92,40 @@ export const orderRouter = t.router({
 
     return paymentURL;
   }),
-  update: authedProcedure
-    .input(createOrderValidator.merge(z.object({ orderId: z.string() })))
+  update: adminRouter
+    .input(EditOrderValidator.merge(z.object({ orderId: z.string() })))
     .mutation(async ({ input, ctx }) => {
-      const updatedOrder = await ctx.prisma.order.update({
-        data: { ...input },
+      const { orderDetail, ...rest } = await ctx.prisma.order.update({
+        data: {
+          paymentStatus: input.paymentStatus,
+        },
         where: {
           id: input.orderId,
         },
+        include: {
+          orderDetail: true,
+        },
       });
+      let transaction: Prisma.Prisma__ProductClient<Product, never>[] = [];
 
-      return updatedOrder;
+      if (rest.paymentStatus === "FAILED" || rest.paymentStatus === "SUCCESS") {
+        transaction = orderDetail.map(detail => {
+          return ctx.prisma.product.update({
+            where: {
+              id: detail.productId,
+            },
+            data: {
+              stock: {
+                increment: rest.paymentStatus === "FAILED" ? detail.quantity : -detail.quantity,
+              },
+            },
+          });
+        });
+      }
+
+      await ctx.prisma.$transaction(transaction);
+
+      return rest;
     }),
   getAll: t.procedure.query(async ({ ctx }) => {
     const orders = await ctx.prisma.order.findMany({});
