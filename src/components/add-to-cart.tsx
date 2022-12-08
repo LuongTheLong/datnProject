@@ -396,8 +396,7 @@ const AddToCartModal = ({ item, onClose, isOpen }: ModalProps) => {
               </Heading>
 
               <Text fontSize={14} lineHeight={1.5} fontWeight={500} mb={8}>
-                Món ăn này vừa gọn nhẹ, thuận tiện, nhanh no, dễ ăn và phù hợp với khẩu vị của nhiều người. Nếu bạn cần
-                dinh dưỡng thì hãy nghĩ ngay đến chiếc bánh này cho khẩu phần ăn nhé!
+                {item.description}
               </Text>
 
               <Box mb={8}>

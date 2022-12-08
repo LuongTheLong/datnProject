@@ -11,9 +11,9 @@ import { env } from "../../../env/server.mjs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { randomUUID } from "crypto";
 import Cookies from "cookies";
+import * as z from "zod";
 import { decode, encode } from "next-auth/jwt";
 import { compare } from "bcrypt";
-import * as z from "zod";
 import { User } from "@prisma/client";
 
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -55,6 +55,7 @@ export function requestWrapper(
         ) {
           if (user) {
             const sessionToken = generateSessionToken();
+            console.log(sessionToken);
             const sessionMaxAge = 60 * 60 * 24 * 30;
             const sessionExpiry = fromDate(sessionMaxAge);
 
@@ -91,7 +92,6 @@ export function requestWrapper(
         return encode({ token, secret, maxAge });
       },
       decode: async ({ token, secret }) => {
-        console.log("i was here 2");
         if (
           req.query.nextauth?.includes("callback") &&
           req.query.nextauth.includes("credentials") &&

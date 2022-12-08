@@ -61,6 +61,9 @@ export const categoryRouter = t.router({
           take: 6,
           where: {
             isDeleted: false,
+            stock: {
+              gt: 0,
+            },
           },
         },
       },
