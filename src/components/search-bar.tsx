@@ -62,7 +62,6 @@ const InputSearch = ({ setSearchKey }: InputSearchProps) => {
 const SearchBar = () => {
   const [searchKey, setSearchKey] = useState("");
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const ref = useRef<HTMLDivElement>(null);
 
   const { isLoading, data } = trpc.product.searchProduct.useQuery(
     { key: searchKey },
@@ -73,16 +72,20 @@ const SearchBar = () => {
     }
   );
 
-  useOutsideClick({
-    ref: ref,
-    handler: () => {
-      onClose();
-    },
-  });
-
   return (
     <>
-      <Box ref={ref} onClick={onOpen} maxW={600} position="relative" zIndex={3}>
+      {isOpen && (
+        <Box
+          position={"fixed"}
+          onClick={onClose}
+          zIndex={2}
+          width={"100%"}
+          inset={0}
+          bg={"rgba(0,0,0,0.2)"}
+          cursor={"pointer"}
+        ></Box>
+      )}
+      <Box onClick={onOpen} maxW={600} position="relative" zIndex={3}>
         <InputSearch setSearchKey={setSearchKey} />
 
         {searchKey !== "" && isOpen && (
