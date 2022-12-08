@@ -13,7 +13,7 @@ const Order = ({ order }: OrderProps) => {
   return (
     <Box border={"1px solid rgb(231, 231, 231)"} rounded={"md"} width={"100%"}>
       <Heading as="h5" size="sm" p={4} bgColor={"rgb(247, 247, 247)"}>
-        {`Đơn hàng #${order.id}`}
+        {`Đơn hàng ${order.code}`}
       </Heading>
       <Flex p={4} alignItems={"center"} justifyContent={"space-between"}>
         <Box>

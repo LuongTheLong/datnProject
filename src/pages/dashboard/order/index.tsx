@@ -14,12 +14,15 @@ import {
   Box,
   Spinner,
   TableContainer,
+  HStack,
 } from "@chakra-ui/react";
 import DashboardLayout from "@layout/dashboard-layout";
 import { formatDate } from "@utils/common";
 import { trpc } from "@utils/trpc";
+import EditOrder from "@components/dashboard-order/edit";
+import ViewOrder from "@components/dashboard-order/view";
 
-const captions = ["Mã đơn hàng", "Hình thức thanh toán", "Trạng thái thanh toán", "Thời gian đặt hàng"];
+const captions = ["Mã đơn hàng", "Hình thức thanh toán", "Trạng thái thanh toán", "Thời gian đặt hàng", "Thao tác"];
 
 const DashboardOrders = () => {
   const textColor = useColorModeValue("gray.700", "white");
@@ -54,7 +57,7 @@ const DashboardOrders = () => {
                   <Td minWidth={{ sm: "250px" }} pl="0px">
                     <Flex align="center" py=".8rem" minWidth="100%" flexWrap="nowrap">
                       <Text fontSize="md" color={textColor} fontWeight="bold" minWidth="100%">
-                        {order.id}
+                        {order.code}
                       </Text>
                     </Flex>
                   </Td>
@@ -85,6 +88,12 @@ const DashboardOrders = () => {
                     <Text fontSize="md" color={textColor} fontWeight="bold" pb=".5rem">
                       {formatDate(order.createdAt)}
                     </Text>
+                  </Td>
+                  <Td>
+                    <HStack spacing={2}>
+                      <EditOrder order={order} />
+                      <ViewOrder orderId={order.id} />
+                    </HStack>
                   </Td>
                 </Tr>
               ))}
