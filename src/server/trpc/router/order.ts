@@ -108,7 +108,7 @@ export const orderRouter = t.router({
       });
       let transaction: Prisma.Prisma__ProductClient<Product, never>[] = [];
 
-      if (rest.paymentStatus === "FAILED" || rest.paymentStatus === "SUCCESS") {
+      if (rest.paymentStatus === "FAILED") {
         transaction = orderDetail.map(detail => {
           return ctx.prisma.product.update({
             where: {
@@ -117,6 +117,21 @@ export const orderRouter = t.router({
             data: {
               stock: {
                 increment: rest.paymentStatus === "FAILED" ? detail.quantity : -detail.quantity,
+              },
+            },
+          });
+        });
+      }
+
+      if (rest.paymentStatus === "SUCCESS") {
+        transaction = orderDetail.map(detail => {
+          return ctx.prisma.product.update({
+            where: {
+              id: detail.productId,
+            },
+            data: {
+              stock: {
+                decrement: detail.quantity,
               },
             },
           });
