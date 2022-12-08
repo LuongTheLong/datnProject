@@ -222,7 +222,11 @@ export const orderRouter = t.router({
     }),
 
   getAllOrders: adminRouter.query(async ({ ctx }) => {
-    const orders = await ctx.prisma.order.findMany();
+    const orders = await ctx.prisma.order.findMany({
+      orderBy: {
+        id: "desc",
+      },
+    });
 
     return orders;
   }),
