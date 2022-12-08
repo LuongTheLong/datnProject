@@ -26,14 +26,15 @@ const SearchItem = ({ product }: SearchItemProps) => {
 
 type InputSearchProps = {
   setSearchKey: Dispatch<SetStateAction<string>>;
+  onOpen: () => void;
 };
 
-const InputSearch = ({ setSearchKey }: InputSearchProps) => {
+const InputSearch = ({ setSearchKey, onOpen }: InputSearchProps) => {
   const [value, setValue] = useState("");
   const debounceCallback = useDebounce(() => setSearchKey(value));
 
   return (
-    <InputGroup>
+    <InputGroup onFocus={() => onOpen()}>
       <InputLeftElement>
         <BsSearch fontSize={17} />
       </InputLeftElement>
@@ -85,8 +86,8 @@ const SearchBar = () => {
           cursor={"pointer"}
         ></Box>
       )}
-      <Box onClick={onOpen} maxW={600} position="relative" zIndex={3}>
-        <InputSearch setSearchKey={setSearchKey} />
+      <Box maxW={600} position="relative" zIndex={3}>
+        <InputSearch onOpen={onOpen} setSearchKey={setSearchKey} />
 
         {searchKey !== "" && isOpen && (
           <Box
