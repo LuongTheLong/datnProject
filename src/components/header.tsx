@@ -89,7 +89,7 @@ const SideMenu = () => {
                 ))}
 
               {isAdmin && (
-                <NextLink href={"/dashboard"} onClick={onClose} passHref>
+                <NextLink href={"/dashboard/order"} onClick={onClose} passHref>
                   <Flex
                     _hover={{ textColor: "crimson" }}
                     alignItems={"center"}
