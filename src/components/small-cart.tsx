@@ -10,12 +10,14 @@ import {
   Text,
   useDisclosure,
   Spinner,
+  Icon,
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
 import { trpc } from "@utils/trpc";
 import { useRouter } from "next/router";
 import CartItem from "./cart-item";
 import { formatPrice } from "@utils/common";
+import { MdOutlineClose } from "react-icons/md";
 
 const SmallCart = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,7 +57,11 @@ const SmallCart = () => {
             <DrawerOverlay />
             <DrawerContent position={"relative"}>
               <DrawerHeader borderBottomWidth="1px" fontSize={24}>
-                Giỏ hàng
+                <Flex alignItems={"center"} justifyContent="space-between">
+                  Giỏ hàng
+                  <Icon onClick={onClose} as={MdOutlineClose} w={8} h={8} />
+                </Flex>
+
                 {cartQuery.data.cart.length !== 0 && (
                   <Button
                     bg={"crimson"}
