@@ -30,7 +30,7 @@ export default function LargeWithLogoLeft() {
             <Box>
               <Image src={Logo} layout="fixed" width={100} height={100} alt="logo" />
             </Box>
-            <Text fontSize={"sm"}>© {new Date().getFullYear()} Long Food. All rights reserved</Text>
+            <Text fontSize={"sm"}>© {new Date().getFullYear()} Fast Food. All rights reserved</Text>
           </Stack>
           <Stack align={"flex-start"}>
             <ListHeader>Danh sách</ListHeader>

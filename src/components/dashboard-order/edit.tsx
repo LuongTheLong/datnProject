@@ -73,7 +73,7 @@ const EditOrder = ({ order }: EditOrderProps) => {
         <ModalOverlay />
         <ModalContent>
           <form onSubmit={onSubmit}>
-            <ModalHeader>Modal Title</ModalHeader>
+            <ModalHeader>Chỉnh sửa trạng thái đơn hàng</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <FormControl mt={4} isDisabled={isLoading}>
