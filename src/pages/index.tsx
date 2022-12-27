@@ -35,30 +35,37 @@ import "swiper/css/scrollbar";
 import "swiper/css";
 
 import Image from "next/legacy/image";
-import FoodServe from "../assets/food-serve.svg";
-import Fresh from "../assets/fresh.svg";
-import Discount from "../assets/discount.svg";
-import FoodPlate from "../assets/food-plate.png";
+import FoodServe from "../assets/check.png";
+import Fresh from "../assets/checkout.png";
+import Test from "../assets/money.png";
+import Discount from "../assets/serve.png";
+import FoodPlate from "../assets/dich-vu-van-tai-quoc-te-gia-re.jpg";
 import LoadingSpinner from "@components/loading-spinner";
 
 const FEATURES = [
   {
     id: 1,
-    title: " Giá",
-    text: "Giá thành rẻ, hợp với túi tiền học sinh, sinh viên.",
+    title: " Phục Vụ 24/7",
+    text: "Dịch vụ 24/7, miễn phí báo giá tận nơi, làm việc cả ngày lễ. Nhận vận chuyển cho khách hàng trên toàn quốc.",
     image: Discount,
   },
   {
     id: 2,
-    title: " Dịch vụ",
-    text: "Dịch vụ nhanh chóng, chuyên nghiệp, lịch sự.",
+    title: " Uy Tín/Chuyên Nghiệp",
+    text: "Luôn cam kết bảo đảm chất lượng dịch vụ tốt và tính an toàn cho hàng hóa trong quá trình vận chuyển.",
     image: FoodServe,
   },
   {
     id: 3,
-    title: " Sản phẩm",
-    text: "Sản phẩm tươi, ngon, sạch như món ăn của mẹ bạn nấu.",
+    title: " Tiên Phong",
+    text: "Sở hữu đội ngũ nhân viên lành nghề, luôn là một trong những đơn vị cung cấp dịch vụ vận tải hàng đầu tại thành phố Đà Nẵng.",
     image: Fresh,
+  },
+  {
+    id: 4,
+    title: " Giá Rẻ",
+    text: "Dịch Vụ Dọn Nhà luôn đem đến mức giá cả hợp lý phù hợp với túi tiền của bạn, giá công khai và cạnh tranh nhất thị trường.",
+    image: Test,
   },
 ];
 
@@ -288,31 +295,35 @@ const Home: NextPageWithLayout = () => {
               <Image src={FoodPlate} alt={"food-plate"} layout={"responsive"} objectFit="cover" priority={true} />
             </Box>
             <Box flex={1}>
-              <Heading as="h2" size="xl" mb={4}>
-                Món ăn thực sự ngon sẽ được phục vụ tới{" "}
+              <Heading as="h2" size="xl" mb={4} color={""}>
+                CHÚNG TÔI CUNG CẤP DỊCH VỤ VỚI 4 PHƯƠNG CHÂM CHÍNH:{" "}
+                {/* Món ăn thực sự ngon sẽ được phục vụ tới{" "} */}
                 <Text color={"crimson"} as={"span"}>
-                  tay của bạn
+                  UY TÍN – ĐẢM BẢO – GIÁ RẺ – CHUYÊN NGHIỆP
                 </Text>
               </Heading>
               <Text fontSize={18} color={"gray.600"} mb={4}>
-                Nếu bạn thực sự muốn kết bạn, hãy đi đến bàn của ai đó và ngồi ăn với anh ta. Người mà cho bạn đồ ăn thì
-                cũng có thể cho bạn trái tim của họ.
+                Chúng tôi luôn cam kết phụng sự bằng cái tâm, cung cấp giải pháp vận chuyển tối ưu nhất cho từng vị khách.
+
+                Tính toán chi phí hợp lý và đưa đến khách hàng mức giá phải chăng, cạnh tranh nhất so với thị trường
+
+                Từng nhân viên đều là bộ mặt của Dịch Vụ Dọn Nhà, luôn đề cao tính trách nhiệm và cách phục vụ với khách hàng.
               </Text>
 
-              <Flex flexDirection={"column"} gap={2}>
+              {/* <Flex flexDirection={"column"} gap={2}>
                 {QUALITIES.map(quality => (
                   <Text key={quality.id} fontWeight={600}>
                     <Icon as={BsFillPatchCheckFill} verticalAlign={"middle"} w={4} h={4} color={"crimson"} mr={2} />
                     {quality.title}
                   </Text>
                 ))}
-              </Flex>
+              </Flex> */}
 
-              <Divider my={4} />
+              {/* <Divider my={4} />
 
               <Text fontStyle={"italic"} fontSize={18} mb={4}>
                 {'"Yêu thương có thể lấp đầy hết tất cả chỉ trừ… bao tử.."'}
-              </Text>
+              </Text> */}
 
               {/* <Flex>
                 <Box width={50} height={50} position={"relative"} rounded={"full"} overflow={"hidden"} mr={4}>
@@ -330,7 +341,7 @@ const Home: NextPageWithLayout = () => {
 
       <Container maxW={"6xl"}>
         <Heading as="h2" size="2xl" textAlign={"center"} mb={6}>
-          Thực đơn
+          Bảng dịch vụ
         </Heading>
 
         <Flex flexDirection={"column"} gap={8}>

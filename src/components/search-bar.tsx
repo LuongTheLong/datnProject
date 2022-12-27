@@ -34,29 +34,31 @@ const InputSearch = ({ setSearchKey, onOpen }: InputSearchProps) => {
   const debounceCallback = useDebounce(() => setSearchKey(value));
 
   return (
-    <InputGroup onFocus={() => onOpen()}>
-      <InputLeftElement>
-        <BsSearch fontSize={17} />
-      </InputLeftElement>
-      <Input
-        rounded={"md"}
-        fontSize={16}
-        _placeholder={{ fontWeight: "medium", fontSize: 16 }}
-        type="text"
-        placeholder="Tìm món ăn"
-        fontWeight={"medium"}
-        _hover={{ borderColor: "gray.300" }}
-        focusBorderColor="crimson"
-        borderColor={"transparent"}
-        bg={"rgb(247, 247, 247)"}
-        maxW={400}
-        value={value}
-        onChange={event => {
-          setValue(event.target.value);
-          debounceCallback();
-        }}
-      />
-    </InputGroup>
+    // <InputGroup onFocus={() => onOpen()}>
+    //   <InputLeftElement>
+    //     <BsSearch fontSize={17} />
+    //   </InputLeftElement>
+    //   <Input
+    //     rounded={"md"}
+    //     fontSize={16}
+    //     _placeholder={{ fontWeight: "medium", fontSize: 16 }}
+    //     type="text"
+    //     placeholder="Tìm món ăn"
+    //     fontWeight={"medium"}
+    //     _hover={{ borderColor: "gray.300" }}
+    //     focusBorderColor="crimson"
+    //     borderColor={"transparent"}
+    //     bg={"rgb(247, 247, 247)"}
+    //     maxW={400}
+    //     value={value}
+    //     onChange={event => {
+    //       setValue(event.target.value);
+    //       debounceCallback();
+    //     }}
+    //   />
+    // </InputGroup>
+    <>
+    </>
   );
 };
 

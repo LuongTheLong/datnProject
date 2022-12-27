@@ -56,6 +56,9 @@ export const categoryRouter = t.router({
   }),
   getProductsByCategories: t.procedure.query(async ({ ctx }) => {
     const products = await ctx.prisma.category.findMany({
+      where: {
+        isDeleted: false,
+      },
       include: {
         products: {
           take: 6,

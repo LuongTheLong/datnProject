@@ -8,9 +8,9 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 import { Navigation } from "swiper";
-import FirstBanner from "../assets/banner-1.jpg";
-import SecondBanner from "../assets/banner-2.jpg";
-import ThirdBanner from "../assets/banner-3.jpg";
+import FirstBanner from "../assets/deep-cleaning-banner-ver25.jpg";
+import SecondBanner from "../assets/main_initial-hotels-banner.jpg";
+import ThirdBanner from "../assets/thiet-bi-ve-sinh-banner-2-mobile.jpg";
 
 export default function CaptionCarousel() {
   const imageSize = useBreakpointValue({

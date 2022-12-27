@@ -35,7 +35,7 @@ const SmallCart = () => {
     <>
       {!cartQuery.isLoading && cartQuery.data && (
         <>
-          <Flex
+          {/* <Flex
             onClick={onOpen}
             px={3}
             py={2}
@@ -52,7 +52,7 @@ const SmallCart = () => {
             <Text lineHeight={0} fontWeight={"medium"} color={"white"} fontSize={18}>
               {cartQuery.data.cart.length}
             </Text>
-          </Flex>
+          </Flex> */}
           <Drawer placement={"right"} onClose={onClose} isOpen={isOpen} size={"sm"}>
             <DrawerOverlay />
             <DrawerContent position={"relative"}>

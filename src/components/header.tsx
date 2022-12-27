@@ -22,7 +22,7 @@ import { AiOutlineHome, AiOutlineUser, AiOutlineFileDone, AiOutlineExport, AiOut
 import SearchBar from "./search-bar";
 import SmallCart from "./small-cart";
 import Nav from "./nav";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/Logo-ve-sinh-cong-nghiep-1-400x400.png";
 import MobileSearchBar from "./mobile-search-bar";
 
 const MENUS = [
@@ -68,7 +68,34 @@ const SideMenu = () => {
                   </Text>
                 </Flex>
               </NextLink>
-
+              <NextLink href={"/about-me"} onClick={onClose} passHref>
+                <Flex
+                  alignItems={"center"}
+                  py={3}
+                  borderBottom={"1px"}
+                  borderColor={"gray.200"}
+                  _hover={{ textColor: "crimson" }}
+                >
+                  <AiOutlineUser fontSize={24} />
+                  <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                    Về chúng tôi
+                  </Text>
+                </Flex>
+              </NextLink>
+              <NextLink href={"/contact"} onClick={onClose} passHref>
+                <Flex
+                  alignItems={"center"}
+                  py={3}
+                  borderBottom={"1px"}
+                  borderColor={"gray.200"}
+                  _hover={{ textColor: "crimson" }}
+                >
+                  <AiOutlineUser fontSize={24} />
+                  <Text ml={2} fontSize={18} fontWeight={"semibold"}>
+                    Thông tin liên hệ
+                  </Text>
+                </Flex>
+              </NextLink>
               {session.status === "authenticated" &&
                 MENUS.map(item => (
                   <NextLink href={item.slug} onClick={onClose} key={item.id} passHref>

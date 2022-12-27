@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/Logo-ve-sinh-cong-nghiep-1-400x400.png";
 import Image from "next/legacy/image";
 import NextLink from "next/link";
 import { Box, Container, SimpleGrid, Stack, Text, useColorModeValue, Icon, Flex } from "@chakra-ui/react";
@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 const MENUS = [
   { id: 2, slug: "/user", title: "Tài khoản", requiredAuth: true, icon: AiOutlineUser },
   { id: 3, slug: "/user/order", title: "Đơn hàng", requiredAuth: true, icon: AiOutlineFileDone },
+  { id: 4, slug: "/about-me", title: "Về chúng tôi", requiredAuth: true, icon: AiOutlineFileDone },
 ];
 
 const ListHeader = ({ children }: { children: ReactNode }) => {

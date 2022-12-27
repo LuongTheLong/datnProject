@@ -6,7 +6,7 @@ const Nav = () => {
   return (
     <Box>
       <Menu autoSelect={false}>
-        <MenuButton
+        {/* <MenuButton
           _hover={{
             color: "crimson",
           }}
@@ -15,7 +15,7 @@ const Nav = () => {
           fontSize={{ base: 14, md: 15 }}
         >
           Thực đơn
-        </MenuButton>
+        </MenuButton> */}
         <MenuList>
           {CATEGORIES.map(category => (
             <NextLink
